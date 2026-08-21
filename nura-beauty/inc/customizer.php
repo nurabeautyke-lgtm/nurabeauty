@@ -42,8 +42,8 @@ function nura_settings_map() {
 		'nura_signoff'     => array( 'default' => 'Wear your crown. — NURA', 'label' => __( 'Signature sign-off', 'nura-beauty' ), 'section' => 'nura_brand' ),
 		'nura_bio'         => array( 'default' => "East Africa's house of radiant confidence. Premium human-hair wigs, hand-crafted in Nairobi.", 'label' => __( 'One-line bio (footer)', 'nura-beauty' ), 'section' => 'nura_brand', 'control' => 'textarea' ),
 		'nura_announcement'=> array( 'default' => 'Free same-day delivery in Nairobi on orders over KES 10,000 · Pay with M-Pesa on delivery', 'label' => __( 'Announcement bar', 'nura-beauty' ), 'section' => 'nura_brand', 'control' => 'textarea' ),
-		'nura_phone'       => array( 'default' => '+254 700 000 000', 'label' => __( 'Phone', 'nura-beauty' ), 'section' => 'nura_brand' ),
-		'nura_whatsapp'    => array( 'default' => 'https://wa.me/254700000000', 'label' => __( 'WhatsApp link (wa.me/...)', 'nura-beauty' ), 'section' => 'nura_brand', 'sanitize' => 'esc_url_raw' ),
+		'nura_phone'       => array( 'default' => '+254 714 994 898', 'label' => __( 'Phone', 'nura-beauty' ), 'section' => 'nura_brand' ),
+		'nura_whatsapp'    => array( 'default' => 'https://wa.me/254714994898', 'label' => __( 'WhatsApp link (wa.me/...)', 'nura-beauty' ), 'section' => 'nura_brand', 'sanitize' => 'esc_url_raw' ),
 		'nura_email'       => array( 'default' => 'care@nura.co.ke', 'label' => __( 'Support email', 'nura-beauty' ), 'section' => 'nura_brand', 'sanitize' => 'sanitize_email' ),
 		'nura_address'     => array( 'default' => 'Nairobi, Kenya', 'label' => __( 'Store address', 'nura-beauty' ), 'section' => 'nura_brand' ),
 		'nura_city'        => array( 'default' => 'Nairobi', 'label' => __( 'City', 'nura-beauty' ), 'section' => 'nura_brand' ),
@@ -82,6 +82,19 @@ function nura_opt( $id ) {
 	$default = isset( $map[ $id ]['default'] ) ? $map[ $id ]['default'] : '';
 	return get_theme_mod( $id, $default );
 }
+
+/**
+ * Guarantee the real NURA contact details show even if placeholder demo values
+ * were saved into the Customizer by the sample data. A real value the owner
+ * sets in Appearance > Customize > NURA Options always wins; only an empty or
+ * known-placeholder value is replaced.
+ */
+add_filter( 'theme_mod_nura_phone', function ( $value ) {
+	return ( '' === $value || '+254 700 000 000' === $value ) ? '+254 714 994 898' : $value;
+} );
+add_filter( 'theme_mod_nura_whatsapp', function ( $value ) {
+	return ( '' === $value || 'https://wa.me/254700000000' === $value ) ? 'https://wa.me/254714994898' : $value;
+} );
 
 function nura_customize_register( $wp_customize ) {
 	$wp_customize->add_panel( 'nura_panel', array(
