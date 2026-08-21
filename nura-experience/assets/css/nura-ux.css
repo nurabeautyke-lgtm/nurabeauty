@@ -671,3 +671,57 @@
 	#nura-cert, #nura-cert * { visibility: visible; }
 	#nura-cert { position: absolute; left: 0; top: 0; width: 100%; border: none; }
 }
+
+/* ---- Phase 3c: NURA Journal (editorial content) ---- */
+.nura-article-meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: .4rem 1.1rem;
+	margin: 0 0 1.4rem;
+	padding: 0 0 1rem;
+	border-bottom: 1px solid rgba(0, 0, 0, .08);
+	font-family: var(--nura-font-ui, 'Jost', sans-serif);
+	font-size: .82rem;
+	letter-spacing: .03em;
+	color: #8a7a58;
+	text-transform: uppercase;
+}
+.nura-article-meta__author { font-weight: 600; color: #2a2a2a; }
+.nura-article-meta a { color: inherit; }
+
+.nura-journal-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 1.4rem;
+}
+.nura-jcard { display: flex; flex-direction: column; }
+.nura-jcard__media {
+	display: block;
+	overflow: hidden;
+	border-radius: 14px;
+	aspect-ratio: 4 / 3;
+	background: #f2ede4;
+}
+.nura-jcard__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.nura-jcard:hover .nura-jcard__media img { transform: scale(1.04); }
+.nura-jcard__body { padding: .9rem 0 0; }
+.nura-jcard__cat {
+	font-family: var(--nura-font-ui, 'Jost', sans-serif);
+	font-size: .68rem;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+	color: #c79a54;
+}
+.nura-jcard__title {
+	font-family: var(--nura-font-display, 'Cormorant Garamond', serif);
+	font-size: 1.3rem;
+	line-height: 1.2;
+	margin: .3rem 0 .4rem;
+}
+.nura-jcard__title a { color: #2a2a2a; text-decoration: none; }
+.nura-jcard__title a:hover { color: #c79a54; }
+.nura-jcard__excerpt { color: #555; font-size: .92rem; margin: 0 0 .5rem; }
+.nura-jcard__meta { display: block; font-size: .76rem; color: #8a7a58; margin: 0 0 .5rem; }
+.nura-jcard__more { font-size: .82rem; font-weight: 600; color: #c79a54; text-decoration: none; }
+.nura-jcard__more:hover { text-decoration: underline; }
