@@ -474,3 +474,76 @@
 	.nura-specs { grid-template-columns: 1fr; }
 	.nura-spec-table th { width: 42%; }
 }
+
+/* ---- Phase 3b: variation swatches ---- */
+.nura-hidden-select { position: absolute !important; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.variations td.value:has(.nura-swatches) > select { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.nura-swatches { display: flex; flex-wrap: wrap; gap: .5rem; margin: .2rem 0 .3rem; }
+.nura-swatch {
+	appearance: none;
+	cursor: pointer;
+	font-family: var(--nura-font-ui, 'Jost', sans-serif);
+	font-size: .82rem;
+	letter-spacing: .02em;
+	line-height: 1;
+	padding: .55rem .85rem;
+	border: 1px solid rgba(0, 0, 0, .18);
+	border-radius: 999px;
+	background: #fff;
+	color: #2a2a2a;
+	transition: border-color .15s ease, box-shadow .15s ease, color .15s ease;
+}
+.nura-swatch:hover { border-color: var(--nura-gold, #c79a54); }
+.nura-swatch.is-active {
+	border-color: var(--nura-gold, #c79a54);
+	color: var(--nura-gold, #c79a54);
+	box-shadow: 0 0 0 1px var(--nura-gold, #c79a54) inset;
+}
+.nura-swatch.is-unavailable {
+	opacity: .38;
+	cursor: not-allowed;
+	text-decoration: line-through;
+}
+/* Colour dots */
+.nura-swatches--colour { gap: .6rem; }
+.nura-swatch--dot {
+	width: 2.2rem;
+	height: 2.2rem;
+	padding: 3px;
+	border-radius: 50%;
+	background: #fff;
+}
+.nura-swatch--dot span {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	border: 1px solid rgba(0, 0, 0, .12);
+}
+.nura-swatch--dot.is-active { box-shadow: 0 0 0 2px var(--nura-gold, #c79a54); }
+.nura-swatch--dot.is-unavailable { text-decoration: none; }
+
+/* ---- Phase 3b: "add the full set" bundle bar ---- */
+.nura-bundle-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: .8rem 1.2rem;
+	margin-top: 1.4rem;
+	padding: 1rem 1.2rem;
+	border: 1px solid rgba(199, 154, 84, .4);
+	border-radius: 14px;
+	background: rgba(199, 154, 84, .06);
+}
+.nura-bundle-bar__txt {
+	font-family: var(--nura-font-display, 'Cormorant Garamond', serif);
+	font-size: 1.15rem;
+	color: #2a2a2a;
+}
+.nura-bundle-bar__btn { display: inline-flex; align-items: center; gap: .5rem; white-space: nowrap; }
+.nura-bundle-bar__price { font-weight: 600; }
+@media (max-width: 560px) {
+	.nura-bundle-bar { flex-direction: column; align-items: stretch; text-align: center; }
+	.nura-bundle-bar__btn { justify-content: center; }
+}

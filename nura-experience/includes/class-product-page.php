@@ -36,6 +36,26 @@ class NURAX_Product_Page {
 
 		// Replace the theme's hardcoded trust line with an attribute-aware one.
 		add_action( 'wp', array( $this, 'retarget_trust' ) );
+
+		// Interactive gallery (zoom + lightbox + slider) for multi-image units.
+		add_action( 'after_setup_theme', array( $this, 'gallery_support' ), 20 );
+
+		// One-click "add the full care set" bundle handler.
+		add_action( 'template_redirect', array( $this, 'handle_bundle' ) );
+	}
+
+	/**
+	 * Enable WooCommerce's interactive gallery so multiple product images
+	 * (front / back / lace / hairline / parting) get thumbnails, a slider and
+	 * click-to-zoom / lightbox. Only added if the theme has not opted in, so a
+	 * deliberate theme choice is respected.
+	 */
+	public function gallery_support() {
+		foreach ( array( 'wc-product-gallery-zoom', 'wc-product-gallery-lightbox', 'wc-product-gallery-slider' ) as $feature ) {
+			if ( ! current_theme_supports( $feature ) ) {
+				add_theme_support( $feature );
+			}
+		}
 	}
 
 	/** Map of attribute taxonomy => label, in display order. */
@@ -204,6 +224,69 @@ class NURAX_Product_Page {
 		echo '<section class="nura-complete"><div class="nura-container">';
 		echo '<div class="nura-shead"><p class="nura-eyebrow">' . esc_html__( 'Finish the ritual', 'nura-experience' ) . '</p><h2>' . esc_html__( 'Complete your NURA look', 'nura-experience' ) . '</h2></div>';
 		echo do_shortcode( '[products ids="' . esc_attr( implode( ',', $ids ) ) . '" columns="4" limit="4" class="nura-complete-products"]' );
+
+		// One-click "add the full set" bar: only the simple, purchasable,
+		// in-stock items can be added straight to cart (variable units need a
+		// chosen variation, so they are left for the shopper to configure).
+		$bundle = array_values( array_filter( $ids, function ( $id ) {
+			$p = wc_get_product( $id );
+			return $p && $p->is_type( 'simple' ) && $p->is_purchasable() && $p->is_in_stock();
+		} ) );
+		if ( count( $bundle ) >= 2 ) {
+			$total = 0.0;
+			foreach ( $bundle as $id ) {
+				$p = wc_get_product( $id );
+				if ( $p ) {
+					$total += (float) wc_get_price_to_display( $p );
+				}
+			}
+			$url = wp_nonce_url(
+				add_query_arg( 'nura_bundle', implode( ',', $bundle ), get_permalink( $product->get_id() ) ),
+				'nura_bundle',
+				'nura_bundle_nonce'
+			);
+			echo '<div class="nura-bundle-bar">';
+			echo '<span class="nura-bundle-bar__txt">' . esc_html__( 'Add the full care set to your cart', 'nura-experience' ) . '</span>';
+			echo '<a class="nura-btn nura-btn--gold nura-bundle-bar__btn" href="' . esc_url( $url ) . '">'
+				. esc_html( sprintf( /* translators: 1: item count, 2: total price */ __( 'Add %1$d items to cart', 'nura-experience' ), count( $bundle ) ) )
+				. ' <span class="nura-bundle-bar__price">' . wp_kses_post( wc_price( $total ) ) . '</span></a>';
+			echo '</div>';
+		}
+
 		echo '</div></section>';
+	}
+
+	/**
+	 * Handle the one-click bundle link: add each simple item to the cart and
+	 * redirect to the cart page. A configured coupon (via the nurax_bundle_coupon
+	 * filter) is applied if present, so any "set" saving is a real WooCommerce
+	 * discount rather than a fabricated number.
+	 */
+	public function handle_bundle() {
+		if ( empty( $_GET['nura_bundle'] ) || ! function_exists( 'WC' ) || ! WC()->cart ) {
+			return;
+		}
+		if ( ! isset( $_GET['nura_bundle_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['nura_bundle_nonce'] ) ), 'nura_bundle' ) ) {
+			return;
+		}
+		$ids = array_filter( array_map( 'absint', explode( ',', sanitize_text_field( wp_unslash( $_GET['nura_bundle'] ) ) ) ) );
+		$added = 0;
+		foreach ( $ids as $id ) {
+			$p = wc_get_product( $id );
+			if ( $p && $p->is_type( 'simple' ) && $p->is_purchasable() && $p->is_in_stock() ) {
+				if ( WC()->cart->add_to_cart( $id ) ) {
+					$added++;
+				}
+			}
+		}
+		$coupon = (string) apply_filters( 'nurax_bundle_coupon', '' );
+		if ( $added && '' !== $coupon && ! WC()->cart->has_discount( $coupon ) ) {
+			WC()->cart->apply_coupon( $coupon );
+		}
+		if ( $added && function_exists( 'wc_add_notice' ) ) {
+			wc_add_notice( sprintf( /* translators: %d: item count */ _n( '%d item added to your cart.', '%d items added to your cart.', $added, 'nura-experience' ), $added ) );
+		}
+		wp_safe_redirect( wc_get_cart_url() );
+		exit;
 	}
 }
