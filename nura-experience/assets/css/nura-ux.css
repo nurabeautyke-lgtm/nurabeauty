@@ -547,3 +547,127 @@
 	.nura-bundle-bar { flex-direction: column; align-items: stretch; text-align: center; }
 	.nura-bundle-bar__btn { justify-content: center; }
 }
+
+/* ---- Phase 3c: The NURA Circle portal ---- */
+.nurax-portal { margin: 0 0 1rem; }
+.nura-portal-lede { color: #555; margin: 0 0 1.2rem; }
+.nura-stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: .8rem;
+	margin: 0 0 1.4rem;
+}
+.nura-stat {
+	display: flex;
+	flex-direction: column;
+	gap: .25rem;
+	padding: 1rem;
+	border: 1px solid rgba(199, 154, 84, .3);
+	border-radius: 14px;
+	background: rgba(199, 154, 84, .05);
+}
+.nura-stat__v {
+	font-family: var(--nura-font-display, 'Cormorant Garamond', serif);
+	font-size: 1.5rem;
+	line-height: 1.1;
+	color: #2a2a2a;
+}
+.nura-stat__k {
+	font-family: var(--nura-font-ui, 'Jost', sans-serif);
+	font-size: .7rem;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	color: #8a7a58;
+}
+.nura-tier { margin: 0 0 1.6rem; }
+.nura-tier__labels {
+	display: flex;
+	justify-content: space-between;
+	font-size: .78rem;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	color: #8a7a58;
+	margin-bottom: .4rem;
+}
+.nura-tier__bar {
+	height: 8px;
+	border-radius: 999px;
+	background: rgba(0, 0, 0, .08);
+	overflow: hidden;
+}
+.nura-tier__bar span {
+	display: block;
+	height: 100%;
+	border-radius: 999px;
+	background: linear-gradient(90deg, #c79a54, #e4c887);
+}
+.nura-tier__note { font-size: .86rem; color: #666; margin: .5rem 0 0; }
+.nura-portal-links { display: flex; flex-wrap: wrap; gap: .6rem; }
+
+.nura-care-order { margin: 0 0 1.4rem; }
+.nura-care-order h4 { margin: 0 0 .6rem; }
+.nura-care-list { list-style: none; margin: 0; padding: 0; }
+.nura-care-list li {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: .5rem .9rem;
+	padding: .6rem 0;
+	border-bottom: 1px solid rgba(0, 0, 0, .07);
+}
+.nura-care-when { min-width: 120px; font-weight: 600; color: #2a2a2a; }
+.nura-care-what { flex: 1; }
+.nura-care-badge {
+	font-size: .68rem;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	padding: .18rem .5rem;
+	border-radius: 999px;
+	background: rgba(0, 0, 0, .06);
+	color: #666;
+}
+.nura-care-list li.is-upcoming .nura-care-badge { background: rgba(199, 154, 84, .18); color: #8a6a2a; }
+.nura-care-book { white-space: nowrap; }
+
+.nura-wty-table .nura-wty-status {
+	font-size: .72rem;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	padding: .18rem .55rem;
+	border-radius: 999px;
+}
+.nura-wty-status.is-active { background: rgba(46, 125, 50, .12); color: #2e7d32; }
+.nura-wty-status.is-expired { background: rgba(0, 0, 0, .07); color: #777; }
+
+.nura-cert {
+	border: 2px solid #c79a54;
+	border-radius: 16px;
+	padding: 2rem;
+	background: #fffdf8;
+	text-align: center;
+	max-width: 620px;
+}
+.nura-cert__brand {
+	font-family: var(--nura-font-ui, 'Jost', sans-serif);
+	letter-spacing: .3em;
+	text-transform: uppercase;
+	font-size: .8rem;
+	color: #8a7a58;
+	margin: 0 0 .4rem;
+}
+.nura-cert__title {
+	font-family: var(--nura-font-display, 'Cormorant Garamond', serif);
+	font-size: 1.6rem;
+	color: #2a2a2a;
+	margin: 0 0 1.4rem;
+}
+.nura-cert__rows { text-align: left; display: grid; gap: .55rem; margin: 0 auto 1.2rem; max-width: 420px; }
+.nura-cert__rows > div { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px dotted rgba(0, 0, 0, .18); padding-bottom: .35rem; }
+.nura-cert__rows span { color: #8a7a58; font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; }
+.nura-cert__note { font-size: .84rem; color: #666; margin: 0; }
+.nura-cert__actions { margin: 1.2rem 0 0; }
+@media print {
+	body * { visibility: hidden; }
+	#nura-cert, #nura-cert * { visibility: visible; }
+	#nura-cert { position: absolute; left: 0; top: 0; width: 100%; border: none; }
+}
