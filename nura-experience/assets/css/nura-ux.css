@@ -415,3 +415,62 @@
 	body.nura-filter-open { overflow: hidden; }
 	.nura-shop-main ul.products { grid-template-columns: repeat(2, 1fr) !important; gap: 1rem !important; }
 }
+
+/* ===================== Single product: specs, tabs, cross-sell ========= */
+.nura-specs {
+	list-style: none;
+	margin: 1rem 0 1.2rem;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: .5rem 1.4rem;
+}
+.nura-specs li {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: .35rem 0;
+	border-bottom: 1px solid rgba(0, 0, 0, .07);
+	font-size: .88rem;
+}
+.nura-specs__k {
+	font-family: var(--nura-font-ui, 'Jost', sans-serif);
+	font-size: .68rem;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+	color: #8a7a58;
+}
+.nura-specs__v { font-weight: 600; text-align: right; }
+
+.nura-spec-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 0 0 1.4rem;
+}
+.nura-spec-table th,
+.nura-spec-table td {
+	text-align: left;
+	padding: .6rem .8rem;
+	border-bottom: 1px solid rgba(0, 0, 0, .08);
+	font-size: .92rem;
+}
+.nura-spec-table th {
+	width: 34%;
+	font-family: var(--nura-font-ui, 'Jost', sans-serif);
+	font-size: .72rem;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	color: #8a7a58;
+	font-weight: 600;
+}
+.nura-inc { margin: .4rem 0 1.2rem 1.1rem; padding: 0; }
+.nura-inc li { margin: .3rem 0; }
+.nura-note { color: #666; font-size: .86rem; }
+
+.nura-complete { margin-top: 2.4rem; padding: 2.4rem 0; border-top: 1px solid rgba(0, 0, 0, .08); }
+.nura-complete .nura-shead { margin-bottom: 1.4rem; }
+
+@media (max-width: 680px) {
+	.nura-specs { grid-template-columns: 1fr; }
+	.nura-spec-table th { width: 42%; }
+}
