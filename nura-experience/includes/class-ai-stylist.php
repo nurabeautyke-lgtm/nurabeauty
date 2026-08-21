@@ -230,40 +230,232 @@ class NURAX_AI_Stylist {
 		return array( 'reply' => $reply, 'products' => $this->suggest_products( $text ) );
 	}
 
-	/** Pick a few relevant products for the chat cards. */
+	/**
+	 * Pick a few genuinely relevant products for the chat cards.
+	 *
+	 * Reads the shopper's message for real catalogue signals (texture,
+	 * construction, length, colour, hair type, occasion and budget), matches
+	 * them to the live NURA attribute taxonomies, then progressively relaxes the
+	 * query so it always returns something sensible.
+	 */
 	private function suggest_products( $text ) {
 		if ( ! function_exists( 'wc_get_products' ) ) {
 			return array();
 		}
-		$t    = strtolower( $text );
-		$args = array( 'status' => 'publish', 'limit' => 3, 'orderby' => 'popularity' );
-		$map  = array(
-			'bridal'  => 'bridal-occasion',
-			'wedding' => 'bridal-occasion',
-			'lace'    => 'lace-front-hd',
-			'hd'      => 'lace-front-hd',
-			'ready'   => 'ready-to-wear',
+		$signals = $this->parse_signals( $text );
+		$ids     = $this->recommend_ids( $signals, 3 );
+		return $this->cards( $ids );
+	}
+
+	/** Resolve a keyword to an existing term slug in a taxonomy (tolerant). */
+	private function term_slug( $taxonomy, $candidates ) {
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			return '';
+		}
+		foreach ( (array) $candidates as $c ) {
+			$term = get_term_by( 'slug', sanitize_title( $c ), $taxonomy );
+			if ( $term ) {
+				return $term->slug;
+			}
+			$term = get_term_by( 'name', $c, $taxonomy );
+			if ( $term ) {
+				return $term->slug;
+			}
+		}
+		$search = is_array( $candidates ) ? reset( $candidates ) : $candidates;
+		$found  = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false, 'number' => 1, 'search' => $search ) );
+		if ( ! is_wp_error( $found ) && ! empty( $found ) ) {
+			return $found[0]->slug;
+		}
+		return '';
+	}
+
+	/** Extract catalogue signals from free text. */
+	private function parse_signals( $text ) {
+		$t   = ' ' . strtolower( $text ) . ' ';
+		$sig = array( 'tax' => array(), 'cat' => '', 'max_price' => 0, 'cheapest' => false );
+
+		$texture = array(
+			'body wave' => 'Body Wave', 'bodywave' => 'Body Wave', 'loose wave' => 'Loose Wave',
+			'deep wave' => 'Deep Wave', 'water' => 'Water Wave', 'kinky' => 'Kinky Straight',
+			'yaki' => 'Yaki', 'curly' => 'Curly', 'straight' => 'Straight',
 		);
-		foreach ( $map as $kw => $slug ) {
+		foreach ( $texture as $kw => $name ) {
 			if ( false !== strpos( $t, $kw ) ) {
-				$args['category'] = array( $slug );
+				$slug = $this->term_slug( 'pa_texture', array( $name, $kw ) );
+				if ( $slug ) {
+					$sig['tax']['pa_texture'] = $slug;
+					break;
+				}
+			}
+		}
+
+		$construction = array(
+			'hd lace' => 'HD Lace Front', 'lace front' => 'Lace Front', 'frontal' => 'Frontal',
+			'closure' => 'Closure', 'glueless' => 'Glueless', 'headband' => 'Headband',
+			'u-part' => 'U-Part', 'u part' => 'U-Part', 'wear and go' => 'Glueless', 'ready to wear' => 'Glueless',
+		);
+		foreach ( $construction as $kw => $name ) {
+			if ( false !== strpos( $t, $kw ) ) {
+				$slug = $this->term_slug( 'pa_construction', array( $name, $kw ) );
+				if ( $slug ) {
+					$sig['tax']['pa_construction'] = $slug;
+					break;
+				}
+			}
+		}
+
+		$colour = array(
+			'natural black' => 'Natural Black', 'jet black' => 'Jet Black', 'black' => 'Natural Black',
+			'honey blonde' => 'Honey Blonde', 'blonde' => 'Blonde', 'brown' => 'Brown',
+			'burgundy' => 'Burgundy', 'ginger' => 'Ginger', 'ombre' => 'Ombre', 'highlight' => 'Highlighted',
+		);
+		foreach ( $colour as $kw => $name ) {
+			if ( false !== strpos( $t, $kw ) ) {
+				$slug = $this->term_slug( 'pa_colour', array( $name, $kw ) );
+				if ( $slug ) {
+					$sig['tax']['pa_colour'] = $slug;
+					break;
+				}
+			}
+		}
+
+		if ( false !== strpos( $t, 'human' ) ) {
+			$slug = $this->term_slug( 'pa_hair-type', array( '100% Human Hair', 'Human Hair' ) );
+			if ( $slug ) {
+				$sig['tax']['pa_hair-type'] = $slug;
+			}
+		} elseif ( false !== strpos( $t, 'synthetic' ) ) {
+			$slug = $this->term_slug( 'pa_hair-type', array( 'Synthetic' ) );
+			if ( $slug ) {
+				$sig['tax']['pa_hair-type'] = $slug;
+			}
+		}
+
+		if ( preg_match( '/(\d{1,2})\s*(?:"|inch|inches|in)\b/', $t, $m ) ) {
+			$n    = (int) $m[1];
+			$slug = $this->term_slug( 'pa_length', array( $n . '"', $n . ' inch', $n . 'inch', (string) $n ) );
+			if ( $slug ) {
+				$sig['tax']['pa_length'] = $slug;
+			}
+		}
+
+		foreach ( array( 'bridal' => 'bridal-occasion', 'wedding' => 'bridal-occasion' ) as $kw => $slug ) {
+			if ( false !== strpos( $t, $kw ) && get_term_by( 'slug', $slug, 'product_cat' ) ) {
+				$sig['cat'] = $slug;
 				break;
 			}
 		}
-		if ( false !== strpos( $t, '5000' ) || false !== strpos( $t, 'budget' ) || false !== strpos( $t, 'cheap' ) || false !== strpos( $t, 'afford' ) ) {
-			$args['orderby'] = 'price';
-			$args['order']   = 'ASC';
+
+		// Budget parsing.
+		if ( preg_match( '/(?:under|below|less than|max(?:imum)?|budget(?: of)?|up ?to|within)\s*(?:kes|ksh|sh)?\s*([\d,]+)\s*(k)?/i', $text, $mp ) ) {
+			$n = (int) str_replace( ',', '', $mp[1] );
+			if ( ! empty( $mp[2] ) ) {
+				$n *= 1000;
+			}
+			$sig['max_price'] = $n;
+			$sig['cheapest']  = true;
+		} elseif ( preg_match( '/\b(\d{1,3})\s*k\b/i', $text, $mk ) ) {
+			$sig['max_price'] = (int) $mk[1] * 1000;
+			$sig['cheapest']  = true;
+		} elseif ( preg_match( '/(?:kes|ksh|sh)\s*([\d,]{3,})/i', $text, $mc ) ) {
+			$sig['max_price'] = (int) str_replace( ',', '', $mc[1] );
 		}
-		$products = wc_get_products( $args );
-		if ( empty( $products ) ) {
-			$products = wc_get_products( array( 'status' => 'publish', 'limit' => 3, 'orderby' => 'popularity' ) );
+		if ( false !== strpos( $t, 'cheap' ) || false !== strpos( $t, 'afford' ) || false !== strpos( $t, 'budget' ) ) {
+			$sig['cheapest'] = true;
 		}
+
+		return $sig;
+	}
+
+	/** Progressive-relaxation product query returning product IDs. */
+	private function recommend_ids( $signals, $limit ) {
+		$order  = array( 'pa_texture', 'pa_construction', 'pa_length', 'pa_hair-type', 'pa_colour' );
+		$active = array();
+		foreach ( $order as $k ) {
+			if ( ! empty( $signals['tax'][ $k ] ) ) {
+				$active[ $k ] = $signals['tax'][ $k ];
+			}
+		}
+		$keys     = array_keys( $active );
+		$attempts = array();
+		for ( $i = count( $keys ); $i >= 0; $i-- ) {
+			$subset = array_slice( $keys, 0, $i );
+			$tx     = array();
+			foreach ( $subset as $k ) {
+				$tx[ $k ] = $active[ $k ];
+			}
+			$attempts[] = array( 'tax' => $tx, 'price' => $signals['max_price'], 'cat' => $signals['cat'] );
+			if ( $signals['max_price'] ) {
+				$attempts[] = array( 'tax' => $tx, 'price' => 0, 'cat' => $signals['cat'] );
+			}
+			if ( empty( $subset ) && $signals['cat'] ) {
+				$attempts[] = array( 'tax' => $tx, 'price' => 0, 'cat' => '' );
+			}
+		}
+		foreach ( $attempts as $a ) {
+			$ids = $this->query_ids( $a['tax'], $a['price'], $a['cat'], $signals['cheapest'], $limit );
+			if ( ! empty( $ids ) ) {
+				return $ids;
+			}
+		}
+		// Final fallback: any published, in-catalogue products.
+		return $this->query_ids( array(), 0, '', false, $limit );
+	}
+
+	/** Run one WP_Query for product IDs matching the given constraints. */
+	private function query_ids( $tax, $max_price, $cat, $cheapest, $limit ) {
+		$tax_query = array( 'relation' => 'AND' );
+		foreach ( $tax as $taxonomy => $slug ) {
+			$tax_query[] = array( 'taxonomy' => $taxonomy, 'field' => 'slug', 'terms' => $slug );
+		}
+		if ( $cat ) {
+			$tax_query[] = array( 'taxonomy' => 'product_cat', 'field' => 'slug', 'terms' => $cat );
+		}
+		$tax_query[] = array(
+			'taxonomy' => 'product_visibility',
+			'field'    => 'slug',
+			'terms'    => array( 'exclude-from-catalog' ),
+			'operator' => 'NOT IN',
+		);
+
+		$args = array(
+			'post_type'      => 'product',
+			'post_status'    => 'publish',
+			'posts_per_page' => (int) $limit,
+			'no_found_rows'  => true,
+			'fields'         => 'ids',
+			'tax_query'      => $tax_query,
+		);
+		if ( $max_price > 0 ) {
+			$args['meta_query'] = array(
+				array( 'key' => '_price', 'value' => $max_price, 'compare' => '<=', 'type' => 'NUMERIC' ),
+			);
+		}
+		if ( $cheapest ) {
+			$args['orderby']  = 'meta_value_num';
+			$args['meta_key'] = '_price';
+			$args['order']    = 'ASC';
+		} else {
+			$args['orderby'] = array( 'menu_order' => 'ASC', 'date' => 'DESC' );
+		}
+
+		$q = new WP_Query( $args );
+		return $q->posts;
+	}
+
+	/** Build chat product cards from an array of product IDs. */
+	private function cards( $ids ) {
 		$out = array();
-		foreach ( $products as $prod ) {
+		foreach ( (array) $ids as $id ) {
+			$prod = wc_get_product( $id );
+			if ( ! $prod ) {
+				continue;
+			}
 			$img   = wp_get_attachment_image_url( $prod->get_image_id(), 'woocommerce_thumbnail' );
 			$out[] = array(
 				'name'  => $prod->get_name(),
-				'price' => wp_strip_all_tags( wc_price( $prod->get_price() ) ),
+				'price' => wp_strip_all_tags( wc_price( wc_get_price_to_display( $prod ) ) ),
 				'img'   => $img ? $img : wc_placeholder_img_src(),
 				'url'   => get_permalink( $prod->get_id() ),
 			);
