@@ -273,7 +273,7 @@ class NURAX_Mega_Menu {
 		echo '<nav class="nura-bottom-nav" aria-label="' . esc_attr__( 'Mobile navigation', 'nura-experience' ) . '">';
 		echo '<a href="' . esc_url( $home ) . '"><span class="nbn-i">' . $ico_home . '</span><span class="nbn-t">' . esc_html__( 'Home', 'nura-experience' ) . '</span></a>';
 		echo '<a href="' . esc_url( $shop ) . '"><span class="nbn-i">' . $ico_shop . '</span><span class="nbn-t">' . esc_html__( 'Shop', 'nura-experience' ) . '</span></a>';
-		echo '<a href="' . esc_url( $account ) . '"><span class="nbn-i">' . $ico_heart . '</span><span class="nbn-t">' . esc_html__( 'Saved', 'nura-experience' ) . '</span></a>';
+		echo '<a class="nbn-saved" href="' . esc_url( $account ) . '"><span class="nbn-i">' . $ico_heart . '</span><span class="nbn-t">' . esc_html__( 'Saved', 'nura-experience' ) . '</span><span class="nbn-badge nura-wish-badge" hidden></span></a>';
 		echo '<a class="nbn-cart" href="' . esc_url( $cart ) . '"><span class="nbn-i">' . $ico_bag . '</span><span class="nbn-t">' . esc_html__( 'Cart', 'nura-experience' ) . '</span>' . ( $count ? '<span class="nbn-badge">' . esc_html( $count ) . '</span>' : '' ) . '</a>';
 		echo '<button type="button" class="nbn-menu" data-nura-drawer aria-label="' . esc_attr__( 'Open menu', 'nura-experience' ) . '"><span class="nbn-i">' . $ico_menu . '</span><span class="nbn-t">' . esc_html__( 'Menu', 'nura-experience' ) . '</span></button>';
 		echo '</nav>';
