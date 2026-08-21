@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       NURA Experience
  * Plugin URI:        https://nura.co.ke
- * Description:       NURA's three exclusive features: AI Wig Finder, Virtual Try-On, and The NURA Circle luxury client portal (order history, care schedule, warranty certificates, maintenance reminders, loyalty points, VIP membership). Requires WooCommerce.
- * Version:           1.3.0
+ * Description:       NURA's exclusive features: AI Wig Finder, Virtual Try-On, and The NURA Circle luxury client portal (order history, care schedule, warranty certificates, maintenance reminders, loyalty points, VIP membership), plus the NURA catalogue architecture, a catalogue-driven mega menu and mobile bottom navigation. Requires WooCommerce.
+ * Version:           1.4.0
  * Author:            NURA - The House of Radiant Confidence
  * License:           GPL-2.0-or-later
  * Text Domain:       nura-experience
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NURAX_VERSION', '1.3.0' );
+define( 'NURAX_VERSION', '1.4.0' );
 define( 'NURAX_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NURAX_URL', plugin_dir_url( __FILE__ ) );
 
@@ -29,6 +29,7 @@ require_once NURAX_DIR . 'includes/class-settings.php';
 require_once NURAX_DIR . 'includes/class-ai-stylist.php';
 require_once NURAX_DIR . 'includes/class-shop-enhance.php';
 require_once NURAX_DIR . 'includes/class-wig-attributes.php';
+require_once NURAX_DIR . 'includes/class-mega-menu.php';
 
 /**
  * Boot.
@@ -41,6 +42,7 @@ function nurax_init() {
 	new NURAX_AI_Stylist();
 	new NURAX_Shop_Enhance();
 	new NURAX_Wig_Attributes();
+	new NURAX_Mega_Menu();
 }
 add_action( 'plugins_loaded', 'nurax_init' );
 
@@ -49,6 +51,7 @@ add_action( 'plugins_loaded', 'nurax_init' );
  */
 function nurax_assets() {
 	wp_enqueue_style( 'nurax', NURAX_URL . 'assets/css/nurax.css', array(), NURAX_VERSION );
+	wp_enqueue_style( 'nurax-ux', NURAX_URL . 'assets/css/nura-ux.css', array( 'nurax' ), NURAX_VERSION );
 	wp_enqueue_script( 'nurax', NURAX_URL . 'assets/js/nurax.js', array(), NURAX_VERSION, true );
 	wp_localize_script( 'nurax', 'NURAX', array(
 		'ajaxUrl' => admin_url( 'admin-ajax.php' ),

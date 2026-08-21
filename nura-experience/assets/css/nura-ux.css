@@ -1,0 +1,159 @@
+/* =========================================================================
+   NURA UX layer  -  mega menu + mobile bottom navigation + drawer menu
+   Shipped by the NURA Experience plugin (assets/css/nura-ux.css).
+   Additive only: it styles the code-driven navigation without touching the
+   parent theme's main.css.
+   ========================================================================= */
+
+:root {
+	--nura-ux-ink:   #0E0E0E;
+	--nura-ux-gold:  #C9A24B;
+	--nura-ux-ivory: #F3E9DC;
+}
+
+/* ---------------------------- Desktop mega menu ------------------------- */
+.nura-nav .nura-mega {
+	display: flex;
+	gap: 1.6rem;
+	align-items: center;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.nura-nav .nura-mega > li { position: relative; }
+.nura-nav .nura-mega > li > a {
+	display: inline-block;
+	padding: 1.1rem 0;
+	font-family: var(--nura-font-ui, 'Jost', sans-serif);
+	font-size: .8rem;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: var(--nura-ux-ink);
+	text-decoration: none;
+	white-space: nowrap;
+}
+.nura-nav .nura-mega > li > a:hover { color: var(--nura-ux-gold); }
+
+.nura-mega__panel {
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%) translateY(8px);
+	min-width: 620px;
+	background: #fff;
+	border-top: 2px solid var(--nura-ux-gold);
+	box-shadow: 0 24px 60px rgba(0, 0, 0, .14);
+	padding: 1.6rem 2rem;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity .18s ease, transform .18s ease;
+	z-index: 60;
+}
+.nura-mega__panel--simple { min-width: 240px; }
+.nura-mega__item:hover > .nura-mega__panel,
+.nura-mega__item:focus-within > .nura-mega__panel {
+	opacity: 1;
+	visibility: visible;
+	transform: translateX(-50%) translateY(0);
+}
+.nura-mega__cols {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(140px, 1fr));
+	gap: 1.4rem 2rem;
+}
+.nura-mega__col ul,
+.nura-mega__panel--simple ul { list-style: none; margin: .45rem 0 0; padding: 0; }
+.nura-mega__h {
+	font-family: var(--nura-font-ui, 'Jost', sans-serif);
+	font-size: .68rem;
+	letter-spacing: .16em;
+	text-transform: uppercase;
+	color: var(--nura-ux-gold);
+}
+.nura-mega__col a,
+.nura-mega__panel--simple a {
+	display: block;
+	padding: .3rem 0;
+	font-size: .9rem;
+	color: #333;
+	text-decoration: none;
+}
+.nura-mega__col a:hover,
+.nura-mega__panel--simple a:hover { color: var(--nura-ux-ink); }
+
+/* --------------------------- Mobile drawer menu ------------------------- */
+.nura-drawer-menu,
+.nura-drawer-menu ul { list-style: none; margin: 0; padding: 0; }
+.nura-drawer-menu > li { border-bottom: 1px solid rgba(0, 0, 0, .06); padding: .2rem 0; }
+.nura-drawer-menu > li > a { font-weight: 600; }
+.nura-drawer-menu ul { margin: .1rem 0 .7rem .9rem; }
+.nura-drawer-menu a {
+	display: block;
+	padding: .38rem 0;
+	color: var(--nura-ux-ink);
+	text-decoration: none;
+}
+.nura-drawer-menu ul a { color: #555; font-size: .92rem; }
+
+/* ------------------------ Mobile bottom navigation ---------------------- */
+.nura-bottom-nav { display: none; }
+
+@media (max-width: 768px) {
+	.nura-bottom-nav {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 80;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		background: #fff;
+		border-top: 1px solid rgba(0, 0, 0, .08);
+		box-shadow: 0 -6px 20px rgba(0, 0, 0, .06);
+		padding: .35rem 0 calc(.35rem + env(safe-area-inset-bottom));
+	}
+	.nura-bottom-nav a,
+	.nura-bottom-nav button {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2px;
+		padding: .2rem .6rem;
+		background: none;
+		border: 0;
+		font: inherit;
+		color: var(--nura-ux-ink);
+		text-decoration: none;
+		cursor: pointer;
+	}
+	.nura-bottom-nav .nbn-i { line-height: 0; }
+	.nura-bottom-nav svg { width: 22px; height: 22px; }
+	.nura-bottom-nav .nbn-t {
+		font-size: .62rem;
+		letter-spacing: .04em;
+		text-transform: uppercase;
+	}
+	.nbn-badge {
+		position: absolute;
+		top: -3px;
+		right: .35rem;
+		min-width: 16px;
+		height: 16px;
+		padding: 0 4px;
+		border-radius: 9px;
+		background: var(--nura-ux-gold);
+		color: #fff;
+		font-size: .6rem;
+		line-height: 16px;
+		text-align: center;
+	}
+
+	/* Keep page content and the WhatsApp FAB clear of the bar. */
+	body { padding-bottom: 62px; }
+	.nura-wa { bottom: 78px !important; }
+
+	/* The desktop mega panels never show on small screens. */
+	.nura-nav .nura-mega { display: none; }
+}
