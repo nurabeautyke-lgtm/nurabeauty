@@ -309,32 +309,6 @@ $reviews = function_exists( 'nura_recent_reviews' ) ? nura_recent_reviews( 3 ) :
 		</div>
 	</section>
 
-	<!-- BEAUTY -->
-	<section class="section section--ivory" id="beauty">
-		<div class="nura-container">
-			<div class="nura-shead nura-shead--row nura-reveal">
-				<div>
-					<p class="nura-eyebrow"><?php esc_html_e( 'More than wigs', 'nura-beauty' ); ?></p>
-					<h2><?php esc_html_e( 'NURA Beauty', 'nura-beauty' ); ?></h2>
-				</div>
-				<a class="nura-rail__viewall" href="<?php echo esc_url( nura_home_cat_url( 'beauty' ) ); ?>"><?php esc_html_e( 'Shop beauty', 'nura-beauty' ); ?> &#8594;</a>
-			</div>
-			<?php
-			nura_home_tiles(
-				array(
-					array( 'label' => __( 'Face', 'nura-beauty' ),        'url' => nura_home_cat_url( 'face' ) ),
-					array( 'label' => __( 'Eyes', 'nura-beauty' ),        'url' => nura_home_cat_url( 'eyes' ) ),
-					array( 'label' => __( 'Lips', 'nura-beauty' ),        'url' => nura_home_cat_url( 'lips' ) ),
-					array( 'label' => __( 'Cheeks', 'nura-beauty' ),      'url' => nura_home_cat_url( 'cheeks' ) ),
-					array( 'label' => __( 'Makeup Tools', 'nura-beauty' ),'url' => nura_home_cat_url( 'makeup-tools' ) ),
-					array( 'label' => __( 'Sets', 'nura-beauty' ),        'url' => nura_home_cat_url( 'sets' ) ),
-				),
-				'nura-tiles--3 nura-tiles--care'
-			);
-			?>
-		</div>
-	</section>
-
 	<!-- SERVICES -->
 	<section class="section" id="services">
 		<div class="nura-container">
@@ -438,64 +412,6 @@ $reviews = function_exists( 'nura_recent_reviews' ) ? nura_recent_reviews( 3 ) :
 			<p style="margin-top:1.4rem">
 				<a class="nura-btn nura-btn--gold" href="<?php echo esc_url( $ig_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Follow @nurabeauty', 'nura-beauty' ); ?></a>
 			</p>
-		</div>
-	</section>
-
-	<!-- BOOK A FITTING -->
-	<section class="section section--ivory" id="book-a-fitting">
-		<div class="nura-container nura-book nura-reveal">
-			<div class="nura-book__intro">
-				<p class="nura-eyebrow"><?php esc_html_e( 'Personal service', 'nura-beauty' ); ?></p>
-				<h2><?php esc_html_e( 'Book a free fitting or virtual consultation', 'nura-beauty' ); ?></h2>
-				<p class="nura-lede"><?php esc_html_e( 'Tell us the look you want. Our stylists guide you to your perfect unit - by video call, WhatsApp or in our Nairobi studio.', 'nura-beauty' ); ?></p>
-				<ul class="nura-book__points">
-					<li><?php esc_html_e( 'Free 15-minute consultation', 'nura-beauty' ); ?></li>
-					<li><?php esc_html_e( 'Same-day Nairobi delivery', 'nura-beauty' ); ?></li>
-					<li><?php esc_html_e( 'M-Pesa, card or pay on delivery', 'nura-beauty' ); ?></li>
-				</ul>
-			</div>
-			<form class="nura-book__form" data-nura-book data-wa="<?php echo esc_attr( $wa ); ?>">
-				<label><?php esc_html_e( 'Full name', 'nura-beauty' ); ?><input type="text" name="name" required></label>
-				<label><?php esc_html_e( 'Phone / WhatsApp', 'nura-beauty' ); ?><input type="tel" name="phone" required></label>
-				<label><?php esc_html_e( 'What do you need?', 'nura-beauty' ); ?>
-					<select name="service">
-						<option><?php esc_html_e( 'Wig consultation', 'nura-beauty' ); ?></option>
-						<option><?php esc_html_e( 'Bridal fitting', 'nura-beauty' ); ?></option>
-						<option><?php esc_html_e( 'Virtual try-on help', 'nura-beauty' ); ?></option>
-						<option><?php esc_html_e( 'Installation booking', 'nura-beauty' ); ?></option>
-						<option><?php esc_html_e( 'Other', 'nura-beauty' ); ?></option>
-					</select>
-				</label>
-				<label><?php esc_html_e( 'Preferred date', 'nura-beauty' ); ?><input type="date" name="date"></label>
-				<label class="nura-book__full"><?php esc_html_e( 'Tell us more', 'nura-beauty' ); ?><textarea name="note" rows="3"></textarea></label>
-				<button type="submit" class="nura-btn nura-btn--gold nura-book__full"><?php esc_html_e( 'Send via WhatsApp', 'nura-beauty' ); ?></button>
-				<p class="nura-book__alt"><?php esc_html_e( 'Prefer to talk now?', 'nura-beauty' ); ?> <a href="<?php echo esc_url( $wa ); ?>"><?php esc_html_e( 'Chat on WhatsApp', 'nura-beauty' ); ?></a></p>
-			</form>
-		</div>
-	</section>
-
-	<!-- EXCLUSIVE FEATURES -->
-	<section class="section section--ink">
-		<div class="nura-container">
-			<div class="nura-shead nura-reveal">
-				<p class="nura-eyebrow"><?php esc_html_e( 'Only at NURA', 'nura-beauty' ); ?></p>
-				<h2><?php esc_html_e( 'A first for Kenyan beauty', 'nura-beauty' ); ?></h2>
-			</div>
-			<div class="nura-grid nura-grid--3 nura-reveal">
-				<?php
-				$features = array(
-					array( 'AI Wig Finder', 'Answer a few questions or upload a selfie and let NURA recommend the perfect wig for your face shape, skin tone, lifestyle and budget.', '/ai-wig-finder/' ),
-					array( 'Virtual Try-On', 'Preview any wig on your own photo before you buy - see your crown before it arrives.', '/virtual-try-on/' ),
-					array( 'The NURA Circle', 'Your luxury client portal: order history, care schedule, warranty certificates and loyalty rewards.', '/nura-circle/' ),
-				);
-				foreach ( $features as $f ) : ?>
-					<a class="nura-feature" href="<?php echo esc_url( home_url( $f[2] ) ); ?>">
-						<div class="icn">&#10022;</div>
-						<h3><?php echo esc_html( $f[0] ); ?></h3>
-						<p><?php echo esc_html( $f[1] ); ?></p>
-					</a>
-				<?php endforeach; ?>
-			</div>
 		</div>
 	</section>
 
