@@ -68,15 +68,21 @@
 </aside>
 <?php
 /**
- * Simple fallback menu so the header is never empty before menus are assigned.
+ * Ecommerce-focused fallback menu, shown only until a menu is assigned under
+ * Appearance -> Menus. Mirrors the intended primary structure:
+ * Shop Wigs | Hair & Extensions | Wig Care | Beauty | Services.
  */
 function nura_default_menu() {
+	$items = array(
+		array( __( 'Shop Wigs', 'nura-beauty' ),         home_url( '/product-category/wigs/' ) ),
+		array( __( 'Hair & Extensions', 'nura-beauty' ), home_url( '/product-category/hair-extensions/' ) ),
+		array( __( 'Wig Care', 'nura-beauty' ),          home_url( '/product-category/wig-care/' ) ),
+		array( __( 'Beauty', 'nura-beauty' ),            home_url( '/product-category/beauty/' ) ),
+		array( __( 'Services', 'nura-beauty' ),          home_url( '/services/' ) ),
+	);
 	echo '<ul>';
-	echo '<li><a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html__( 'Home', 'nura-beauty' ) . '</a></li>';
-	if ( function_exists( 'wc_get_page_id' ) ) {
-		echo '<li><a href="' . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '">' . esc_html__( 'Shop', 'nura-beauty' ) . '</a></li>';
+	foreach ( $items as $it ) {
+		echo '<li><a href="' . esc_url( $it[1] ) . '">' . esc_html( $it[0] ) . '</a></li>';
 	}
-	echo '<li><a href="' . esc_url( home_url( '/about-us/' ) ) . '">' . esc_html__( 'About', 'nura-beauty' ) . '</a></li>';
-	echo '<li><a href="' . esc_url( home_url( '/contact-us/' ) ) . '">' . esc_html__( 'Contact', 'nura-beauty' ) . '</a></li>';
 	echo '</ul>';
 }

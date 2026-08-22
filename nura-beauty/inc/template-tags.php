@@ -67,7 +67,7 @@ function nura_cart_button() {
  * Announcement bar (edit text in the Customizer).
  */
 function nura_announcement_bar() {
-	$text = get_theme_mod( 'nura_announcement', __( 'Free same-day delivery in Nairobi on orders over KES 10,000. Pay with M-Pesa on delivery.', 'nura-beauty' ) );
+	$text = get_theme_mod( 'nura_announcement', __( 'Same-Day Nairobi Delivery • M-Pesa Available • Shop with Confidence', 'nura-beauty' ) );
 	if ( ! $text ) {
 		return;
 	}
