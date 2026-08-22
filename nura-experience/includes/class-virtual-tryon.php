@@ -1,12 +1,17 @@
 <?php
 /**
- * Virtual Try-On.
+ * Virtual Try-On - manual visual preview.
  *
- * Lets a shopper upload a photo and preview a wig image over it on a canvas
- * (drag to position, slider to scale, opacity match). This client-side MVP works
- * with any product that has a transparent-PNG try-on image. For production-grade,
- * auto-aligned try-on, attach a face-landmark provider via the 'nurax_tryon_provider'
- * JS hook (documented in the plugin readme) - the UI stays the same.
+ * Lets a shopper upload their own photo and place the product image over it on a
+ * canvas, then drag to position, scale and blend it. Everything runs in the
+ * browser - the photo is never uploaded or stored. The overlay is the product's
+ * own photo, so it shows as a rectangular image rather than a cut-out: this is a
+ * quick visual preview to picture the look, NOT automated face-tracking or AR
+ * fitting.
+ *
+ * An auto-aligned, face-landmark provider can be attached later via the
+ * window.nuraxTryonProvider JS hook (the UI stays the same), but nothing tracks a
+ * face by default.
  *
  * @package NURA_Experience
  */
@@ -49,7 +54,7 @@ class NURAX_Virtual_TryOn {
 				<label><?php esc_html_e( 'Blend', 'nura-experience' ); ?> <input type="range" min="40" max="100" value="100" data-nurax-opacity></label>
 				<button class="nura-btn nura-btn--ghost" data-nurax-reset><?php esc_html_e( 'Reset', 'nura-experience' ); ?></button>
 			</div>
-			<p><small><?php esc_html_e( 'Drag the wig to position it. Your photo stays in your browser and is never uploaded or shared.', 'nura-experience' ); ?></small></p>
+			<p><small><?php esc_html_e( 'A quick visual preview: drag, resize and blend the wig over your photo to picture the look. Your photo stays in your browser and is never uploaded or shared.', 'nura-experience' ); ?></small></p>
 		</div>
 		<?php
 		return ob_get_clean();

@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NURAX_VERSION', '1.15.0' );
+define( 'NURAX_VERSION', '1.16.0' );
 define( 'NURAX_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NURAX_URL', plugin_dir_url( __FILE__ ) );
 

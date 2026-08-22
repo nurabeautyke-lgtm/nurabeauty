@@ -49,17 +49,13 @@ class NURAX_AI_Wig_Finder {
 
 				<fieldset class="nurax-step is-active" data-step="1">
 					<h3><?php esc_html_e( 'What is your face shape?', 'nura-experience' ); ?></h3>
-					<p class="nurax-step__hint"><?php esc_html_e( 'Not sure? Choose "Not sure" or upload a selfie and our stylist will guide you.', 'nura-experience' ); ?></p>
+					<p class="nurax-step__hint"><?php esc_html_e( 'Choose the closest match - or pick "Not sure" and our stylist will help you find the most flattering shape at your fitting.', 'nura-experience' ); ?></p>
 					<?php
 					echo $this->step_opts( 'face', array(
 						'oval' => 'Oval', 'round' => 'Round', 'square' => 'Square',
 						'heart' => 'Heart', 'long' => 'Long', 'unsure' => 'Not sure',
 					) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					?>
-					<label class="nurax-selfie"><?php esc_html_e( 'Optional: upload a selfie for AI face analysis', 'nura-experience' ); ?>
-						<input type="file" accept="image/*" data-nurax-selfie>
-						<small><?php esc_html_e( 'Analysed for your recommendation only - never stored or shared.', 'nura-experience' ); ?></small>
-					</label>
 				</fieldset>
 
 				<fieldset class="nurax-step" data-step="2">
