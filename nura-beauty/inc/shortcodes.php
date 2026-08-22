@@ -226,6 +226,7 @@ function nura_render_wig_finder() {
 	$questions .= nura_finder_select( 'pa_hair-type', __( 'Hair type & budget', 'nura-beauty' ), __( 'Synthetic is budget-friendly; human hair is premium.', 'nura-beauty' ), __( 'Any type', 'nura-beauty' ) );
 	$questions .= nura_finder_select( 'pa_colour', __( 'Colour family', 'nura-beauty' ), __( 'Pick a shade family, or explore them all.', 'nura-beauty' ), __( 'Any colour', 'nura-beauty' ) );
 	$questions .= nura_finder_select( 'pa_lace', __( 'Lace / cap style', 'nura-beauty' ), __( 'Lace fronts and closures give a natural hairline.', 'nura-beauty' ), __( 'Any style', 'nura-beauty' ) );
+	$questions .= nura_finder_select( 'pa_occasion', __( 'What is it for?', 'nura-beauty' ), __( 'Everyday, work, a wedding or a night out.', 'nura-beauty' ), __( 'Any occasion', 'nura-beauty' ) );
 
 	if ( '' === trim( $questions ) ) {
 		return '<div class="nura-finder nura-finder--empty"><p>' . esc_html__( 'Our wig finder is being prepared. Browse the full collection in the meantime.', 'nura-beauty' ) . '</p><p><a class="nura-btn nura-btn--gold" href="' . esc_url( $shop ) . '">' . esc_html__( 'Shop all wigs', 'nura-beauty' ) . '</a></p></div>';

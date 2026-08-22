@@ -31,15 +31,26 @@ function nura_is_shop_context() {
 /**
  * Global attribute taxonomies offered as facets, in display order.
  *
+ * Every facetable NURA attribute is listed here, but each facet self-hides until
+ * its taxonomy exists AND has terms in use (get_terms hide_empty), so shoppers only
+ * ever see facets that resolve to real products (brief #6 / #29). The same list also
+ * drives smart-search term recognition (inc/nura-search.php).
+ *
  * @return array taxonomy => label
  */
 function nura_filter_attributes() {
 	return array(
-		'pa_texture'   => __( 'Texture', 'nura-beauty' ),
-		'pa_colour'    => __( 'Colour', 'nura-beauty' ),
-		'pa_hair-type' => __( 'Hair Type', 'nura-beauty' ),
-		'pa_length'    => __( 'Length', 'nura-beauty' ),
-		'pa_lace'      => __( 'Lace Type', 'nura-beauty' ),
+		'pa_construction' => __( 'Construction', 'nura-beauty' ),
+		'pa_hair-type'    => __( 'Hair Type', 'nura-beauty' ),
+		'pa_texture'      => __( 'Texture', 'nura-beauty' ),
+		'pa_length'       => __( 'Length', 'nura-beauty' ),
+		'pa_colour'       => __( 'Colour', 'nura-beauty' ),
+		'pa_density'      => __( 'Density', 'nura-beauty' ),
+		'pa_lace'         => __( 'Lace Type', 'nura-beauty' ),
+		'pa_cap-size'     => __( 'Cap Size', 'nura-beauty' ),
+		'pa_origin'       => __( 'Hair Origin', 'nura-beauty' ),
+		'pa_style'        => __( 'Style', 'nura-beauty' ),
+		'pa_occasion'     => __( 'Occasion', 'nura-beauty' ),
 	);
 }
 
