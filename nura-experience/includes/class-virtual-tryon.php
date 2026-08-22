@@ -24,10 +24,18 @@ class NURAX_Virtual_TryOn {
 	}
 
 	public function render( $atts ) {
-		$atts = shortcode_atts( array( 'product' => 0 ), $atts );
+		$atts       = shortcode_atts( array( 'product' => 0 ), $atts );
+		$product_id = absint( $atts['product'] );
+		// Allow the product to arrive from the "Try it on" button as ?tryon={id}.
+		// We deliberately do NOT use ?product=: "product" is a reserved WooCommerce
+		// query var, so /virtual-try-on/?product=ID makes WordPress resolve a product
+		// by that slug, fail, and return a 404.
+		if ( ! $product_id && isset( $_GET['tryon'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only lookup of a product id for display.
+			$product_id = absint( wp_unslash( $_GET['tryon'] ) );
+		}
 		$overlay = '';
-		if ( $atts['product'] ) {
-			$overlay = wp_get_attachment_image_url( get_post_thumbnail_id( absint( $atts['product'] ) ), 'nura-portrait' );
+		if ( $product_id ) {
+			$overlay = wp_get_attachment_image_url( get_post_thumbnail_id( $product_id ), 'nura-portrait' );
 		}
 		ob_start(); ?>
 		<div class="nurax-tryon" data-nurax-tryon data-overlay="<?php echo esc_url( $overlay ); ?>">
@@ -59,7 +67,9 @@ class NURAX_Virtual_TryOn {
 		if ( ! $page ) {
 			return;
 		}
-		$url = add_query_arg( 'product', $product->get_id(), get_permalink( $page->ID ) );
+		// Use a custom query var, not the reserved WooCommerce "product" var (which
+		// would 404 the try-on page). render() reads ?tryon to preload the overlay.
+		$url = add_query_arg( 'tryon', $product->get_id(), get_permalink( $page->ID ) );
 		printf(
 			'<a class="nura-btn nura-btn--ghost nurax-tryon-btn" href="%s">%s</a>',
 			esc_url( $url ),
