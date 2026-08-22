@@ -327,3 +327,33 @@ p{margin:0 0 1.1em}
 .single-post .entry-title,.blog .entry-title,.archive .entry-title{font-family:var(--font-display)}
 .single-post .entry-content img{border-radius:6px}
 .single-post blockquote,.entry-content blockquote{border-left:3px solid var(--nura-gold);padding-left:1.2rem;font-family:var(--font-editorial);font-style:italic;color:#444}
+
+/* ==================================================================
+   NURA v1.5.0 - Homepage UI/UX polish (alignment, rhythm, depth)
+   Appended overrides layered on the existing design system.
+   ================================================================== */
+
+/* Hero: tighter editorial rhythm over the new photography */
+.nura-slide__inner h1{line-height:1.05;font-size:clamp(2.5rem,5.2vw,4.6rem)}
+.nura-slide__inner .nura-eyebrow{margin-bottom:1.1rem}
+.nura-slide__inner .nura-lede{margin-top:.3rem}
+@media(max-width:768px){.nura-slide__inner>*{max-width:100%}.nura-slide__inner .nura-lede{max-width:26em}}
+
+/* Product cards: subtle depth + lift so the grid reads tactile and aligned */
+.nura-card{transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.nura-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(14,14,14,.10)}
+.nura-card__body{padding:1.1rem .4rem 1.3rem}
+
+/* Editorial split image: premium framing consistent with reviews/lookbook */
+.nura-split__media img{border-radius:8px;box-shadow:0 24px 60px rgba(14,14,14,.14)}
+
+/* Section headings: calmer, consistent eyebrow/lede spacing */
+.nura-shead .nura-eyebrow{margin-bottom:.8rem}
+.nura-shead .nura-lede{margin-top:.7rem}
+
+/* Category tiles: gentle lift to match the card interaction */
+.nura-cat{border-radius:6px;transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.nura-cat:hover{box-shadow:0 16px 36px rgba(14,14,14,.18)}
+
+/* Buttons: tactile press feedback */
+.nura-btn:active{transform:translateY(1px)}
