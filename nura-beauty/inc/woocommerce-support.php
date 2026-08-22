@@ -9,14 +9,56 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Products per page and columns tuned for a luxury 3-up grid.
+// Products per page and columns tuned for a luxury 3-up shop grid.
 add_filter( 'loop_shop_per_page', function () { return 12; }, 20 );
 add_filter( 'loop_shop_columns', function () { return 3; }, 20 );
+
+// Related products render 4-up (see the matching grid override in assets/css/woocommerce.css).
 add_filter( 'woocommerce_related_products_args', function ( $args ) {
-	$args['posts_per_page'] = 3;
-	$args['columns']        = 3;
+	$args['posts_per_page'] = 4;
+	$args['columns']        = 4;
 	return $args;
 } );
+
+/**
+ * Image clarity fixes (v1.7.0).
+ *
+ * The uploaded product masters are modest resolution, so WooCommerce's default
+ * 600px "single" image was being upscaled into the ~590px gallery box and looked
+ * soft until the hover-zoom swapped in the full file. Render the full-size file as
+ * the main gallery image so what you see matches the zoom, and serve the larger
+ * "single" size (instead of the 300px thumbnail) in product loops so the shop,
+ * related and homepage grids stay crisp at 3- and 4-up.
+ */
+add_filter( 'woocommerce_gallery_image_size', function ( $size ) {
+	return 'woocommerce_single' === $size ? 'full' : $size;
+} );
+add_filter( 'single_product_archive_thumbnail_size', function () {
+	return 'woocommerce_single';
+} );
+
+// Variation selection should swap in the full-resolution image too (not the 600px single).
+add_filter( 'woocommerce_available_variation', function ( $data, $product, $variation ) {
+	$image_id = $variation->get_image_id();
+	if ( $image_id ) {
+		$full = wp_get_attachment_image_src( $image_id, 'full' );
+		if ( $full ) {
+			$data['image']['src']      = $full[0];
+			$data['image']['src_w']    = $full[1];
+			$data['image']['src_h']    = $full[2];
+			$data['image']['full_src'] = $full[0];
+			$srcset = wp_get_attachment_image_srcset( $image_id, 'full' );
+			$sizes  = wp_get_attachment_image_sizes( $image_id, 'full' );
+			if ( $srcset ) {
+				$data['image']['srcset'] = $srcset;
+			}
+			if ( $sizes ) {
+				$data['image']['sizes'] = $sizes;
+			}
+		}
+	}
+	return $data;
+}, 10, 3 );
 
 // Remove the default WooCommerce wrappers so we control markup.
 remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );

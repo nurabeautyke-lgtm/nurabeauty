@@ -57,3 +57,11 @@
 #reviews .star-rating{color:var(--nura-gold)}
 #reviews .woocommerce-Reviews-title,#reviews h2{font-family:var(--font-display)}
 .woocommerce #review_form #respond textarea,.woocommerce #review_form #respond input[type=text],.woocommerce #review_form #respond input[type=email]{border:1px solid var(--nura-line);border-radius:6px;padding:.7rem .8rem}
+
+
+/* ===== NURA v1.7.0 : related & up-sell products 4-up ===== */
+/* Beats the global repeat(3,1fr)!important via higher specificity (.related.products). */
+.related.products ul.products,.up-sells.products ul.products{grid-template-columns:repeat(4,1fr)!important}
+@media(max-width:1024px){.related.products ul.products,.up-sells.products ul.products{grid-template-columns:repeat(3,1fr)!important}}
+@media(max-width:860px){.related.products ul.products,.up-sells.products ul.products{grid-template-columns:1fr 1fr!important}}
+@media(max-width:520px){.related.products ul.products,.up-sells.products ul.products{grid-template-columns:1fr 1fr!important}}
