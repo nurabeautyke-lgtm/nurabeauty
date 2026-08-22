@@ -357,3 +357,21 @@ p{margin:0 0 1.1em}
 
 /* Buttons: tactile press feedback */
 .nura-btn:active{transform:translateY(1px)}
+
+
+/* ===== NURA v1.8.0 : Phase 2 - discovery, conversion & dark-section readability ===== */
+.section--ink .nura-lede{color:rgba(255,250,242,.97)}
+.section--ink p{color:rgba(255,250,242,.92)}
+.section--ink small{color:rgba(255,250,242,.9)}
+.nura-announce{color:#fbf3e6}
+.nura-badge--hair{background:var(--nura-ink);color:var(--nura-ivory)}
+.nura-finderbar{background:var(--nura-plum);color:var(--nura-ivory)}
+.nura-finderbar__inner{display:flex;align-items:center;justify-content:center;gap:clamp(12px,2vw,28px);flex-wrap:wrap;text-align:center;padding-block:clamp(14px,1.8vw,20px)}
+.nura-finderbar__text{margin:0;font-family:var(--font-ui);font-size:clamp(.9rem,1.4vw,1.02rem);color:rgba(243,233,220,.95)}
+.nura-finderbar__text strong{color:var(--nura-gold-soft);font-weight:600}
+.nura-finderbar .nura-btn{white-space:nowrap}
+.nura-typegrid{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(10px,1.2vw,16px)}
+.nura-typechip{display:inline-flex;align-items:center;padding:.72em 1.4em;border:1px solid var(--nura-line);border-radius:999px;font-family:var(--font-ui);font-size:.86rem;letter-spacing:.04em;color:var(--nura-text);background:#fff;transition:background .25s var(--ease),color .25s var(--ease),border-color .25s var(--ease)}
+.nura-typechip:hover{background:var(--nura-ink);color:var(--nura-ivory);border-color:var(--nura-ink)}
+.nura-typechip--all{border-color:var(--nura-gold);color:var(--nura-gold)}
+.nura-typechip--all:hover{background:var(--nura-gold);color:var(--nura-ink);border-color:var(--nura-gold)}

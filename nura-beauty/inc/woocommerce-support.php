@@ -60,6 +60,23 @@ add_filter( 'woocommerce_available_variation', function ( $data, $product, $vari
 	return $data;
 }, 10, 3 );
 
+/**
+ * Show "From {min price}" on variable products instead of a full price range,
+ * in loops and on the product page - clearer and more compelling.
+ */
+add_filter( 'woocommerce_variable_price_html', function ( $price, $product ) {
+	$min = $product->get_variation_price( 'min', true );
+	$max = $product->get_variation_price( 'max', true );
+	if ( '' === $min ) {
+		return $price;
+	}
+	if ( $min === $max ) {
+		return wc_price( $min );
+	}
+	/* translators: %s: lowest variation price */
+	return sprintf( esc_html__( 'From %s', 'nura-beauty' ), wc_price( $min ) );
+}, 10, 2 );
+
 // Remove the default WooCommerce wrappers so we control markup.
 remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
 remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
@@ -95,6 +112,18 @@ function nura_product_badges() {
 	$created = strtotime( get_the_date( 'c', $product->get_id() ) );
 	if ( $created && ( time() - $created ) < ( 30 * DAY_IN_SECONDS ) ) {
 		echo '<span class="nura-badge nura-badge--new">' . esc_html__( 'New', 'nura-beauty' ) . '</span>';
+	}
+	// One category-derived badge (Human Hair / Glueless) where genuinely applicable.
+	$nura_cat_badges = array(
+		'human-hair-wigs'       => __( 'Human Hair', 'nura-beauty' ),
+		'human-hair-blend-wigs' => __( 'Human Hair', 'nura-beauty' ),
+		'glueless-wigs'         => __( 'Glueless', 'nura-beauty' ),
+	);
+	foreach ( $nura_cat_badges as $nura_slug => $nura_label ) {
+		if ( has_term( $nura_slug, 'product_cat', $product->get_id() ) ) {
+			echo '<span class="nura-badge nura-badge--hair">' . esc_html( $nura_label ) . '</span>';
+			break;
+		}
 	}
 	echo '</div>';
 }
