@@ -103,3 +103,67 @@ r(function(){var form=d.querySelector("[data-nura-book]");if(!form){return;}
 		window.open(url,"_blank");
 	});
 });})();
+
+/* ===== NURA v1.9.0 - Shop faceted filters (progressive enhancement + AJAX) ===== */
+(function(){
+	var d=document;
+	function ready(f){if(d.readyState!=="loading"){f();}else{d.addEventListener("DOMContentLoaded",f);}}
+	ready(function(){
+		if(!d.querySelector("[data-nura-filterbar]")){return;}
+		var overlay=d.querySelector("[data-nura-overlay]");
+
+		function panel(){return d.querySelector("[data-nura-filters]");}
+		function openDrawer(){var p=panel();if(p){p.classList.add("is-open");p.setAttribute("aria-hidden","false");}var t=d.querySelector("[data-nura-filter-toggle]");if(t){t.setAttribute("aria-expanded","true");}if(overlay){overlay.classList.add("is-open");}d.body.classList.add("nura-filters-open");}
+		function closeDrawer(){var p=panel();if(p){p.classList.remove("is-open");p.setAttribute("aria-hidden","true");}var t=d.querySelector("[data-nura-filter-toggle]");if(t){t.setAttribute("aria-expanded","false");}if(overlay){overlay.classList.remove("is-open");}d.body.classList.remove("nura-filters-open");}
+
+		var canAjax=("fetch" in window)&&("DOMParser" in window)&&!!d.querySelector("[data-nura-results]");
+
+		function swap(url,push){
+			var cur=d.querySelector("[data-nura-results]");
+			if(cur){cur.classList.add("is-loading");}
+			fetch(url,{headers:{"X-Requested-With":"XMLHttpRequest"},credentials:"same-origin"})
+				.then(function(res){return res.text();})
+				.then(function(html){
+					var doc=new DOMParser().parseFromString(html,"text/html");
+					var nRes=doc.querySelector("[data-nura-results]"),nBar=doc.querySelector("[data-nura-filterbar]");
+					var cRes=d.querySelector("[data-nura-results]"),cBar=d.querySelector("[data-nura-filterbar]");
+					if(nRes&&cRes){cRes.parentNode.replaceChild(nRes,cRes);}
+					if(nBar&&cBar){cBar.parentNode.replaceChild(nBar,cBar);}
+					if(d.body.classList.contains("nura-filters-open")){var p=panel();if(p){p.classList.add("is-open");p.setAttribute("aria-hidden","false");}}
+					if(push&&window.history&&window.history.pushState){window.history.pushState({nura:1},"",url);}
+					var anchor=d.querySelector(".nura-filterbar");
+					if(anchor){var y=anchor.getBoundingClientRect().top+window.scrollY-90;if(y<window.scrollY){window.scrollTo({top:y,behavior:"smooth"});}}
+				})
+				.catch(function(){window.location.href=url;});
+		}
+
+		d.addEventListener("click",function(e){
+			var toggle=e.target.closest("[data-nura-filter-toggle]");
+			if(toggle){e.preventDefault();openDrawer();return;}
+			var closeBtn=e.target.closest("[data-nura-filter-close]");
+			if(closeBtn){e.preventDefault();closeDrawer();return;}
+			if(overlay&&e.target===overlay){closeDrawer();}
+			if(!canAjax){return;}
+			var link=e.target.closest("a[data-nura-filter]");
+			if(!link){return;}
+			if(e.metaKey||e.ctrlKey||e.shiftKey||e.button){return;}
+			e.preventDefault();
+			swap(link.href,true);
+		});
+
+		d.addEventListener("submit",function(e){
+			if(!canAjax){return;}
+			var form=e.target.closest("form[data-nura-price]");
+			if(!form){return;}
+			e.preventDefault();
+			var fd=new FormData(form),pairs=[];
+			fd.forEach(function(v,k){if(String(v).length){pairs.push(encodeURIComponent(k)+"="+encodeURIComponent(v));}});
+			var action=form.getAttribute("action")||window.location.pathname;
+			var url=action+(action.indexOf("?")===-1?"?":"&")+pairs.join("&");
+			swap(url,true);
+		});
+
+		d.addEventListener("keyup",function(e){if(e.key==="Escape"){closeDrawer();}});
+		window.addEventListener("popstate",function(){if(canAjax){swap(window.location.href,false);}});
+	});
+})();

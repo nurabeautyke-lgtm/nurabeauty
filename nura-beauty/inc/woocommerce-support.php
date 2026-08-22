@@ -157,16 +157,52 @@ add_filter( 'woocommerce_add_to_cart_fragments', function ( $fragments ) {
 } );
 
 /**
+ * Data-driven hair claim for a product, derived from the global Hair Type attribute.
+ * Never asserts human hair on a synthetic or blended unit (see brief #13, #29).
+ *
+ * @param WC_Product $product Product.
+ * @return string Claim text, or '' when the data does not support any claim.
+ */
+function nura_product_hair_claim( $product ) {
+	if ( ! $product || ! function_exists( 'wc_get_product_terms' ) ) {
+		return '';
+	}
+	$terms = wc_get_product_terms( $product->get_id(), 'pa_hair-type', array( 'fields' => 'names' ) );
+	$name  = ! empty( $terms ) ? strtolower( (string) $terms[0] ) : '';
+	if ( '' === $name ) {
+		return '';
+	}
+	if ( false !== strpos( $name, 'blend' ) ) {
+		return __( 'Premium human-hair blend', 'nura-beauty' );
+	}
+	if ( false !== strpos( $name, 'human hair' ) ) {
+		return __( '100% human hair, quality guaranteed', 'nura-beauty' );
+	}
+	if ( false !== strpos( $name, 'synthetic' ) ) {
+		return __( 'Premium synthetic fibre', 'nura-beauty' );
+	}
+	return '';
+}
+
+/**
  * Trust strip under the add-to-cart button (KE-specific reassurance).
+ * The hair-quality line reflects the actual product; it is omitted when the data
+ * does not support a claim, so we never overstate a unit.
  */
 add_action( 'woocommerce_single_product_summary', 'nura_trust_strip', 35 );
 function nura_trust_strip() {
-	$items = array(
-		__( '100% human hair, quality guaranteed', 'nura-beauty' ),
-		__( 'Same-day delivery in Nairobi', 'nura-beauty' ),
-		__( 'Pay with M-Pesa, card or on delivery', 'nura-beauty' ),
-		__( 'Free virtual wig consultation', 'nura-beauty' ),
-	);
+	global $product;
+	if ( ! $product ) {
+		return;
+	}
+	$items = array();
+	$hair  = nura_product_hair_claim( $product );
+	if ( $hair ) {
+		$items[] = $hair;
+	}
+	$items[] = __( 'Same-day delivery in Nairobi', 'nura-beauty' );
+	$items[] = __( 'Pay with M-Pesa, card or on delivery', 'nura-beauty' );
+	$items[] = __( 'Free virtual wig consultation', 'nura-beauty' );
 	echo '<ul class="nura-trust">';
 	foreach ( $items as $item ) {
 		echo '<li>' . esc_html( $item ) . '</li>';
