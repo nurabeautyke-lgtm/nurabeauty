@@ -69,7 +69,7 @@ if ( ! function_exists( 'nura_home_tiles' ) ) {
 
 $slides = array(
 	array(
-		'img'      => ( nura_opt( 'nura_hero_image' ) ? nura_opt( 'nura_hero_image' ) : NURA_URI . 'assets/images/hero.jpg' ),
+		'img'      => NURA_URI . 'assets/images/hero.jpg',
 		'eyebrow'  => ( nura_opt( 'nura_hero_eyebrow' ) ? nura_opt( 'nura_hero_eyebrow' ) : __( 'The House of Radiant Confidence', 'nura-beauty' ) ),
 		'title'    => ( nura_opt( 'nura_hero_title' ) ? nura_opt( 'nura_hero_title' ) : __( 'Luxury Human Hair Wigs, Made for You', 'nura-beauty' ) ),
 		'sub'      => ( nura_opt( 'nura_hero_subtitle' ) ? nura_opt( 'nura_hero_subtitle' ) : __( 'Verified human hair, HD lace and glueless units, hand-crafted in Nairobi and delivered across Kenya.', 'nura-beauty' ) ),
