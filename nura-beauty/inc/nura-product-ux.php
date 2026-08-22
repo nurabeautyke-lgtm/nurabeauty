@@ -279,3 +279,19 @@ function nura_variation_swatches( $html, $args ) {
 	return $html . ob_get_clean();
 }
 add_filter( 'woocommerce_dropdown_variation_attribute_options_html', 'nura_variation_swatches', 20, 2 );
+
+/**
+ * Hide the non-variation pa_colour facet taxonomy from the product "Additional
+ * information" tab (v1.11.0). pa_colour is a colour-family taxonomy added purely to
+ * power the shop Colour filter; the exact per-variation shade is already shown in the
+ * swatch selector, so listing pa_colour again in the specs would duplicate it.
+ *
+ * @param array      $attributes Display attribute rows keyed by attribute_{name}.
+ * @param WC_Product $product    Product (unused; signature required by the filter).
+ * @return array
+ */
+function nura_hide_colour_facet_attribute( $attributes, $product ) {
+	unset( $attributes['attribute_pa_colour'], $attributes['attribute_pa_color'] );
+	return $attributes;
+}
+add_filter( 'woocommerce_display_product_attributes', 'nura_hide_colour_facet_attribute', 20, 2 );

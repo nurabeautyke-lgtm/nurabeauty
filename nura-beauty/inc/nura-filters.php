@@ -1,14 +1,15 @@
 <?php
 /**
- * NURA faceted shop filters (v1.9.0).
+ * NURA faceted shop filters (v1.11.0).
  *
  * A lightweight, plugin-free filtering layer for the shop and product archives.
  * Facet links use WooCommerce's native filter_{attribute} query vars, so filtering
  * works with a normal page load (SEO-friendly, no-JS safe); assets/js/main.js then
  * upgrades interactions to AJAX. Only global attribute taxonomies that actually have
  * terms in the catalogue are rendered, so customers never see an empty or irrelevant
- * facet. Colour is intentionally NOT yet a facet - it is still a per-product/variation
- * attribute pending a variation-safe migration.
+ * facet. Colour (v1.11.0) is faceted via a non-variation global pa_colour taxonomy of
+ * colour families, added alongside the untouched per-variation Colour axis; the facet
+ * renders real colour swatches and auto-hides until the pa_colour terms exist.
  *
  * @package NURA_Beauty
  */
@@ -35,6 +36,7 @@ function nura_is_shop_context() {
 function nura_filter_attributes() {
 	return array(
 		'pa_texture'   => __( 'Texture', 'nura-beauty' ),
+		'pa_colour'    => __( 'Colour', 'nura-beauty' ),
 		'pa_hair-type' => __( 'Hair Type', 'nura-beauty' ),
 		'pa_length'    => __( 'Length', 'nura-beauty' ),
 		'pa_lace'      => __( 'Lace Type', 'nura-beauty' ),
@@ -287,20 +289,30 @@ function nura_render_filter_bar() {
 		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			continue; // No relevant values -> no facet.
 		}
-		$chosen = nura_chosen_terms( $tax );
+		$chosen    = nura_chosen_terms( $tax );
+		$is_colour = in_array( $tax, array( 'pa_colour', 'pa_color' ), true ) && function_exists( 'nura_colour_style' );
 		printf(
-			'<details class="nura-facet"%1$s><summary>%2$s%3$s</summary><div class="nura-facet__menu">',
+			'<details class="nura-facet%1$s"%2$s><summary>%3$s%4$s</summary><div class="nura-facet__menu%5$s">',
+			$is_colour ? ' nura-facet--colour' : '',
 			$chosen ? ' open' : '',
 			esc_html( $label ),
-			$chosen ? ' <span class="nura-facet__badge">' . absint( count( $chosen ) ) . '</span>' : ''
+			$chosen ? ' <span class="nura-facet__badge">' . absint( count( $chosen ) ) . '</span>' : '',
+			$is_colour ? ' nura-facet__menu--colour' : ''
 		);
 		foreach ( $terms as $term ) {
 			$is_active = in_array( $term->slug, $chosen, true );
+			if ( $is_colour ) {
+				$box = '<span class="nura-facet__box nura-facet__box--swatch" style="background:' . esc_attr( nura_colour_style( $term->name ) ) . '" aria-hidden="true"></span>';
+			} else {
+				$box = '<span class="nura-facet__box" aria-hidden="true"></span>';
+			}
 			printf(
-				'<a class="nura-facet__opt%1$s" href="%2$s" data-nura-filter aria-pressed="%3$s"><span class="nura-facet__box" aria-hidden="true"></span><span class="nura-facet__name">%4$s</span><em class="nura-facet__count">%5$d</em></a>',
+				'<a class="nura-facet__opt%1$s%2$s" href="%3$s" data-nura-filter aria-pressed="%4$s">%5$s<span class="nura-facet__name">%6$s</span><em class="nura-facet__count">%7$d</em></a>',
 				$is_active ? ' is-active' : '',
+				$is_colour ? ' nura-facet__opt--swatch' : '',
 				esc_url( nura_toggle_term_url( $tax, $term->slug ) ),
 				$is_active ? 'true' : 'false',
+				$box,
 				esc_html( $term->name ),
 				absint( $term->count )
 			);

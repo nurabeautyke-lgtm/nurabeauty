@@ -159,3 +159,9 @@
 .nura-swatch__name{white-space:nowrap}
 .nura-swatch.is-active .nura-swatch__dot{box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),0 0 0 2px var(--nura-gold)}
 .nura-swatch:focus-visible,.nura-pill:focus-visible{outline:2px solid var(--nura-gold);outline-offset:2px}
+/* Colour filter facet swatches (v1.11.0) */
+.nura-facet__menu--colour{display:flex;flex-wrap:wrap;gap:.35rem .7rem}
+.nura-facet__opt--swatch{display:inline-flex;align-items:center;gap:.5rem}
+.nura-facet__box--swatch{width:18px;height:18px;border-radius:50%;border:1px solid rgba(14,14,14,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);flex:none}
+.nura-facet__opt--swatch.is-active .nura-facet__box--swatch{box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),0 0 0 2px var(--nura-gold)}
+.nura-facet__opt--swatch .nura-facet__name{white-space:nowrap}
