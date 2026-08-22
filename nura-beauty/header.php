@@ -47,7 +47,7 @@
 		</nav>
 
 		<div class="nura-header-actions">
-			<a class="nura-icon-btn nura-search-txt" href="<?php echo esc_url( home_url( '/?s=' ) ); ?>" aria-label="<?php esc_attr_e( 'Search', 'nura-beauty' ); ?>"><?php esc_html_e( 'Search', 'nura-beauty' ); ?></a>
+			<a class="nura-icon-btn nura-search-txt" href="<?php echo esc_url( add_query_arg( 'post_type', 'product', home_url( '/?s=' ) ) ); ?>" data-nura-search-open aria-label="<?php esc_attr_e( 'Search', 'nura-beauty' ); ?>"><?php esc_html_e( 'Search', 'nura-beauty' ); ?></a>
 			<?php if ( function_exists( 'nura_cart_button' ) ) { nura_cart_button(); } ?>
 		</div>
 	</div>

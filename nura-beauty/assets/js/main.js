@@ -206,3 +206,65 @@ r(function(){var form=d.querySelector("[data-nura-book]");if(!form){return;}
 		syncAll();
 	});
 })();
+
+/* NURA smart search overlay (v1.12.0) */
+(function(){
+	var modal=document.querySelector("[data-nura-search-modal]");
+	if(!modal){return;}
+	var input=modal.querySelector("[data-nura-search-input]");
+	var results=modal.querySelector("[data-nura-search-results]");
+	var openers=document.querySelectorAll("[data-nura-search-open]");
+	var timer=null,lastQ="",ctrl=null;
+
+	function openModal(e){if(e){e.preventDefault();}modal.classList.add("is-open");modal.setAttribute("aria-hidden","false");document.documentElement.classList.add("nura-noscroll");setTimeout(function(){input.focus();},40);}
+	function closeModal(){modal.classList.remove("is-open");modal.setAttribute("aria-hidden","true");document.documentElement.classList.remove("nura-noscroll");}
+
+	[].forEach.call(openers,function(a){a.addEventListener("click",openModal);});
+	[].forEach.call(modal.querySelectorAll("[data-nura-search-close]"),function(b){b.addEventListener("click",closeModal);});
+	document.addEventListener("keydown",function(e){if(e.key==="Escape"&&modal.classList.contains("is-open")){closeModal();}});
+
+	function esc(s){var d=document.createElement("div");d.textContent=(s==null)?"":String(s);return d.innerHTML;}
+
+	function render(data){
+		var q=data.query||"",html="";
+		if(data.suggestions&&data.suggestions.length){
+			html+='<div class="nura-sresult__group"><p class="nura-sresult__label">Shop by</p><div class="nura-sresult__chips">';
+			data.suggestions.forEach(function(s){
+				html+='<a class="nura-sresult__chip" href="'+encodeURI(s.url)+'"><span>'+esc(s.label)+'</span><em>'+esc(s.context)+'</em></a>';
+			});
+			html+='</div></div>';
+		}
+		if(data.products&&data.products.length){
+			html+='<div class="nura-sresult__group"><p class="nura-sresult__label">Products</p><div class="nura-sresult__list">';
+			data.products.forEach(function(p){
+				var oos=p.inStock?"":' <em class="nura-sresult__oos">Sold out</em>';
+				var thumb=p.img?'<img src="'+encodeURI(p.img)+'" alt="" loading="lazy">':"";
+				html+='<a class="nura-sresult__item" href="'+encodeURI(p.url)+'"><span class="nura-sresult__thumb">'+thumb+'</span><span class="nura-sresult__meta"><span class="nura-sresult__name">'+esc(p.title)+oos+'</span><span class="nura-sresult__price">'+(p.price||"")+'</span></span></a>';
+			});
+			html+='</div></div>';
+			html+='<a class="nura-sresult__all" href="'+encodeURI(data.viewAllUrl)+'">See all results for \u201C'+esc(q)+'\u201D</a>';
+		}else if(q.length>=2){
+			html+='<p class="nura-sresult__empty">No products match \u201C'+esc(q)+'\u201D. Try a texture, colour or length.</p>';
+		}
+		results.innerHTML=html;
+	}
+
+	function run(q){
+		if(typeof NURA==="undefined"||!NURA.ajaxUrl){return;}
+		if(ctrl&&ctrl.abort){ctrl.abort();}
+		var opts={};
+		if(window.AbortController){ctrl=new AbortController();opts.signal=ctrl.signal;}
+		results.classList.add("is-loading");
+		var url=NURA.ajaxUrl+"?action=nura_search&nonce="+encodeURIComponent(NURA.nonce||"")+"&q="+encodeURIComponent(q);
+		fetch(url,opts).then(function(r){return r.json();}).then(function(j){results.classList.remove("is-loading");if(j&&j.success){render(j.data);}}).catch(function(){results.classList.remove("is-loading");});
+	}
+
+	input.addEventListener("input",function(){
+		var q=input.value.trim();
+		if(q===lastQ){return;}
+		lastQ=q;
+		if(timer){clearTimeout(timer);}
+		if(q.length<2){results.innerHTML="";return;}
+		timer=setTimeout(function(){run(q);},220);
+	});
+})();
