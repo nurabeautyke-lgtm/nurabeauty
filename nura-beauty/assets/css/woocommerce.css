@@ -130,3 +130,32 @@
 	.nura-filters__foot .nura-btn{flex:1 1 50%;padding:1em 1.2em}
 	body.nura-filters-open{overflow:hidden}
 }
+
+
+/* ================= NURA v1.10.0 : product cards + variation UX ================= */
+/* Hover-reveal of the second gallery image */
+.woocommerce ul.products li.product .nura-loop-2nd{position:absolute;top:0;left:0;width:100%;aspect-ratio:3/4;object-fit:cover;margin:0;opacity:0;transition:opacity .55s var(--ease);z-index:1;pointer-events:none;border-radius:2px}
+@media(hover:hover){.woocommerce ul.products li.product:hover .nura-loop-2nd{opacity:1}}
+.woocommerce ul.products li.product .nura-badges{z-index:3}
+/* Sold-out flash */
+.nura-soldout{position:absolute;top:12px;right:12px;z-index:3;background:var(--nura-ink);color:var(--nura-ivory);font-family:var(--font-ui);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;padding:.4em .7em;border-radius:2px}
+.woocommerce ul.products li.product:has(.nura-soldout) a img{opacity:.72}
+/* Colour dots on cards */
+.nura-swatch-dots{display:flex;align-items:center;justify-content:center;gap:.32rem;margin:.1rem 0 .5rem;min-height:14px}
+.nura-dot{width:13px;height:13px;border-radius:50%;border:1px solid rgba(14,14,14,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.nura-dot-more{font-family:var(--font-ui);font-size:.68rem;color:var(--nura-muted);letter-spacing:.04em}
+/* Variation swatch / pill selector (revealed only when JS enhances the form) */
+.nura-swatches{display:none;flex-wrap:wrap;gap:.5rem;margin:.15rem 0 .4rem}
+.nura-var-enhanced .nura-swatches{display:flex}
+.nura-var-enhanced .variations select{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.nura-swatch,.nura-pill{cursor:pointer;font-family:var(--font-ui);background:#fff;border:1px solid var(--nura-line);border-radius:2px;color:var(--nura-text);transition:all .22s var(--ease)}
+.nura-pill{padding:.6em 1.1em;font-size:.8rem;letter-spacing:.06em;min-height:42px}
+.nura-pill:hover{border-color:var(--nura-gold)}
+.nura-pill.is-active{border-color:var(--nura-ink);background:var(--nura-ink);color:var(--nura-ivory)}
+.nura-swatch{display:inline-flex;align-items:center;gap:.5rem;padding:.4em .8em .4em .45em;font-size:.8rem;min-height:42px}
+.nura-swatch:hover{border-color:var(--nura-gold)}
+.nura-swatch.is-active{border-color:var(--nura-gold);box-shadow:0 0 0 1px var(--nura-gold)}
+.nura-swatch__dot{width:20px;height:20px;border-radius:50%;border:1px solid rgba(14,14,14,.2);flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
+.nura-swatch__name{white-space:nowrap}
+.nura-swatch.is-active .nura-swatch__dot{box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),0 0 0 2px var(--nura-gold)}
+.nura-swatch:focus-visible,.nura-pill:focus-visible{outline:2px solid var(--nura-gold);outline-offset:2px}

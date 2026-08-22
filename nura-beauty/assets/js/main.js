@@ -167,3 +167,42 @@ r(function(){var form=d.querySelector("[data-nura-book]");if(!form){return;}
 		window.addEventListener("popstate",function(){if(canAjax){swap(window.location.href,false);}});
 	});
 })();
+
+/* ===== NURA v1.10.0 - Variation swatch selector (enhances native <select>) ===== */
+(function(){
+	var d=document;
+	function ready(f){if(d.readyState!=="loading"){f();}else{d.addEventListener("DOMContentLoaded",f);}}
+	ready(function(){
+		var form=d.querySelector("form.variations_form");
+		if(!form||!form.querySelector("[data-nura-swatches]")){return;}
+		form.classList.add("nura-var-enhanced");
+
+		function sync(sel){
+			var wrap=sel.parentNode.querySelector("[data-nura-swatches]");
+			if(!wrap){return;}
+			var val=sel.value;
+			[].forEach.call(wrap.querySelectorAll(".nura-swatch,.nura-pill"),function(b){
+				var on=(b.getAttribute("data-value")===val&&val!=="");
+				b.classList.toggle("is-active",on);
+				b.setAttribute("aria-pressed",on?"true":"false");
+			});
+		}
+		function syncAll(){[].forEach.call(form.querySelectorAll(".variations select"),sync);}
+
+		form.addEventListener("click",function(e){
+			var btn=e.target.closest(".nura-swatch,.nura-pill");
+			if(!btn||!form.contains(btn)){return;}
+			e.preventDefault();
+			var wrap=btn.closest("[data-nura-swatches]");
+			var sel=wrap?wrap.parentNode.querySelector("select"):null;
+			if(!sel){return;}
+			sel.value=btn.getAttribute("data-value");
+			sel.dispatchEvent(new Event("change",{bubbles:true}));
+			sync(sel);
+		});
+		form.addEventListener("change",function(e){if(e.target.tagName==="SELECT"){sync(e.target);}});
+		form.addEventListener("reset",function(){setTimeout(syncAll,60);});
+		form.addEventListener("click",function(e){if(e.target.closest(".reset_variations")){setTimeout(syncAll,60);}});
+		syncAll();
+	});
+})();
