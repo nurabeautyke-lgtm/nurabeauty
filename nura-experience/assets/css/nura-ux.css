@@ -725,3 +725,33 @@
 .nura-jcard__meta { display: block; font-size: .76rem; color: #8a7a58; margin: 0 0 .5rem; }
 .nura-jcard__more { font-size: .82rem; font-weight: 600; color: #c79a54; text-decoration: none; }
 .nura-jcard__more:hover { text-decoration: underline; }
+
+/* NURA v1.15.0 - Cluster "Keep reading" related block (#18/#23) */
+.nura-related {
+	margin: 3rem 0 0;
+	padding-top: 2rem;
+	border-top: 1px solid rgba(201,162,75,.28);
+}
+.nura-related__head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 1rem;
+	flex-wrap: wrap;
+	margin-bottom: 1.4rem;
+}
+.nura-related__head h2 {
+	margin: 0;
+	font-family: var(--nura-font-display, 'Cormorant Garamond', serif);
+	font-size: 1.6rem;
+}
+.nura-related__pillar {
+	font-family: var(--nura-font-ui, 'Jost', sans-serif);
+	font-size: .78rem;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: #c79a54;
+	text-decoration: none;
+	white-space: nowrap;
+}
+.nura-related__pillar:hover { text-decoration: underline; }
