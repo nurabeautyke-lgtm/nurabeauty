@@ -165,3 +165,25 @@
 .nura-facet__box--swatch{width:18px;height:18px;border-radius:50%;border:1px solid rgba(14,14,14,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);flex:none}
 .nura-facet__opt--swatch.is-active .nura-facet__box--swatch{box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),0 0 0 2px var(--nura-gold)}
 .nura-facet__opt--swatch .nura-facet__name{white-space:nowrap}
+/* Product spec chips + Complete Your Look + Wig Finder (v1.13.0) */
+.nura-specchips{list-style:none;margin:1.1rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem}
+.nura-specchip{display:inline-flex;flex-direction:column;gap:.05rem;padding:.45rem .8rem;border:1px solid var(--nura-line);border-radius:var(--radius);background:#fff}
+.nura-specchip__k{font-family:var(--font-ui);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--nura-muted)}
+.nura-specchip__v{font-family:var(--font-editorial);font-size:.95rem;color:var(--nura-ink)}
+.nura-complete-look{margin:3.5rem 0 1rem}
+.nura-complete-look__head{text-align:center;margin-bottom:1.6rem}
+.nura-complete-look__head h2{font-family:var(--font-display);font-size:clamp(1.4rem,2.6vw,2rem);margin:0 0 .3rem}
+.nura-complete-look__head p{font-family:var(--font-editorial);color:var(--nura-muted);margin:0}
+.nura-finder{max-width:820px;margin:0 auto;background:var(--nura-ivory);border:1px solid var(--nura-line);border-radius:var(--radius);padding:clamp(1.4rem,3vw,2.4rem)}
+.nura-finder__intro{text-align:center;margin-bottom:1.6rem}
+.nura-finder__intro h3{font-family:var(--font-display);font-size:clamp(1.3rem,2.6vw,1.9rem);margin:.2rem 0 0;line-height:1.15}
+.nura-finder__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.1rem 1.4rem}
+.nura-finder__q{display:flex;flex-direction:column;gap:.3rem}
+.nura-finder__label{font-family:var(--font-ui);font-size:.82rem;letter-spacing:.04em;color:var(--nura-ink);font-weight:500}
+.nura-finder__hint{font-family:var(--font-editorial);font-size:.85rem;color:var(--nura-muted);margin:0}
+.nura-finder__select{font-family:var(--font-ui);font-size:.9rem;padding:.7em .9em;border:1px solid var(--nura-line);border-radius:var(--radius);background:#fff;color:var(--nura-ink);cursor:pointer}
+.nura-finder__select:focus-visible{outline:2px solid var(--nura-gold);outline-offset:2px}
+.nura-finder__foot{display:flex;align-items:center;justify-content:center;gap:1.2rem;margin-top:1.8rem;flex-wrap:wrap}
+.nura-finder__skip{font-family:var(--font-ui);font-size:.82rem;color:var(--nura-muted);text-decoration:underline}
+.nura-finder__skip:hover{color:var(--nura-ink)}
+.nura-finder--empty{text-align:center}

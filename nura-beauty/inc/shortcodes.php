@@ -171,3 +171,83 @@ add_shortcode( 'nura_reviews', function ( $atts ) {
 	echo '</div>';
 	return ob_get_clean();
 } );
+
+
+/**
+ * One wig-finder question: a labelled <select> built from a live attribute taxonomy.
+ * Returns '' when the taxonomy has no terms yet, so unavailable questions vanish.
+ *
+ * @param string $tax      Attribute taxonomy (e.g. pa_texture).
+ * @param string $label    Question label.
+ * @param string $intro    Helper line under the label.
+ * @param string $anylabel The "no preference" first option.
+ * @return string
+ */
+function nura_finder_select( $tax, $label, $intro, $anylabel ) {
+	if ( ! taxonomy_exists( $tax ) ) {
+		return '';
+	}
+	$terms = get_terms( array( 'taxonomy' => $tax, 'hide_empty' => true ) );
+	if ( is_wp_error( $terms ) || empty( $terms ) ) {
+		return '';
+	}
+	$name = 'filter_' . str_replace( 'pa_', '', $tax );
+	ob_start();
+	echo '<div class="nura-finder__q">';
+	printf( '<label class="nura-finder__label" for="%1$s">%2$s</label>', esc_attr( $name ), esc_html( $label ) );
+	if ( $intro ) {
+		echo '<p class="nura-finder__hint">' . esc_html( $intro ) . '</p>';
+	}
+	printf( '<select class="nura-finder__select" id="%1$s" name="%1$s">', esc_attr( $name ) );
+	printf( '<option value="">%s</option>', esc_html( $anylabel ) );
+	foreach ( $terms as $term ) {
+		printf( '<option value="%1$s">%2$s</option>', esc_attr( $term->slug ), esc_html( $term->name ) );
+	}
+	echo '</select>';
+	echo '</div>';
+	return ob_get_clean();
+}
+
+/**
+ * [nura_ai_wig_finder] / [nura_wig_finder] - a real, attribute-matching wig finder.
+ *
+ * Honest matching (brief #29): a few quick questions, each built from the store's
+ * actual global attributes (Texture, Length, Hair Type, Colour, Lace). Submitting
+ * maps the answers to the faceted-shop filters and lands the shopper on matching,
+ * in-stock NURA units - genuine matching to real inventory, no invented "AI selfie"
+ * analysis. Works with a normal page load (no JS required); unavailable attributes
+ * are simply skipped.
+ */
+function nura_render_wig_finder() {
+	$shop = function_exists( 'wc_get_page_id' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/' );
+
+	$questions  = nura_finder_select( 'pa_texture', __( 'What texture do you love?', 'nura-beauty' ), __( 'The overall feel of the hair.', 'nura-beauty' ), __( 'Any texture', 'nura-beauty' ) );
+	$questions .= nura_finder_select( 'pa_length', __( 'How long?', 'nura-beauty' ), __( 'From cropped bobs to long and dramatic.', 'nura-beauty' ), __( 'Any length', 'nura-beauty' ) );
+	$questions .= nura_finder_select( 'pa_hair-type', __( 'Hair type & budget', 'nura-beauty' ), __( 'Synthetic is budget-friendly; human hair is premium.', 'nura-beauty' ), __( 'Any type', 'nura-beauty' ) );
+	$questions .= nura_finder_select( 'pa_colour', __( 'Colour family', 'nura-beauty' ), __( 'Pick a shade family, or explore them all.', 'nura-beauty' ), __( 'Any colour', 'nura-beauty' ) );
+	$questions .= nura_finder_select( 'pa_lace', __( 'Lace / cap style', 'nura-beauty' ), __( 'Lace fronts and closures give a natural hairline.', 'nura-beauty' ), __( 'Any style', 'nura-beauty' ) );
+
+	if ( '' === trim( $questions ) ) {
+		return '<div class="nura-finder nura-finder--empty"><p>' . esc_html__( 'Our wig finder is being prepared. Browse the full collection in the meantime.', 'nura-beauty' ) . '</p><p><a class="nura-btn nura-btn--gold" href="' . esc_url( $shop ) . '">' . esc_html__( 'Shop all wigs', 'nura-beauty' ) . '</a></p></div>';
+	}
+
+	ob_start();
+	?>
+	<form class="nura-finder" method="get" action="<?php echo esc_url( $shop ); ?>">
+		<div class="nura-finder__intro">
+			<p class="nura-eyebrow"><?php esc_html_e( 'NURA Wig Finder', 'nura-beauty' ); ?></p>
+			<h3><?php esc_html_e( 'Answer a few quick questions and meet your match.', 'nura-beauty' ); ?></h3>
+		</div>
+		<div class="nura-finder__grid">
+			<?php echo $questions; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts in nura_finder_select(). ?>
+		</div>
+		<div class="nura-finder__foot">
+			<button type="submit" class="nura-btn nura-btn--gold"><?php esc_html_e( 'Show my matches', 'nura-beauty' ); ?></button>
+			<a class="nura-finder__skip" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'or browse everything', 'nura-beauty' ); ?></a>
+		</div>
+	</form>
+	<?php
+	return ob_get_clean();
+}
+add_shortcode( 'nura_ai_wig_finder', 'nura_render_wig_finder' );
+add_shortcode( 'nura_wig_finder', 'nura_render_wig_finder' );

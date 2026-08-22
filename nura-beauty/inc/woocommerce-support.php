@@ -209,3 +209,150 @@ function nura_trust_strip() {
 	}
 	echo '</ul>';
 }
+
+/**
+ * At-a-glance spec chips on the single product summary (v1.13.0).
+ *
+ * The key global attributes (Texture, Length, Hair Type, Lace) shown as elegant
+ * pills so shoppers grasp the unit instantly. Data-driven (brief #29): only the
+ * attributes the product actually has are rendered.
+ */
+add_action( 'woocommerce_single_product_summary', 'nura_product_spec_chips', 25 );
+function nura_product_spec_chips() {
+	global $product;
+	if ( ! $product || ! function_exists( 'wc_get_product_terms' ) ) {
+		return;
+	}
+	$specs = array(
+		'pa_texture'   => __( 'Texture', 'nura-beauty' ),
+		'pa_length'    => __( 'Length', 'nura-beauty' ),
+		'pa_hair-type' => __( 'Hair Type', 'nura-beauty' ),
+		'pa_lace'      => __( 'Lace', 'nura-beauty' ),
+	);
+	$chips = array();
+	foreach ( $specs as $tax => $label ) {
+		if ( ! taxonomy_exists( $tax ) ) {
+			continue;
+		}
+		$names = wc_get_product_terms( $product->get_id(), $tax, array( 'fields' => 'names' ) );
+		if ( ! empty( $names ) ) {
+			$chips[ $label ] = implode( ', ', $names );
+		}
+	}
+	if ( empty( $chips ) ) {
+		return;
+	}
+	echo '<ul class="nura-specchips">';
+	foreach ( $chips as $label => $value ) {
+		printf(
+			'<li class="nura-specchip"><span class="nura-specchip__k">%1$s</span><span class="nura-specchip__v">%2$s</span></li>',
+			esc_html( $label ),
+			esc_html( $value )
+		);
+	}
+	echo '</ul>';
+}
+
+/**
+ * Build the "Complete Your NURA Look" product list, data-first (only ever returns
+ * products that actually exist), in priority order:
+ *   1. The product's configured WooCommerce cross-sells.
+ *   2. Complementary products (care / accessories / extensions / services).
+ *   3. Related products sharing this unit's Texture (fallback within the wig range).
+ * The current product is always excluded.
+ *
+ * @param WC_Product $product The product being viewed.
+ * @param int        $limit   Max products to return.
+ * @return int[] Product IDs.
+ */
+function nura_complete_look_ids( $product, $limit = 4 ) {
+	$exclude = array( $product->get_id() );
+	$ids     = array_values( array_diff( (array) $product->get_cross_sell_ids(), $exclude ) );
+
+	$vis = array( 'taxonomy' => 'product_visibility', 'field' => 'slug', 'terms' => array( 'exclude-from-catalog' ), 'operator' => 'NOT IN' );
+
+	// 2. Complementary categories.
+	if ( count( $ids ) < $limit ) {
+		$complement = array( 'wig-care', 'hair-care', 'care', 'accessories', 'hair-extensions', 'extensions', 'services', 'installation-services' );
+		$q = new WP_Query( array(
+			'post_type'           => 'product',
+			'post_status'         => 'publish',
+			'posts_per_page'      => $limit * 2,
+			'post__not_in'        => array_merge( $exclude, $ids ),
+			'orderby'             => 'rand',
+			'ignore_sticky_posts' => true,
+			'no_found_rows'       => true,
+			'fields'              => 'ids',
+			'tax_query'           => array(
+				$vis,
+				array( 'taxonomy' => 'product_cat', 'field' => 'slug', 'terms' => $complement, 'operator' => 'IN' ),
+			),
+		) );
+		$ids = array_values( array_unique( array_merge( $ids, $q->posts ) ) );
+		wp_reset_postdata();
+	}
+
+	// 3. Fallback: related by shared texture.
+	if ( count( $ids ) < $limit && taxonomy_exists( 'pa_texture' ) ) {
+		$textures = wc_get_product_terms( $product->get_id(), 'pa_texture', array( 'fields' => 'slugs' ) );
+		if ( ! empty( $textures ) ) {
+			$q = new WP_Query( array(
+				'post_type'           => 'product',
+				'post_status'         => 'publish',
+				'posts_per_page'      => $limit * 2,
+				'post__not_in'        => array_merge( $exclude, $ids ),
+				'orderby'             => 'rand',
+				'ignore_sticky_posts' => true,
+				'no_found_rows'       => true,
+				'fields'              => 'ids',
+				'tax_query'           => array(
+					$vis,
+					array( 'taxonomy' => 'pa_texture', 'field' => 'slug', 'terms' => $textures, 'operator' => 'IN' ),
+				),
+			) );
+			$ids = array_values( array_unique( array_merge( $ids, $q->posts ) ) );
+			wp_reset_postdata();
+		}
+	}
+
+	return array_slice( array_values( array_diff( $ids, $exclude ) ), 0, $limit );
+}
+
+// Replace the default related-products rail with the curated "Complete Your Look".
+remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
+add_action( 'woocommerce_after_single_product_summary', 'nura_complete_the_look', 20 );
+function nura_complete_the_look() {
+	global $product;
+	if ( ! $product || ! function_exists( 'woocommerce_product_loop_start' ) ) {
+		return;
+	}
+	$main_product = $product; // Preserve to restore the global after our custom loop.
+	$ids          = nura_complete_look_ids( $product, 4 );
+	if ( empty( $ids ) ) {
+		return;
+	}
+	$loop = new WP_Query( array(
+		'post_type'           => 'product',
+		'post_status'         => 'publish',
+		'post__in'            => $ids,
+		'orderby'             => 'post__in',
+		'posts_per_page'      => count( $ids ),
+		'ignore_sticky_posts' => true,
+		'no_found_rows'       => true,
+	) );
+	if ( ! $loop->have_posts() ) {
+		wp_reset_postdata();
+		return;
+	}
+	echo '<section class="nura-complete-look">';
+	echo '<div class="nura-complete-look__head"><h2>' . esc_html__( 'Complete Your NURA Look', 'nura-beauty' ) . '</h2><p>' . esc_html__( 'Curated pairings to finish your style.', 'nura-beauty' ) . '</p></div>';
+	woocommerce_product_loop_start();
+	while ( $loop->have_posts() ) {
+		$loop->the_post();
+		wc_get_template_part( 'content', 'product' );
+	}
+	woocommerce_product_loop_end();
+	echo '</section>';
+	wp_reset_postdata();
+	$GLOBALS['product'] = $main_product; // Restore for any later single-product hooks.
+}
