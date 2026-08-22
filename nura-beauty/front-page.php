@@ -144,10 +144,10 @@ $slides = array(
 			<?php
 			nura_home_tiles(
 				array(
-					array( 'label' => __( 'Wigs', 'nura-beauty' ),              'sub' => __( 'Human Hair • Lace • Glueless', 'nura-beauty' ), 'url' => nura_home_cat_url( 'wigs' ),            'img' => nura_home_cat_img( 'wigs' ) ),
-					array( 'label' => __( 'Hair & Extensions', 'nura-beauty' ), 'sub' => __( 'Bundles • Closures • Frontals', 'nura-beauty' ), 'url' => nura_home_cat_url( 'hair-extensions' ), 'img' => nura_home_cat_img( 'hair-extensions' ) ),
-					array( 'label' => __( 'Wig Care', 'nura-beauty' ),          'sub' => __( 'Wash • Treat • Maintain', 'nura-beauty' ),     'url' => nura_home_cat_url( 'wig-care' ),        'img' => nura_home_cat_img( 'wig-care' ) ),
-					array( 'label' => __( 'Beauty', 'nura-beauty' ),            'sub' => __( 'Makeup • Accessories', 'nura-beauty' ),           'url' => nura_home_cat_url( 'beauty' ),          'img' => nura_home_cat_img( 'beauty' ) ),
+					array( 'label' => __( 'Wigs', 'nura-beauty' ),              'sub' => __( 'Human Hair • Lace • Glueless', 'nura-beauty' ), 'url' => nura_home_cat_url( 'wigs' ),            'img' => ( nura_home_cat_img( 'wigs' ) ?: NURA_URI . 'assets/images/cats/pillar-wigs.jpg' ) ),
+					array( 'label' => __( 'Hair & Extensions', 'nura-beauty' ), 'sub' => __( 'Bundles • Closures • Frontals', 'nura-beauty' ), 'url' => nura_home_cat_url( 'hair-extensions' ), 'img' => ( nura_home_cat_img( 'hair-extensions' ) ?: NURA_URI . 'assets/images/cats/pillar-hair-extensions.jpg' ) ),
+					array( 'label' => __( 'Wig Care', 'nura-beauty' ),          'sub' => __( 'Wash • Treat • Maintain', 'nura-beauty' ),     'url' => nura_home_cat_url( 'wig-care' ),        'img' => ( nura_home_cat_img( 'wig-care' ) ?: NURA_URI . 'assets/images/cats/pillar-wig-care.jpg' ) ),
+					array( 'label' => __( 'Beauty', 'nura-beauty' ),            'sub' => __( 'Makeup • Accessories', 'nura-beauty' ),           'url' => nura_home_cat_url( 'beauty' ),          'img' => ( nura_home_cat_img( 'beauty' ) ?: NURA_URI . 'assets/images/cats/pillar-beauty.jpg' ) ),
 				),
 				'nura-tiles--4'
 			);
