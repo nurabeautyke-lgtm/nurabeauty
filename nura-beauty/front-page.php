@@ -99,11 +99,12 @@ $slides = array(
 <main id="primary" class="site-main">
 
 	<!-- HERO SLIDER -->
-	<section class="nura-hero-slider" data-nura-slider>
+	<section class="nura-hero-slider" data-nura-slider role="region" aria-roledescription="<?php esc_attr_e( 'carousel', 'nura-beauty' ); ?>" aria-label="<?php esc_attr_e( 'Featured collections', 'nura-beauty' ); ?>">
 		<div class="nura-slides">
+			<?php $nura_total = count( $slides ); ?>
 			<?php foreach ( $slides as $i => $s ) : ?>
-				<div class="nura-slide<?php echo 0 === $i ? ' is-active' : ''; ?>">
-					<div class="nura-slide__media" style="background-image:url('<?php echo esc_url( $s['img'] ); ?>')" role="img" aria-label="<?php echo esc_attr( $s['title'] ); ?>"></div>
+				<div class="nura-slide<?php echo 0 === $i ? ' is-active' : ''; ?>" role="group" aria-roledescription="<?php esc_attr_e( 'slide', 'nura-beauty' ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: 1: current slide number, 2: total slides. */ __( '%1$d of %2$d', 'nura-beauty' ), $i + 1, $nura_total ) ); ?>">
+					<div class="nura-slide__media" style="background-image:url('<?php echo esc_url( $s['img'] ); ?>')" aria-hidden="true"></div>
 					<div class="nura-container nura-slide__inner">
 						<p class="nura-eyebrow"><?php echo esc_html( $s['eyebrow'] ); ?></p>
 						<h1><?php echo esc_html( $s['title'] ); ?></h1>
@@ -125,10 +126,22 @@ $slides = array(
 	<div class="nura-trustbar">
 		<div class="nura-container">
 			<ul>
-				<li><?php esc_html_e( 'Verified Human Hair', 'nura-beauty' ); ?></li>
-				<li><?php esc_html_e( 'Same-Day Nairobi Delivery', 'nura-beauty' ); ?></li>
-				<li><?php esc_html_e( 'Kenya-Wide Delivery', 'nura-beauty' ); ?></li>
-				<li><?php esc_html_e( 'M-Pesa & Pay on Delivery', 'nura-beauty' ); ?></li>
+				<li><?php esc_html_e( 'Quality-Verified Wigs', 'nura-beauty' ); ?></li>
+				<?php
+				// Delivery + payment reflect the store's real WooCommerce shipping
+				// zones and enabled gateways (see inc/nura-commerce.php), with the
+				// curated Kenya promises as a graceful fallback.
+				$nura_delivery = function_exists( 'nura_delivery_lines' )
+					? nura_delivery_lines( 2 )
+					: array( __( 'Same-Day Nairobi Delivery', 'nura-beauty' ), __( 'Kenya-Wide Delivery', 'nura-beauty' ) );
+				foreach ( $nura_delivery as $nura_line ) {
+					echo '<li>' . esc_html( $nura_line ) . '</li>';
+				}
+				$nura_pay = function_exists( 'nura_payment_summary' )
+					? nura_payment_summary( __( 'M-Pesa & Pay on Delivery', 'nura-beauty' ) )
+					: __( 'M-Pesa & Pay on Delivery', 'nura-beauty' );
+				?>
+				<li><?php echo esc_html( $nura_pay ); ?></li>
 			</ul>
 		</div>
 	</div>

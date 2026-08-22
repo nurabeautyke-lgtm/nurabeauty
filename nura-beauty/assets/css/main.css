@@ -411,3 +411,31 @@ p{margin:0 0 1.1em}
 .nura-sresult__all:hover{color:var(--nura-ink)}
 .nura-sresult__empty{padding:1.7rem 1.2rem;color:var(--nura-muted);font-family:var(--font-editorial);font-size:1.05rem}
 @media(max-width:600px){.nura-search-modal__panel{margin-top:0;max-height:100vh;height:100vh;border-radius:0}}
+
+/* ==================================================================
+   NURA v1.14.0 - Accessibility (visible keyboard focus, skip link,
+   reduced motion) + a resilient trust bar for the dynamic
+   payment/delivery copy driven by inc/nura-commerce.php.
+   ================================================================== */
+
+/* Visible keyboard focus everywhere. Mouse clicks stay ring-free via :focus-visible. */
+a:focus-visible,button:focus-visible,.nura-btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,[tabindex]:focus-visible,.nura-slider-nav:focus-visible,.nura-slider-dots button:focus-visible,.nura-rail__nav:focus-visible,.nura-typechip:focus-visible{outline:2px solid var(--nura-gold);outline-offset:3px;border-radius:2px}
+/* On dark sections and over hero imagery, use the soft-gold ring for contrast. */
+.section--ink a:focus-visible,.section--ink .nura-btn:focus-visible,.site-footer a:focus-visible,.site-footer button:focus-visible,.nura-hero-slider a:focus-visible,.nura-slider-nav:focus-visible,.nura-slider-dots button:focus-visible,.nura-drawer a:focus-visible{outline-color:var(--nura-gold-soft)}
+
+/* Screen-reader-only utility + reveal-on-focus skip link (a11y baseline). */
+.screen-reader-text{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip-link.screen-reader-text:focus{position:fixed;left:16px;top:12px;width:auto;height:auto;clip:auto;margin:0;z-index:1000;background:var(--nura-ink);color:var(--nura-ivory);padding:.7em 1.2em;border:1px solid var(--nura-gold);border-radius:2px;font-family:var(--font-ui);letter-spacing:.1em;text-transform:uppercase;font-size:.74rem}
+
+/* Trust bar: adapt to a variable number of dynamic items (3 or 4) so it stays
+   evenly balanced whatever the store's shipping zones / gateways produce. */
+.nura-trustbar ul{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+
+/* Respect reduced-motion: freeze the hero cross-fade, image zooms and the
+   search entrance (main.js also stops the hero auto-advancing under this). */
+@media (prefers-reduced-motion:reduce){
+  .nura-slide{transition:none}
+  .nura-card__media img,.nura-cat img,.nura-look img,.nura-split__media img{transition:none}
+  .nura-search-modal__panel{animation:none}
+  html{scroll-behavior:auto}
+}

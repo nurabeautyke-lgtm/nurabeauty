@@ -118,10 +118,21 @@ class NURAX_Product_Page {
 			? sprintf( /* translators: %s: hair type, e.g. 100% Human Hair */ __( '%s, quality guaranteed', 'nura-experience' ), $hair )
 			: __( 'Premium quality, quality guaranteed', 'nura-experience' );
 
+		// Delivery + payment mirror the store's real WooCommerce shipping zones
+		// and enabled gateways (theme helpers in inc/nura-commerce.php), so the
+		// reassurance strip never promises what checkout does not offer. Both
+		// fall back to the original curated copy when the helpers are absent.
+		$delivery      = function_exists( 'nura_delivery_lines' ) ? nura_delivery_lines( 1 ) : array();
+		$delivery_line = ! empty( $delivery ) ? $delivery[0] : __( 'Same-day delivery in Nairobi', 'nura-experience' );
+		$pay           = function_exists( 'nura_payment_summary' ) ? nura_payment_summary( '' ) : '';
+		$pay_line      = '' !== $pay
+			? sprintf( /* translators: %s: list of payment methods, e.g. M-Pesa, Card & Pay on Delivery. */ __( 'Pay with %s', 'nura-experience' ), $pay )
+			: __( 'Pay with M-Pesa, card or on delivery', 'nura-experience' );
+
 		$items = array(
 			$first,
-			__( 'Same-day delivery in Nairobi', 'nura-experience' ),
-			__( 'Pay with M-Pesa, card or on delivery', 'nura-experience' ),
+			$delivery_line,
+			$pay_line,
 			__( 'Free virtual wig consultation', 'nura-experience' ),
 		);
 		echo '<ul class="nura-trust">';

@@ -4,6 +4,11 @@
  * @package NURA_Beauty
  */
 $payments = array_filter( array_map( 'trim', explode( ',', (string) nura_opt( 'nura_payments' ) ) ) );
+if ( empty( $payments ) && function_exists( 'nura_payment_methods' ) ) {
+	// Fall back to the merchant's actually-enabled WooCommerce gateways so the
+	// footer badges never advertise a payment method that is switched off.
+	$payments = nura_payment_methods();
+}
 ?>
 <footer class="site-footer" id="site-footer">
 	<div class="nura-container">

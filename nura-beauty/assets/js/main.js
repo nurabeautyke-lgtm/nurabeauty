@@ -67,13 +67,15 @@ r(function(){
 	var root=d.querySelector("[data-nura-slider]");if(!root){return;}
 	var slides=[].slice.call(root.querySelectorAll(".nura-slide"));if(slides.length<2){return;}
 	var dotsWrap=root.querySelector("[data-slider-dots]");var cur=0,timer=null;
-	var dots=slides.map(function(s,i){var btn=d.createElement("button");btn.type="button";btn.setAttribute("aria-label","Go to slide "+(i+1));if(i===0){btn.className="is-active";}btn.addEventListener("click",function(){go(i);reset();});if(dotsWrap){dotsWrap.appendChild(btn);}return btn;});
-	function go(i){slides[cur].classList.remove("is-active");if(dots[cur]){dots[cur].classList.remove("is-active");}cur=(i+slides.length)%slides.length;slides[cur].classList.add("is-active");if(dots[cur]){dots[cur].classList.add("is-active");}}
+	var reduceMotion=window.matchMedia?window.matchMedia("(prefers-reduced-motion: reduce)"):{matches:false};
+	var dots=slides.map(function(s,i){var btn=d.createElement("button");btn.type="button";btn.setAttribute("aria-label","Go to slide "+(i+1));if(i===0){btn.className="is-active";btn.setAttribute("aria-current","true");}btn.addEventListener("click",function(){go(i);reset();});if(dotsWrap){dotsWrap.appendChild(btn);}return btn;});
+	function go(i){slides[cur].classList.remove("is-active");if(dots[cur]){dots[cur].classList.remove("is-active");dots[cur].removeAttribute("aria-current");}cur=(i+slides.length)%slides.length;slides[cur].classList.add("is-active");if(dots[cur]){dots[cur].classList.add("is-active");dots[cur].setAttribute("aria-current","true");}}
 	function next(){go(cur+1);}function prev(){go(cur-1);}
 	var bn=root.querySelector("[data-slider-next]"),bp=root.querySelector("[data-slider-prev]");
 	if(bn){bn.addEventListener("click",function(){next();reset();});}
 	if(bp){bp.addEventListener("click",function(){prev();reset();});}
-	function start(){timer=window.setInterval(next,6500);}function reset(){window.clearInterval(timer);start();}
+	function start(){if(reduceMotion.matches){return;}window.clearInterval(timer);timer=window.setInterval(next,6500);}
+	function reset(){window.clearInterval(timer);start();}
 	root.addEventListener("mouseenter",function(){window.clearInterval(timer);});
 	root.addEventListener("mouseleave",start);
 	start();
