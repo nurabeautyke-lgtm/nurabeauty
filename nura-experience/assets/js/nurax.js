@@ -202,6 +202,36 @@ r(function(){
 	function closeM(){modal.hidden=true;modal.classList.remove("is-open");d.body.style.overflow="";}
 	[].slice.call(modal.querySelectorAll("[data-qv-close]")).forEach(function(x){x.addEventListener("click",closeM);});
 	d.addEventListener("keyup",function(e){if(e.key==="Escape"){closeM();}});
+	// Close Quick View whenever an add-to-cart succeeds (the site cart drawer then opens).
+	if(window.jQuery){window.jQuery(d.body).on("added_to_cart",function(){closeM();});}
+	// Quick View add-to-cart: the simple ajax button is handled by WooCommerce core; this
+	// handles the variation form (and any form-based add) -> AJAX add, then open the drawer.
+	body.addEventListener("submit",function(ev){
+		var form=ev.target.closest("form.cart");
+		if(!form){return;}
+		ev.preventDefault();
+		var isVar=form.classList.contains("variations_form");
+		var vidEl=form.querySelector("input[name=variation_id]");
+		if(isVar&&(!vidEl||!vidEl.value||vidEl.value==="0")){
+			var err=form.querySelector(".nura-qv-error");
+			if(!err){err=d.createElement("p");err.className="nura-qv-error";form.appendChild(err);}
+			err.textContent="Please choose the available options first.";
+			return;
+		}
+		var addBtn=form.querySelector("button.single_add_to_cart_button, button[name=add-to-cart]");
+		if(addBtn&&addBtn.classList.contains("disabled")){return;}
+		var fd=new FormData(form);
+		var pid=fd.get("add-to-cart")||(addBtn&&addBtn.value)||"";
+		if(pid&&!fd.get("product_id")){fd.append("product_id",pid);}
+		var ep=(window.wc_add_to_cart_params&&wc_add_to_cart_params.wc_ajax_url)?wc_add_to_cart_params.wc_ajax_url.replace("%%endpoint%%","add_to_cart"):"/?wc-ajax=add_to_cart";
+		if(addBtn){addBtn.classList.add("loading");}
+		fetch(ep,{method:"POST",body:fd,credentials:"same-origin"}).then(function(res){return res.json();}).then(function(data){
+			if(addBtn){addBtn.classList.remove("loading");}
+			if(!data||data.error){return;}
+			if(window.jQuery){window.jQuery(d.body).trigger("added_to_cart",[data.fragments,data.cart_hash]);}
+			else{closeM();d.dispatchEvent(new CustomEvent("nura:cartadded"));}
+		}).catch(function(){if(addBtn){addBtn.classList.remove("loading");}});
+	});
 	d.addEventListener("click",function(e){
 		var el=e.target;while(el&&el.nodeType!==1){el=el.parentNode;}
 		var btn=(el&&el.closest)?el.closest(".nura-qv"):null;
@@ -213,7 +243,7 @@ r(function(){
 		fetch(rest+"quickview?id="+encodeURIComponent(id)).then(function(res){return res.json();}).then(function(pr){
 			if(!pr||pr.error){body.innerHTML='<p style="padding:2rem">Sorry, this product could not be loaded.</p>';return;}
 			body.innerHTML='<div class="nura-qv-grid"><div class="nura-qv-media"><img src="'+pr.image+'" alt=""></div><div class="nura-qv-info"><h3>'+pr.title+'</h3><div class="nura-qv-price">'+(pr.price||"")+'</div><div class="nura-qv-desc">'+(pr.excerpt||"")+'</div><div class="nura-qv-actions">'+(pr.add||"")+'<a class="nura-btn nura-btn--ghost" href="'+pr.url+'">Full details</a></div></div></div>';
-			if(window.jQuery){window.jQuery(d.body).trigger("wc_fragment_refresh");}
+			if(window.jQuery){window.jQuery(d.body).trigger("wc_fragment_refresh");var $vf=window.jQuery(body).find("form.variations_form");if($vf.length&&$vf.wc_variation_form){try{$vf.wc_variation_form();$vf.trigger("check_variations");}catch(err){}}}
 		}).catch(function(){body.innerHTML='<p style="padding:2rem">Sorry, something went wrong.</p>';});
 	});
 });})();

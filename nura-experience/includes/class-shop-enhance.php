@@ -83,11 +83,22 @@ class NURAX_Shop_Enhance {
 				esc_html( $product->add_to_cart_text() )
 			);
 		} else {
-			$add = sprintf(
-				'<a href="%1$s" class="nura-btn nura-btn--gold">%2$s</a>',
-				esc_url( $product->get_permalink() ),
-				esc_html__( 'Choose options', 'nura-experience' )
-			);
+			// Render the real single-product add-to-cart area (including the variation
+			// form for variable products) so Quick View lets shoppers choose options in
+			// place instead of bouncing them to the product page.
+			$prev = isset( $GLOBALS['product'] ) ? $GLOBALS['product'] : null;
+			$GLOBALS['product'] = $product;
+			ob_start();
+			woocommerce_template_single_add_to_cart();
+			$add = trim( ob_get_clean() );
+			$GLOBALS['product'] = $prev;
+			if ( '' === $add ) {
+				$add = sprintf(
+					'<a href="%1$s" class="nura-btn nura-btn--gold">%2$s</a>',
+					esc_url( $product->get_permalink() ),
+					esc_html__( 'Choose options', 'nura-experience' )
+				);
+			}
 		}
 		return rest_ensure_response( array(
 			'id'      => $product->get_id(),
