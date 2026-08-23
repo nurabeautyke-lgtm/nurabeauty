@@ -3,7 +3,7 @@
  * Plugin Name:       NURA Experience
  * Plugin URI:        https://nura.co.ke
  * Description:       NURA's exclusive features: AI Wig Finder, Virtual Try-On, and The NURA Circle luxury client portal (order history, care schedule, warranty certificates, maintenance reminders, loyalty points, VIP membership), plus the NURA catalogue architecture, a catalogue-driven mega menu, mobile bottom navigation, a faceted shop experience and an upgraded product page. Requires WooCommerce.
- * Version:           1.18.0
+ * Version:           1.19.0
  * Author:            NURA - The House of Radiant Confidence
  * License:           GPL-2.0-or-later
  * Text Domain:       nura-experience
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NURAX_VERSION', '1.18.0' );
+define( 'NURAX_VERSION', '1.19.0' );
 define( 'NURAX_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NURAX_URL', plugin_dir_url( __FILE__ ) );
 
@@ -42,6 +42,11 @@ require_once NURAX_DIR . 'includes/class-nura-ai.php';
 require_once NURAX_DIR . 'includes/class-nura-whatsapp.php';
 require_once NURAX_DIR . 'includes/class-nura-whatsapp-bot.php';
 
+// Growth: marketing consent, abandoned-cart recovery, post-purchase follow-ups.
+require_once NURAX_DIR . 'includes/class-nura-consent.php';
+require_once NURAX_DIR . 'includes/class-nura-abandoned-cart.php';
+require_once NURAX_DIR . 'includes/class-nura-followup.php';
+
 /**
  * Boot.
  */
@@ -64,6 +69,12 @@ function nurax_init() {
 	// WhatsApp Cloud API webhook are configured; safe to load unconditionally.
 	NURAX_AI::instance();
 	new NURAX_WhatsApp_Bot();
+
+	// Growth modules. Each installs its own storage and stays dormant until
+	// enabled in its own settings screen (all OFF by default).
+	NURAX_Consent::instance()->boot();
+	NURAX_Abandoned_Cart::instance()->boot();
+	NURAX_Followup::instance()->boot();
 }
 add_action( 'plugins_loaded', 'nurax_init' );
 
