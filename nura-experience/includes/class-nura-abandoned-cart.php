@@ -52,6 +52,8 @@ final class NURAX_Abandoned_Cart {
 			'from_name'       => '',
 			'reply_to'        => '',
 			'whatsapp_handoff' => '',
+			'wa_template'     => '',
+			'wa_lang'         => 'en_US',
 		);
 	}
 
@@ -455,7 +457,16 @@ final class NURAX_Abandoned_Cart {
 				if ( ! $consent_ok ) {
 					$handled = true;
 				} else {
-					if ( NURAX_WhatsApp::send_text( $phone, $this->whatsapp_text( $row, $items, $stage, $s, $recover ) ) ) {
+					$sent_wa = false;
+					if ( '' !== (string) $s['wa_template'] ) {
+						// Business-initiated: an approved template delivers outside the 24h window.
+						$first   = $row->name ? strtok( (string) $row->name, ' ' ) : '';
+						$sent_wa = NURAX_WhatsApp::send_template( $phone, (string) $s['wa_template'], (string) $s['wa_lang'], array( $first, $recover ) );
+					} else {
+						// In-window free-form text (delivered only if the shopper messaged in the last 24h).
+						$sent_wa = NURAX_WhatsApp::send_text( $phone, $this->whatsapp_text( $row, $items, $stage, $s, $recover ) );
+					}
+					if ( $sent_wa ) {
 						$handled = true;
 					}
 				}
@@ -714,6 +725,11 @@ final class NURAX_Abandoned_Cart {
 		$out['from_name']       = sanitize_text_field( (string) ( $input['from_name'] ?? '' ) );
 		$out['reply_to']        = sanitize_email( (string) ( $input['reply_to'] ?? '' ) );
 		$out['whatsapp_handoff'] = preg_replace( '/[^0-9]/', '', (string) ( $input['whatsapp_handoff'] ?? '' ) );
+		$out['wa_template']      = preg_replace( '/[^a-z0-9_]/', '', strtolower( (string) ( $input['wa_template'] ?? '' ) ) );
+		$out['wa_lang']          = preg_replace( '/[^A-Za-z_]/', '', (string) ( $input['wa_lang'] ?? 'en_US' ) );
+		if ( '' === $out['wa_lang'] ) {
+			$out['wa_lang'] = 'en_US';
+		}
 		return $out;
 	}
 
@@ -785,6 +801,14 @@ final class NURAX_Abandoned_Cart {
 					<tr>
 						<th scope="row"><?php esc_html_e( 'WhatsApp handoff number', 'nura-experience' ); ?></th>
 						<td><input type="text" name="<?php echo esc_attr( $opt ); ?>[whatsapp_handoff]" value="<?php echo esc_attr( (string) $s['whatsapp_handoff'] ); ?>" /> <span class="description"><?php esc_html_e( 'Digits only, incl. country code, e.g. 254714994898. Shown as a "WhatsApp us" link in emails.', 'nura-experience' ); ?></span></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'WhatsApp template name', 'nura-experience' ); ?></th>
+						<td><input type="text" name="<?php echo esc_attr( $opt ); ?>[wa_template]" value="<?php echo esc_attr( (string) $s['wa_template'] ); ?>" /> <span class="description"><?php esc_html_e( 'Approved Meta template name. Required to send WhatsApp reminders outside WhatsApp\'s 24-hour window. Build the template with two body variables: {{1}} = first name, {{2}} = the recover-cart link. Leave blank to send free-form text (delivered only if the shopper messaged you in the last 24h).', 'nura-experience' ); ?></span></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'WhatsApp template language', 'nura-experience' ); ?></th>
+						<td><input type="text" name="<?php echo esc_attr( $opt ); ?>[wa_lang]" value="<?php echo esc_attr( (string) $s['wa_lang'] ); ?>" class="small-text" /> <span class="description"><?php esc_html_e( 'Template language code, e.g. en_US.', 'nura-experience' ); ?></span></td>
 					</tr>
 				</table>
 				<?php submit_button(); ?>

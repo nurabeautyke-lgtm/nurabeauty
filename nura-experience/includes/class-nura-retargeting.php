@@ -1,6 +1,6 @@
 <?php
 /**
- * Retargeting pixels for NURA.
+ * Retargeting pixels + server-side conversions for NURA.
  *
  * The honest answer to *anonymous* browse and cart abandonment: you cannot
  * email a signed-out visitor, but you can retarget them with ads. This module
@@ -13,6 +13,12 @@
  *   AddToCart / add_to_cart     - on the WooCommerce add-to-cart event
  *   InitiateCheckout / begin_checkout - checkout page
  *   Purchase / purchase        - order received (with value + contents)
+ *
+ * For accuracy against ad-blockers it can ALSO send the Purchase server-side
+ * via the Meta Conversions API (sharing the browser event id so Meta
+ * de-duplicates) and the GA4 Measurement Protocol (in which case the on-page
+ * GA4 purchase event is suppressed to avoid double counting). Server tokens are
+ * read only from wp-config.php / env, never the database.
  *
  * All tags are consent-gated (a lightweight cookie banner, overridable by any
  * consent plugin via the `nurax_retargeting_consent` filter) and the whole
@@ -30,6 +36,7 @@ final class NURAX_Retargeting {
 
 	const OPTION = 'nurax_retargeting';
 	const COOKIE = 'nurax_px_consent';
+	const GRAPH_VERSION = 'v21.0';
 
 	private static $instance = null;
 
@@ -52,6 +59,7 @@ final class NURAX_Retargeting {
 		}
 		add_action( 'wp_head', array( $this, 'print_base' ), 5 );
 		add_action( 'woocommerce_thankyou', array( $this, 'capture_purchase' ), 5, 1 );
+		add_action( 'woocommerce_thankyou', array( $this, 'send_server_purchase' ), 20, 1 );
 		add_action( 'wp_footer', array( $this, 'print_events' ), 20 );
 	}
 
@@ -64,6 +72,8 @@ final class NURAX_Retargeting {
 			'ga4_id'           => '',
 			'google_ads_id'    => '',
 			'ads_purchase_lbl' => '',
+			'capi_enabled'     => 0,
+			'ga4_mp_enabled'   => 0,
 			'require_consent'  => 1,
 			'consent_text'     => __( 'We use cookies to personalise content and ads. You can accept or decline advertising cookies.', 'nura-experience' ),
 		);
@@ -89,6 +99,8 @@ final class NURAX_Retargeting {
 		$out['ga4_id']           = preg_replace( '/[^A-Za-z0-9\-]/', '', (string) ( $input['ga4_id'] ?? '' ) );
 		$out['google_ads_id']    = preg_replace( '/[^A-Za-z0-9\-]/', '', (string) ( $input['google_ads_id'] ?? '' ) );
 		$out['ads_purchase_lbl'] = preg_replace( '/[^A-Za-z0-9\-_]/', '', (string) ( $input['ads_purchase_lbl'] ?? '' ) );
+		$out['capi_enabled']     = empty( $input['capi_enabled'] ) ? 0 : 1;
+		$out['ga4_mp_enabled']   = empty( $input['ga4_mp_enabled'] ) ? 0 : 1;
 		$out['require_consent']  = empty( $input['require_consent'] ) ? 0 : 1;
 		$out['consent_text']     = isset( $input['consent_text'] ) && '' !== trim( (string) $input['consent_text'] )
 			? sanitize_text_field( (string) $input['consent_text'] )
@@ -225,7 +237,8 @@ final class NURAX_Retargeting {
 				if ( $has_meta ) {
 					$js .= "fbq('track','Purchase',{value:" . $value . ",currency:'" . esc_js( $cur ) . "',content_type:'product',content_ids:" . wp_json_encode( $ids ) . "},{eventID:'nura-" . esc_js( $oid ) . "'});\n";
 				}
-				if ( $has_ga ) {
+				// Suppress the on-page GA4 purchase when it is sent server-side (dedup).
+				if ( $has_ga && ! $this->ga4_mp_active() ) {
 					$js .= "gtag('event','purchase',{transaction_id:'" . esc_js( $oid ) . "',value:" . $value . ",currency:'" . esc_js( $cur ) . "',items:" . wp_json_encode( $ga_items ) . "});\n";
 				}
 				if ( $has_ads && '' !== $s['ads_purchase_lbl'] ) {
@@ -284,6 +297,216 @@ final class NURAX_Retargeting {
 		<?php
 	}
 
+	/* --------------------------------------------------- server-side events */
+
+	/** Resolve a secret from env first, then a wp-config constant. Never the DB. */
+	private static function secret( string $name ): string {
+		$env = getenv( $name );
+		if ( is_string( $env ) && '' !== trim( $env ) ) {
+			return trim( $env );
+		}
+		if ( defined( $name ) ) {
+			$val = constant( $name );
+			if ( is_string( $val ) && '' !== trim( $val ) ) {
+				return trim( $val );
+			}
+		}
+		return '';
+	}
+
+	private function capi_token(): string {
+		$t = self::secret( 'META_CAPI_TOKEN' );
+		if ( '' === $t ) {
+			$t = self::secret( 'NURAX_CAPI_TOKEN' );
+		}
+		return $t;
+	}
+
+	private function ga4_mp_secret(): string {
+		$s = self::secret( 'GA4_MP_API_SECRET' );
+		if ( '' === $s ) {
+			$s = self::secret( 'NURAX_GA4_MP_SECRET' );
+		}
+		return $s;
+	}
+
+	/** Meta Conversions API is switched on and fully configured. */
+	public function capi_active(): bool {
+		$s = $this->settings();
+		return ! empty( $s['capi_enabled'] ) && '' !== $s['meta_pixel_id'] && '' !== $this->capi_token();
+	}
+
+	/** GA4 Measurement Protocol is switched on and fully configured. */
+	public function ga4_mp_active(): bool {
+		$s = $this->settings();
+		return ! empty( $s['ga4_mp_enabled'] ) && '' !== $s['ga4_id'] && '' !== $this->ga4_mp_secret();
+	}
+
+	private static function h( string $v ): string {
+		$v = strtolower( trim( $v ) );
+		return '' === $v ? '' : hash( 'sha256', $v );
+	}
+
+	/** GA4 client id from the _ga cookie, else a generated one. */
+	private function ga_client_id(): string {
+		if ( ! empty( $_COOKIE['_ga'] ) ) {
+			$parts = explode( '.', (string) $_COOKIE['_ga'] );
+			$n     = count( $parts );
+			if ( $n >= 2 ) {
+				return $parts[ $n - 2 ] . '.' . $parts[ $n - 1 ];
+			}
+		}
+		return (string) wp_rand( 1000000000, 2147483647 ) . '.' . time();
+	}
+
+	/**
+	 * Send the server-side Purchase to Meta CAPI and/or GA4 MP, once per order.
+	 * Shares the browser event id (nura-{order_id}) so Meta de-duplicates the
+	 * pixel and server events into one conversion.
+	 */
+	public function send_server_purchase( $order_id ): void {
+		$order_id = (int) $order_id;
+		if ( $order_id <= 0 || ! function_exists( 'wc_get_order' ) ) {
+			return;
+		}
+		if ( ! $this->capi_active() && ! $this->ga4_mp_active() ) {
+			return;
+		}
+		if ( ! $this->consent_ok() ) {
+			return;
+		}
+		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			return;
+		}
+		if ( 'yes' === (string) $order->get_meta( '_nurax_px_server_sent' ) ) {
+			return;
+		}
+		if ( $this->capi_active() ) {
+			$this->capi_send_purchase( $order );
+		}
+		if ( $this->ga4_mp_active() ) {
+			$this->ga4mp_send_purchase( $order );
+		}
+		$order->update_meta_data( '_nurax_px_server_sent', 'yes' );
+		$order->save();
+	}
+
+	private function capi_send_purchase( $order ): void {
+		$s     = $this->settings();
+		$pixel = $s['meta_pixel_id'];
+		$token = $this->capi_token();
+		$oid   = (string) $order->get_id();
+
+		$ids = array();
+		foreach ( $order->get_items() as $item ) {
+			if ( is_object( $item ) && method_exists( $item, 'get_product_id' ) ) {
+				$ids[] = (string) $item->get_product_id();
+			}
+		}
+
+		$user  = array();
+		$email = strtolower( trim( (string) $order->get_billing_email() ) );
+		if ( '' !== $email ) {
+			$user['em'] = array( self::h( $email ) );
+		}
+		$phone = preg_replace( '/[^0-9]/', '', (string) $order->get_billing_phone() );
+		if ( '' !== $phone ) {
+			$user['ph'] = array( self::h( $phone ) );
+		}
+		$fn = (string) $order->get_billing_first_name();
+		if ( '' !== $fn ) {
+			$user['fn'] = array( self::h( $fn ) );
+		}
+		$ln = (string) $order->get_billing_last_name();
+		if ( '' !== $ln ) {
+			$user['ln'] = array( self::h( $ln ) );
+		}
+		$ip = (string) $order->get_customer_ip_address();
+		if ( '' !== $ip ) {
+			$user['client_ip_address'] = $ip;
+		}
+		$ua = (string) $order->get_customer_user_agent();
+		if ( '' !== $ua ) {
+			$user['client_user_agent'] = $ua;
+		}
+
+		$event = array(
+			'event_name'       => 'Purchase',
+			'event_time'       => time(),
+			'event_id'         => 'nura-' . $oid,
+			'action_source'    => 'website',
+			'event_source_url' => $order->get_checkout_order_received_url(),
+			'user_data'        => $user,
+			'custom_data'      => array(
+				'currency'     => (string) $order->get_currency(),
+				'value'        => (float) $order->get_total(),
+				'content_type' => 'product',
+				'content_ids'  => $ids,
+			),
+		);
+
+		$body = array( 'data' => array( $event ) );
+		$test = self::secret( 'META_CAPI_TEST_CODE' );
+		if ( '' !== $test ) {
+			$body['test_event_code'] = $test;
+		}
+
+		$url = 'https://graph.facebook.com/' . self::GRAPH_VERSION . '/' . rawurlencode( $pixel ) . '/events?access_token=' . rawurlencode( $token );
+		wp_remote_post(
+			$url,
+			array(
+				'timeout' => 15,
+				'headers' => array( 'Content-Type' => 'application/json' ),
+				'body'    => wp_json_encode( $body ),
+			)
+		);
+	}
+
+	private function ga4mp_send_purchase( $order ): void {
+		$s      = $this->settings();
+		$mid    = $s['ga4_id'];
+		$secret = $this->ga4_mp_secret();
+		$oid    = (string) $order->get_id();
+
+		$items = array();
+		foreach ( $order->get_items() as $item ) {
+			if ( ! is_object( $item ) || ! method_exists( $item, 'get_product_id' ) ) {
+				continue;
+			}
+			$items[] = array(
+				'item_id'   => (string) $item->get_product_id(),
+				'item_name' => method_exists( $item, 'get_name' ) ? $item->get_name() : '',
+				'quantity'  => method_exists( $item, 'get_quantity' ) ? (int) $item->get_quantity() : 1,
+			);
+		}
+
+		$payload = array(
+			'client_id' => $this->ga_client_id(),
+			'events'    => array(
+				array(
+					'name'   => 'purchase',
+					'params' => array(
+						'transaction_id' => $oid,
+						'value'          => (float) $order->get_total(),
+						'currency'       => (string) $order->get_currency(),
+						'items'          => $items,
+					),
+				),
+			),
+		);
+
+		$url = 'https://www.google-analytics.com/mp/collect?measurement_id=' . rawurlencode( $mid ) . '&api_secret=' . rawurlencode( $secret );
+		wp_remote_post(
+			$url,
+			array(
+				'timeout' => 15,
+				'headers' => array( 'Content-Type' => 'application/json' ),
+				'body'    => wp_json_encode( $payload ),
+			)
+		);
+	}
+
 	/* ------------------------------------------------------------- admin page */
 
 	public function menu(): void {
@@ -339,6 +562,19 @@ final class NURAX_Retargeting {
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Consent bar text', 'nura-experience' ); ?></th>
 						<td><input type="text" name="<?php echo esc_attr( $opt ); ?>[consent_text]" value="<?php echo esc_attr( (string) $s['consent_text'] ); ?>" class="large-text" /></td>
+					</tr>
+					<tr>
+						<th scope="row" colspan="2" style="padding-bottom:0"><h2 style="margin:.4em 0"><?php esc_html_e( 'Server-side tracking (ad-blocker resilient)', 'nura-experience' ); ?></h2></th>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Meta Conversions API', 'nura-experience' ); ?></th>
+						<td><label><input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[capi_enabled]" value="1" <?php checked( ! empty( $s['capi_enabled'] ) ); ?> /> <?php esc_html_e( 'Also send purchases to Meta server-side', 'nura-experience' ); ?></label>
+						<p class="description"><?php echo wp_kses_post( sprintf( __( 'Needs the Meta Pixel ID above and an access token in wp-config.php: %1$s. It shares the browser event id so Meta de-duplicates the pixel and server events. Status: %2$s', 'nura-experience' ), '<code>define( \'META_CAPI_TOKEN\', \'...\' );</code>', ( $this->capi_active() ? '<strong style="color:#1f7a3d">' . esc_html__( 'active', 'nura-experience' ) . '</strong>' : '<strong style="color:#8a6d00">' . esc_html__( 'not active yet', 'nura-experience' ) . '</strong>' ) ) ); ?></p></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'GA4 Measurement Protocol', 'nura-experience' ); ?></th>
+						<td><label><input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[ga4_mp_enabled]" value="1" <?php checked( ! empty( $s['ga4_mp_enabled'] ) ); ?> /> <?php esc_html_e( 'Send purchases to GA4 server-side (the on-page GA4 purchase event is suppressed to avoid double counting)', 'nura-experience' ); ?></label>
+						<p class="description"><?php echo wp_kses_post( sprintf( __( 'Needs the GA4 ID above and an API secret in wp-config.php: %1$s. Status: %2$s', 'nura-experience' ), '<code>define( \'GA4_MP_API_SECRET\', \'...\' );</code>', ( $this->ga4_mp_active() ? '<strong style="color:#1f7a3d">' . esc_html__( 'active', 'nura-experience' ) . '</strong>' : '<strong style="color:#8a6d00">' . esc_html__( 'not active yet', 'nura-experience' ) . '</strong>' ) ) ); ?></p></td>
 					</tr>
 				</table>
 				<?php submit_button(); ?>

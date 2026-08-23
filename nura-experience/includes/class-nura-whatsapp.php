@@ -78,7 +78,8 @@ final class NURAX_WhatsApp {
 
 	/**
 	 * Send a plain-text WhatsApp message to a single recipient (in-window /
-	 * session messages). Business-initiated template sends are a later phase.
+	 * session messages only). For business-initiated sends OUTSIDE the 24-hour
+	 * customer-service window, use send_template() instead.
 	 */
 	public static function send_text( string $to, string $message ): bool {
 		$to = (string) preg_replace( '/[^0-9]/', '', $to );
@@ -96,6 +97,56 @@ final class NURAX_WhatsApp {
 				'preview_url' => false,
 				'body'        => $message,
 			),
+		);
+		return self::request( $payload );
+	}
+
+	/**
+	 * Send an approved WhatsApp message template. Unlike send_text(), a template
+	 * CAN be delivered business-initiated - outside the 24-hour customer-service
+	 * window - which is what proactive reminders (abandoned cart, follow-ups)
+	 * need. The template name, language and variable count must already be
+	 * approved in Meta; $body_params fills the body placeholders {{1}}, {{2}}...
+	 * in order.
+	 *
+	 * @param string            $to          Recipient phone (digits, incl. country code).
+	 * @param string            $template    Approved template name.
+	 * @param string            $lang        Template language code, e.g. "en_US".
+	 * @param array<int,string> $body_params Ordered body variable values.
+	 */
+	public static function send_template( string $to, string $template, string $lang = 'en_US', array $body_params = array() ): bool {
+		$to       = (string) preg_replace( '/[^0-9]/', '', $to );
+		$template = trim( $template );
+		if ( '' === $to || '' === $template ) {
+			return false;
+		}
+		if ( ! self::is_configured() ) {
+			return false;
+		}
+		$params = array();
+		foreach ( $body_params as $p ) {
+			$params[] = array(
+				'type' => 'text',
+				'text' => (string) $p,
+			);
+		}
+		$template_payload = array(
+			'name'     => $template,
+			'language' => array( 'code' => '' !== trim( $lang ) ? trim( $lang ) : 'en_US' ),
+		);
+		if ( ! empty( $params ) ) {
+			$template_payload['components'] = array(
+				array(
+					'type'       => 'body',
+					'parameters' => $params,
+				),
+			);
+		}
+		$payload = array(
+			'messaging_product' => 'whatsapp',
+			'to'                => $to,
+			'type'              => 'template',
+			'template'          => $template_payload,
 		);
 		return self::request( $payload );
 	}
