@@ -24,6 +24,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class NURAX_Product_Page {
 
+	/** Guard so the action-row CSS prints only once per page. */
+	private static $actions_css = false;
+
 	public function __construct() {
 		// Attribute spec strip inside the summary (after excerpt, before add-to-cart).
 		add_action( 'woocommerce_single_product_summary', array( $this, 'spec_strip' ), 25 );
@@ -42,6 +45,10 @@ class NURAX_Product_Page {
 
 		// One-click "add the full care set" bundle handler.
 		add_action( 'template_redirect', array( $this, 'handle_bundle' ) );
+
+		// Consolidated single-product action row (Try it on + Order on WhatsApp),
+		// rendered just after the add-to-cart button so both sit in a tidy row.
+		add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'secondary_actions' ), 20 );
 	}
 
 	/**
@@ -299,5 +306,83 @@ class NURAX_Product_Page {
 		}
 		wp_safe_redirect( wc_get_cart_url() );
 		exit;
+	}
+
+	/* ------------------------------------------------------------------ */
+	/* Single-product action row: Try it on + Order on WhatsApp            */
+	/* ------------------------------------------------------------------ */
+
+	/** Resolve the store WhatsApp number to digits (with a public fallback). */
+	private function whatsapp_number() {
+		$raw = '';
+		if ( class_exists( 'NURAX_Settings' ) ) {
+			$raw = (string) NURAX_Settings::get( 'whatsapp', '' );
+		}
+		if ( '' === $raw ) {
+			$raw = (string) get_theme_mod( 'nura_whatsapp', '' );
+		}
+		$digits = preg_replace( '/\D+/', '', $raw );
+		if ( '' === $digits ) {
+			$digits = '254714994898'; // NURA's public WhatsApp number.
+		}
+		if ( 0 === strpos( $digits, '0' ) ) {
+			$digits = '254' . substr( $digits, 1 );
+		}
+		/** Allow overriding the destination WhatsApp number (digits only). */
+		return preg_replace( '/\D+/', '', (string) apply_filters( 'nurax_whatsapp_number', $digits ) );
+	}
+
+	/** Render "Try it on" + "Order on WhatsApp" in one aligned row under add-to-cart. */
+	public function secondary_actions() {
+		global $product;
+		if ( ! $product instanceof WC_Product ) {
+			return;
+		}
+
+		$buttons = '';
+
+		// Try it on -> the Virtual Try-On page preloaded with this product.
+		$vto = get_page_by_path( 'virtual-try-on' );
+		if ( $vto ) {
+			$url      = add_query_arg( 'tryon', $product->get_id(), get_permalink( $vto->ID ) );
+			$buttons .= sprintf(
+				'<a class="nura-btn nura-btn--ghost nura-pdp-actions__btn" href="%s">%s</a>',
+				esc_url( $url ),
+				esc_html__( 'Try it on', 'nura-experience' )
+			);
+		}
+
+		// Order on WhatsApp -> prefilled message with the product name + link.
+		$num = $this->whatsapp_number();
+		if ( $num ) {
+			$msg = sprintf(
+				/* translators: 1: product name, 2: product URL */
+				__( "Hi NURA, I'd like to order the %1\$s (%2\$s). Is it available?", 'nura-experience' ),
+				$product->get_name(),
+				get_permalink( $product->get_id() )
+			);
+			$wa       = 'https://wa.me/' . $num . '?text=' . rawurlencode( $msg );
+			$buttons .= sprintf(
+				'<a class="nura-btn nura-btn--wa nura-pdp-actions__btn" href="%s" target="_blank" rel="noopener nofollow">%s</a>',
+				esc_url( $wa ),
+				esc_html__( 'Order on WhatsApp', 'nura-experience' )
+			);
+		}
+
+		if ( '' === $buttons ) {
+			return;
+		}
+
+		echo '<div class="nura-pdp-actions">' . $buttons . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_* helpers above.
+
+		if ( ! self::$actions_css ) {
+			self::$actions_css = true;
+			echo '<style>'
+				. '.nura-pdp-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0 0;clear:both;width:100%}'
+				. '.nura-pdp-actions__btn{flex:1 1 200px;display:inline-flex;align-items:center;justify-content:center;text-align:center;min-height:48px;padding:.7rem 1.2rem;border-radius:6px;text-decoration:none}'
+				. '.nura-btn--wa{background:#25D366;color:#0b3d24;border:1px solid #1da851;font-weight:700}'
+				. '.nura-btn--wa:hover{background:#1ebe5b}'
+				. '</style>';
+		}
 	}
 }

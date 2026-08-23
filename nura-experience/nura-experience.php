@@ -3,7 +3,7 @@
  * Plugin Name:       NURA Experience
  * Plugin URI:        https://nura.co.ke
  * Description:       NURA's exclusive features: AI Wig Finder, Virtual Try-On, and The NURA Circle luxury client portal (order history, care schedule, warranty certificates, maintenance reminders, loyalty points, VIP membership), plus the NURA catalogue architecture, a catalogue-driven mega menu, mobile bottom navigation, a faceted shop experience and an upgraded product page. Requires WooCommerce.
- * Version:           1.23.0
+ * Version:           1.24.0
  * Author:            NURA - The House of Radiant Confidence
  * License:           GPL-2.0-or-later
  * Text Domain:       nura-experience
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NURAX_VERSION', '1.23.0' );
+define( 'NURAX_VERSION', '1.24.0' );
 define( 'NURAX_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NURAX_URL', plugin_dir_url( __FILE__ ) );
 
@@ -52,6 +52,11 @@ require_once NURAX_DIR . 'includes/class-nura-retargeting.php';
 require_once NURAX_DIR . 'includes/class-nura-wig-quiz.php';
 require_once NURAX_DIR . 'includes/class-nura-trust.php';
 require_once NURAX_DIR . 'includes/class-nura-pages.php';
+
+// SEO structured data, safe security hardening, and performance wins.
+require_once NURAX_DIR . 'includes/class-nura-schema.php';
+require_once NURAX_DIR . 'includes/class-nura-security.php';
+require_once NURAX_DIR . 'includes/class-nura-perf.php';
 
 /**
  * Boot.
@@ -89,6 +94,11 @@ function nurax_init() {
 	new NURAX_Wig_Quiz();
 	NURAX_Trust::instance()->boot();
 	new NURAX_Pages();
+
+	// SEO structured data, safe security hardening, and performance wins.
+	new NURAX_Schema();
+	new NURAX_Security();
+	new NURAX_Perf();
 }
 add_action( 'plugins_loaded', 'nurax_init' );
 
