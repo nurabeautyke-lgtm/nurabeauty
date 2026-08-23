@@ -47,6 +47,23 @@
 		</nav>
 
 		<div class="nura-header-actions">
+			<?php
+			$nura_phone   = function_exists( 'nura_opt' ) ? nura_opt( 'nura_phone' ) : '';
+			$nura_wa_link = function_exists( 'nura_opt' ) ? nura_opt( 'nura_whatsapp' ) : '';
+			// Never render an empty contact affordance: fall back to the published number.
+			if ( ! $nura_phone && ! $nura_wa_link ) {
+				$nura_phone = '+254 714 994 898';
+			}
+			if ( $nura_phone || $nura_wa_link ) :
+				$nura_contact_href = $nura_phone ? 'tel:' . preg_replace( '/[^0-9+]/', '', $nura_phone ) : $nura_wa_link;
+				$nura_contact_ext  = $nura_phone ? '' : ' target="_blank" rel="noopener"';
+				$nura_contact_txt  = $nura_phone ? $nura_phone : __( 'Contact', 'nura-beauty' );
+			?>
+			<a class="nura-icon-btn nura-contact-link" href="<?php echo esc_url( $nura_contact_href ); ?>"<?php echo $nura_contact_ext; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> aria-label="<?php esc_attr_e( 'Contact NURA', 'nura-beauty' ); ?>">
+				<svg class="nura-contact-link__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.9.36 1.79.7 2.63a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.45-1.27a2 2 0 0 1 2.11-.45c.84.34 1.73.57 2.63.7A2 2 0 0 1 22 16.92z"/></svg>
+				<span class="nura-contact-link__txt"><?php echo esc_html( $nura_contact_txt ); ?></span>
+			</a>
+			<?php endif; ?>
 			<a class="nura-icon-btn nura-search-txt" href="<?php echo esc_url( add_query_arg( 'post_type', 'product', home_url( '/?s=' ) ) ); ?>" data-nura-search-open aria-label="<?php esc_attr_e( 'Search', 'nura-beauty' ); ?>"><?php esc_html_e( 'Search', 'nura-beauty' ); ?></a>
 			<?php if ( function_exists( 'nura_cart_button' ) ) { nura_cart_button(); } ?>
 		</div>

@@ -796,10 +796,91 @@ html { overflow-x: clip; }
 }
 
 @media (max-width: 768px) {
-	/* Clear the mobile bottom navigation, and keep the two buttons stacked. */
-	.nurax-stylist { right: 12px !important; bottom: 72px !important; }
-	.nura-wa { bottom: 140px !important; }
-	/* The mobile bar is narrower and the buttons sit above it, so a small
-	   right gutter is enough here. */
-	.nura-sticky-atc { padding-right: calc(var(--gutter, 18px) + 12px) !important; }
+	/* The mobile bottom nav already owns this strip, so the single-product
+	   sticky bar is redundant here and only collided with the nav - hide it. */
+	.nura-sticky-atc { display: none !important; }
+	/* Stack the launcher and WhatsApp FAB clearly above the bottom nav;
+	   env() keeps them clear of the iOS/Android home indicator. */
+	.nurax-stylist { right: 12px !important; bottom: calc(76px + env(safe-area-inset-bottom)) !important; }
+	.nura-wa { right: 12px !important; bottom: calc(144px + env(safe-area-inset-bottom)) !important; }
 }
+
+/* While the mobile drawer menu is open, hide the floating buttons so they never
+   sit on top of the drawer (the drawer is z-index:100, below the FABs). */
+body.nura-drawer-open .nura-wa,
+body.nura-drawer-open .nurax-stylist { display: none !important; }
+
+
+/* =========================================================================
+   NURA v1.26.0 : header contact affordance + homepage "Why NURA" value grid
+   + "Talk to NURA" contact section. Additive; reuses the theme's .section,
+   .nura-container, .nura-shead, .nura-eyebrow and .nura-btn helpers.
+   ========================================================================= */
+
+/* --- Header contact link (top-right, beside Search) --- */
+.nura-contact-link { display: inline-flex; align-items: center; gap: .45rem; white-space: nowrap; }
+.nura-contact-link__ic { width: 18px; height: 18px; flex: 0 0 auto; }
+.nura-contact-link__txt { font-family: var(--nura-font-ui, 'Jost', sans-serif); font-size: .82rem; letter-spacing: .02em; }
+@media (max-width: 900px) { .nura-contact-link__txt { display: none; } } /* icon-only on tablet/mobile */
+
+/* --- Homepage: "Why NURA" value grid --- */
+.nura-why__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+.nura-why__item {
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+	padding: 1.4rem 1.3rem;
+	background: #fff;
+	border: 1px solid rgba(201, 162, 75, .28);
+	border-radius: 14px;
+	text-align: left;
+}
+.nura-why__ic {
+	display: inline-flex;
+	width: 40px;
+	height: 40px;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: rgba(201, 162, 75, .12);
+	color: var(--nura-ux-gold);
+}
+.nura-why__ic svg { width: 22px; height: 22px; }
+.nura-why__t { font-family: var(--nura-font-display, 'Playfair Display', serif); font-size: 1.12rem; color: var(--nura-ux-ink); }
+.nura-why__d { color: #5a5147; font-size: .9rem; line-height: 1.55; }
+@media (max-width: 900px) { .nura-why__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .nura-why__grid { grid-template-columns: 1fr; } }
+
+/* --- Homepage: "Talk to NURA" contact grid --- */
+.nura-contact-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.6rem; }
+.nura-contact-card {
+	display: flex;
+	flex-direction: column;
+	gap: .35rem;
+	padding: 1.4rem 1.2rem;
+	background: #fff;
+	border: 1px solid rgba(201, 162, 75, .3);
+	border-radius: 14px;
+	text-decoration: none;
+	color: var(--nura-ux-ink);
+	transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+a.nura-contact-card:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(0, 0, 0, .1); border-color: var(--nura-ux-gold); }
+.nura-contact-card__ic {
+	display: inline-flex;
+	width: 42px;
+	height: 42px;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: rgba(201, 162, 75, .12);
+	color: var(--nura-ux-gold);
+	margin-bottom: .3rem;
+}
+.nura-contact-card__ic svg { width: 22px; height: 22px; }
+.nura-contact-card__k { font-family: var(--nura-font-ui, 'Jost', sans-serif); font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: var(--nura-ux-gold); }
+.nura-contact-card__v { font-family: var(--nura-font-display, 'Playfair Display', serif); font-size: 1.08rem; line-height: 1.25; word-break: break-word; }
+.nura-contact-card__cta { font-size: .82rem; color: #6a6058; }
+.nura-contact-note { margin: 1.4rem 0 0; text-align: center; font-size: .86rem; color: #6a6058; }
+@media (max-width: 900px) { .nura-contact-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .nura-contact-grid { grid-template-columns: 1fr; } }

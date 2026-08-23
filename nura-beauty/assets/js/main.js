@@ -16,13 +16,22 @@
 			onScroll();
 		}
 
-		// Mobile drawer.
-		var burger  = d.querySelector('[data-nura-drawer]');
+		// Mobile drawer. Bind EVERY trigger ([data-nura-drawer]) - both the header
+		// hamburger AND the mobile bottom-nav "Menu" button open it. (Previously
+		// only the first match was wired, so the bottom-nav Menu did nothing.)
+		var burgers = d.querySelectorAll('[data-nura-drawer]');
 		var panel   = d.querySelector('[data-nura-drawer-panel]');
 		var overlay = d.querySelector('[data-nura-overlay]');
-		function closeDrawer(){ if(panel){panel.classList.remove('is-open');panel.setAttribute('aria-hidden','true');} if(overlay){overlay.classList.remove('is-open');} }
-		function openDrawer(){ if(panel){panel.classList.add('is-open');panel.setAttribute('aria-hidden','false');} if(overlay){overlay.classList.add('is-open');} }
-		if (burger) { burger.addEventListener('click', openDrawer); }
+		function setExpanded(v){ [].forEach.call(burgers, function (b) { b.setAttribute('aria-expanded', v ? 'true' : 'false'); }); }
+		function closeDrawer(){ if(panel){panel.classList.remove('is-open');panel.setAttribute('aria-hidden','true');} if(overlay){overlay.classList.remove('is-open');} d.body.classList.remove('nura-drawer-open'); setExpanded(false); }
+		function openDrawer(){ if(panel){panel.classList.add('is-open');panel.setAttribute('aria-hidden','false');} if(overlay){overlay.classList.add('is-open');} d.body.classList.add('nura-drawer-open'); setExpanded(true); }
+		[].forEach.call(burgers, function (btn) {
+			btn.setAttribute('aria-expanded', 'false');
+			btn.addEventListener('click', function (e) {
+				e.preventDefault();
+				if (panel && panel.classList.contains('is-open')) { closeDrawer(); } else { openDrawer(); }
+			});
+		});
 		if (overlay) { overlay.addEventListener('click', closeDrawer); }
 		d.addEventListener('keyup', function (e) { if (e.key === 'Escape') { closeDrawer(); } });
 

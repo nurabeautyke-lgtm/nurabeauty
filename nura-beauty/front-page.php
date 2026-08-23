@@ -18,6 +18,15 @@ $shop_url   = function_exists( 'wc_get_page_id' ) ? get_permalink( wc_get_page_i
 $wa         = nura_opt( 'nura_whatsapp' );
 $finder_url = home_url( '/ai-wig-finder/' );
 
+// Contact details for the "Talk to NURA" section below. Customizer values win;
+// the published NURA details are a graceful fallback so the block is never empty.
+$nura_phone = nura_opt( 'nura_phone' );
+if ( ! $nura_phone ) { $nura_phone = '+254 714 994 898'; }
+$nura_email = nura_opt( 'nura_email' );
+if ( ! $nura_email ) { $nura_email = 'care@nura.co.ke'; }
+$nura_tel   = preg_replace( '/[^0-9+]/', '', $nura_phone );
+if ( ! $wa ) { $wa = 'https://wa.me/254714994898'; }
+
 /** Resolve a product-category URL by slug, with a safe shop fallback. */
 if ( ! function_exists( 'nura_home_cat_url' ) ) {
 	function nura_home_cat_url( $slug ) {
@@ -176,6 +185,58 @@ $slides = array(
 		</div>
 	</section>
 
+	<!-- WHY NURA (value propositions) -->
+	<section class="section section--ivory" id="why-nura">
+		<div class="nura-container">
+			<div class="nura-shead nura-reveal">
+				<p class="nura-eyebrow"><?php esc_html_e( 'Why NURA', 'nura-beauty' ); ?></p>
+				<h2><?php esc_html_e( 'The NURA promise', 'nura-beauty' ); ?></h2>
+				<p><?php esc_html_e( 'Premium hair, honest advice and a service that stays with you long after checkout.', 'nura-beauty' ); ?></p>
+			</div>
+			<?php
+			$nura_why = array(
+				array(
+					'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8l4 3 5-6 5 6 4-3-2 11H5L3 8z"/></svg>',
+					't'   => __( '100% Human Hair', 'nura-beauty' ),
+					'd'   => __( 'Premium human-hair and HD-lace units, quality-checked before they ship.', 'nura-beauty' ),
+				),
+				array(
+					'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h11v8H3z"/><path d="M14 10h4l3 3v2h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>',
+					't'   => __( 'Same-Day Nairobi', 'nura-beauty' ),
+					'd'   => __( 'Order before 2pm for same-day Nairobi delivery; 1-3 days countrywide.', 'nura-beauty' ),
+				),
+				array(
+					'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 9.5h19"/></svg>',
+					't'   => __( 'M-Pesa & Pay on Delivery', 'nura-beauty' ),
+					'd'   => __( 'Pay by M-Pesa, card or on delivery in Nairobi - whatever suits you.', 'nura-beauty' ),
+				),
+				array(
+					'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',
+					't'   => __( '6-Month Warranty', 'nura-beauty' ),
+					'd'   => __( 'Custom units are backed by up to a 6-month workmanship warranty.', 'nura-beauty' ),
+				),
+				array(
+					'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v11H8l-4 3z"/></svg>',
+					't'   => __( 'Free Consultation', 'nura-beauty' ),
+					'd'   => __( 'Not sure what suits you? Talk to a NURA stylist before you buy.', 'nura-beauty' ),
+				),
+				array(
+					'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+					't'   => __( 'Secure Checkout', 'nura-beauty' ),
+					'd'   => __( 'Your details are protected end to end on a secure, encrypted checkout.', 'nura-beauty' ),
+				),
+			);
+			echo '<div class="nura-why nura-reveal"><div class="nura-why__grid">';
+			foreach ( $nura_why as $w ) {
+				echo '<div class="nura-why__item"><span class="nura-why__ic" aria-hidden="true">' . $w['svg'] . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static trusted SVG
+				echo '<span class="nura-why__t">' . esc_html( $w['t'] ) . '</span>';
+				echo '<span class="nura-why__d">' . esc_html( $w['d'] ) . '</span></div>';
+			}
+			echo '</div></div>';
+			?>
+		</div>
+	</section>
+
 	<!-- SHOP BY WIG TYPE (discovery) -->
 	<section class="section" id="shop-by-type">
 		<div class="nura-container">
@@ -272,6 +333,44 @@ $slides = array(
 			<p style="margin-top:1.6rem">
 				<a class="nura-btn nura-btn--gold" href="<?php echo esc_url( home_url( '/services/' ) ); ?>"><?php esc_html_e( 'Explore NURA Services', 'nura-beauty' ); ?> &#8594;</a>
 			</p>
+		</div>
+	</section>
+
+	<!-- TALK TO NURA (contact) -->
+	<section class="section section--ivory" id="contact">
+		<div class="nura-container nura-reveal">
+			<div class="nura-shead">
+				<p class="nura-eyebrow"><?php esc_html_e( 'We are here to help', 'nura-beauty' ); ?></p>
+				<h2><?php esc_html_e( 'Talk to NURA', 'nura-beauty' ); ?></h2>
+				<p><?php esc_html_e( 'Questions about a unit, sizing or an order? Reach us any way you like.', 'nura-beauty' ); ?></p>
+			</div>
+			<div class="nura-contact-grid">
+				<a class="nura-contact-card" href="<?php echo esc_url( $wa ); ?>" target="_blank" rel="noopener">
+					<span class="nura-contact-card__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.2A8 8 0 1 1 20 11.5z"/></svg></span>
+					<span class="nura-contact-card__k"><?php esc_html_e( 'WhatsApp', 'nura-beauty' ); ?></span>
+					<span class="nura-contact-card__v"><?php echo esc_html( $nura_phone ); ?></span>
+					<span class="nura-contact-card__cta"><?php esc_html_e( 'Chat now', 'nura-beauty' ); ?> &#8594;</span>
+				</a>
+				<a class="nura-contact-card" href="tel:<?php echo esc_attr( $nura_tel ); ?>">
+					<span class="nura-contact-card__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.9.36 1.79.7 2.63a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.45-1.27a2 2 0 0 1 2.11-.45c.84.34 1.73.57 2.63.7A2 2 0 0 1 22 16.92z"/></svg></span>
+					<span class="nura-contact-card__k"><?php esc_html_e( 'Call', 'nura-beauty' ); ?></span>
+					<span class="nura-contact-card__v"><?php echo esc_html( $nura_phone ); ?></span>
+					<span class="nura-contact-card__cta"><?php esc_html_e( 'Mon - Sat, 9 - 18', 'nura-beauty' ); ?></span>
+				</a>
+				<a class="nura-contact-card" href="mailto:<?php echo esc_attr( $nura_email ); ?>">
+					<span class="nura-contact-card__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+					<span class="nura-contact-card__k"><?php esc_html_e( 'Email', 'nura-beauty' ); ?></span>
+					<span class="nura-contact-card__v"><?php echo esc_html( $nura_email ); ?></span>
+					<span class="nura-contact-card__cta"><?php esc_html_e( 'We reply within a day', 'nura-beauty' ); ?></span>
+				</a>
+				<div class="nura-contact-card nura-contact-card--static">
+					<span class="nura-contact-card__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg></span>
+					<span class="nura-contact-card__k"><?php esc_html_e( 'Studio', 'nura-beauty' ); ?></span>
+					<span class="nura-contact-card__v"><?php esc_html_e( 'Nairobi, Kenya', 'nura-beauty' ); ?></span>
+					<span class="nura-contact-card__cta"><?php esc_html_e( 'Visits by appointment', 'nura-beauty' ); ?></span>
+				</div>
+			</div>
+			<p class="nura-contact-note"><?php esc_html_e( 'Same-day delivery in Nairobi (order before 2pm) - Kenya-wide in 1-3 days - Worldwide shipping available.', 'nura-beauty' ); ?></p>
 		</div>
 	</section>
 
