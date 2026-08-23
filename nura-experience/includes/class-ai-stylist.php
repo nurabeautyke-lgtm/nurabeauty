@@ -104,6 +104,17 @@ class NURAX_AI_Stylist {
 		$last      = end( $clean );
 		$last_text = isset( $last['content'] ) ? $last['content'] : '';
 
+		// Prefer the multi-provider NURA AI brain (Gemini / Groq / OpenAI, keys
+		// in wp-config) when it is enabled and available. Any miss falls through
+		// to the legacy path below, so the widget never regresses.
+		if ( class_exists( 'NURAX_AI' ) && NURAX_AI::instance()->is_enabled() ) {
+			$history = array_slice( $clean, 0, -1 );
+			$out     = NURAX_AI::instance()->handle_message( $last_text, $history, array(), 'web', true );
+			if ( ! empty( $out['ok'] ) && '' !== trim( (string) $out['reply'] ) ) {
+				return rest_ensure_response( array( 'reply' => (string) $out['reply'], 'products' => $this->suggest_products( $last_text ) ) );
+			}
+		}
+
 		if ( ! self::has_ai() ) {
 			return rest_ensure_response( $this->guided( $last_text ) );
 		}
