@@ -210,21 +210,6 @@ $slides = array(
 					't'   => __( 'M-Pesa & Pay on Delivery', 'nura-beauty' ),
 					'd'   => __( 'Pay by M-Pesa, card or on delivery in Nairobi - whatever suits you.', 'nura-beauty' ),
 				),
-				array(
-					'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',
-					't'   => __( '6-Month Warranty', 'nura-beauty' ),
-					'd'   => __( 'Custom units are backed by up to a 6-month workmanship warranty.', 'nura-beauty' ),
-				),
-				array(
-					'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v11H8l-4 3z"/></svg>',
-					't'   => __( 'Free Consultation', 'nura-beauty' ),
-					'd'   => __( 'Not sure what suits you? Talk to a NURA stylist before you buy.', 'nura-beauty' ),
-				),
-				array(
-					'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
-					't'   => __( 'Secure Checkout', 'nura-beauty' ),
-					'd'   => __( 'Your details are protected end to end on a secure, encrypted checkout.', 'nura-beauty' ),
-				),
 			);
 			echo '<div class="nura-why nura-reveal"><div class="nura-why__grid">';
 			foreach ( $nura_why as $w ) {

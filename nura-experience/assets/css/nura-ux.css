@@ -38,8 +38,8 @@
 .nura-mega__panel {
 	position: absolute;
 	top: 100%;
-	left: 50%;
-	transform: translateX(-50%) translateY(8px);
+	left: 0;
+	transform: translateY(8px);
 	min-width: 620px;
 	background: #fff;
 	border-top: 2px solid var(--nura-ux-gold);
@@ -55,7 +55,7 @@
 .nura-mega__item:focus-within > .nura-mega__panel {
 	opacity: 1;
 	visibility: visible;
-	transform: translateX(-50%) translateY(0);
+	transform: translateY(0);
 }
 .nura-mega__cols {
 	display: grid;

@@ -67,96 +67,54 @@ class NURAX_Mega_Menu {
 		$shop = self::shop_url();
 
 		return array(
-			'Wigs' => array(
-				'url'     => self::cat_url( 'wigs' ),
+			'Home' => array(
+				'url' => home_url( '/' ),
+			),
+			'Shop' => array(
+				'url'     => $shop,
 				'columns' => array(
-					'By Construction' => array(
+					'Wigs' => array(
 						'Lace Front Wigs' => self::cat_url( 'lace-front-wigs' ),
 						'HD Lace Wigs'    => self::cat_url( 'hd-lace-wigs' ),
 						'Glueless Wigs'   => self::cat_url( 'glueless-wigs' ),
 						'Closure Wigs'    => self::cat_url( 'closure-wigs' ),
-						'360 Lace Wigs'   => self::cat_url( '360-lace-wigs' ),
-						'Full Lace Wigs'  => self::cat_url( 'full-lace-wigs' ),
-						'Headband Wigs'   => self::cat_url( 'headband-wigs' ),
+						'Human Hair Wigs' => self::cat_url( 'human-hair-wigs' ),
+						'Shop All Wigs'   => self::cat_url( 'wigs' ),
 					),
-					'By Hair Type' => array(
-						'Human Hair Wigs'  => self::cat_url( 'human-hair-wigs' ),
-						'Human Hair Blend' => self::cat_url( 'human-hair-blend-wigs' ),
-						'Synthetic Wigs'   => self::cat_url( 'synthetic-wigs' ),
-						'Heat-Friendly'    => self::cat_url( 'heat-friendly-wigs' ),
+					'Hair & Extensions' => array(
+						'Bundles'             => self::cat_url( 'bundles' ),
+						'Closures'            => self::cat_url( 'closures' ),
+						'Frontals'            => self::cat_url( 'frontals' ),
+						'Clip-In Extensions'  => self::cat_url( 'clip-in-extensions' ),
+						'Ponytail Extensions' => self::cat_url( 'ponytail-extensions' ),
 					),
-					'By Texture' => array(
-						'Straight'   => self::cat_url( 'straight-wigs' ),
-						'Body Wave'  => self::cat_url( 'body-wave-wigs' ),
-						'Loose Wave' => self::cat_url( 'loose-wave-wigs' ),
-						'Water Wave' => self::cat_url( 'water-wave-wigs' ),
-						'Curly'      => self::cat_url( 'curly-wigs' ),
-						'Kinky'      => self::cat_url( 'kinky-wigs' ),
-						'Afro'       => self::cat_url( 'afro-wigs' ),
+					'Wig Care' => array(
+						'Shampoo & Conditioner' => self::cat_url( 'wig-care' ),
+						'Treatments'            => self::cat_url( 'treatments' ),
+						'Styling Products'      => self::cat_url( 'styling-products' ),
+						'Wig Care Kits'         => self::cat_url( 'wig-care-kits' ),
+						'Accessories'           => self::cat_url( 'accessories' ),
 					),
-					'By Style' => array(
-						'Bob Wigs'     => self::cat_url( 'bob-wigs' ),
-						'Pixie Wigs'   => self::cat_url( 'pixie-wigs' ),
-						'Bridal Wigs'  => self::cat_url( 'bridal-wigs' ),
-						'Shop All Wigs' => self::cat_url( 'wigs' ),
+					'Beauty & Offers' => array(
+						'Beauty'       => self::cat_url( 'beauty' ),
+						'Makeup Tools' => self::cat_url( 'makeup-tools' ),
+						'New In'       => add_query_arg( 'orderby', 'date', $shop ),
+						'On Sale'      => self::cat_url( 'sale' ),
 					),
-				),
-			),
-			'Hair & Extensions' => array(
-				'url'   => self::cat_url( 'hair-extensions' ),
-				'links' => array(
-					'Bundles'             => self::cat_url( 'bundles' ),
-					'Closures'            => self::cat_url( 'closures' ),
-					'Frontals'            => self::cat_url( 'frontals' ),
-					'Clip-In Extensions'  => self::cat_url( 'clip-in-extensions' ),
-					'Tape-In Extensions'  => self::cat_url( 'tape-in-extensions' ),
-					'Ponytail Extensions' => self::cat_url( 'ponytail-extensions' ),
-					'Braiding Hair'       => self::cat_url( 'braiding-hair' ),
-				),
-			),
-			'Beauty' => array(
-				'url'   => self::cat_url( 'beauty' ),
-				'links' => array(
-					'Face'        => self::cat_url( 'face' ),
-					'Eyes'        => self::cat_url( 'eyes' ),
-					'Lips'        => self::cat_url( 'lips' ),
-					'Cheeks'      => self::cat_url( 'cheeks' ),
-					'Makeup Tools' => self::cat_url( 'makeup-tools' ),
-					'Sets'        => self::cat_url( 'sets' ),
-				),
-			),
-			'Wig Care' => array(
-				'url'   => self::cat_url( 'wig-care' ),
-				'links' => array(
-					'Shampoo'          => self::cat_url( 'shampoo' ),
-					'Conditioner'      => self::cat_url( 'conditioner' ),
-					'Treatments'       => self::cat_url( 'treatments' ),
-					'Styling Products' => self::cat_url( 'styling-products' ),
-					'Maintenance'      => self::cat_url( 'maintenance' ),
-					'Wig Care Kits'    => self::cat_url( 'wig-care-kits' ),
-					'Accessories'      => self::cat_url( 'accessories' ),
 				),
 			),
 			'Services' => array(
-				'url'   => self::cat_url( 'services' ),
+				'url'   => self::page_url( 'services' ),
 				'links' => array(
-					'Installation'     => self::cat_url( 'installation' ),
-					'Wig Revamp'       => self::cat_url( 'wig-revamp' ),
-					'Wig Repair'       => self::cat_url( 'wig-repair' ),
-					'Wig Colouring'    => self::cat_url( 'wig-colouring' ),
-					'Restyling'        => self::cat_url( 'restyling' ),
-					'Consultation'     => self::cat_url( 'consultation' ),
+					'Installation'      => self::cat_url( 'installation' ),
+					'Wig Revamp'        => self::cat_url( 'wig-revamp' ),
+					'Restyling'         => self::cat_url( 'restyling' ),
+					'Consultation'      => self::cat_url( 'consultation' ),
 					'Custom Wig Making' => self::cat_url( 'custom-wig-making' ),
-					'Bridal Hair'      => self::cat_url( 'bridal-hair' ),
+					'Bridal Hair'       => self::cat_url( 'bridal-hair' ),
 				),
 			),
-			'New In' => array(
-				'url' => add_query_arg( 'orderby', 'date', $shop ),
-			),
-			'Sale' => array(
-				'url' => self::cat_url( 'sale' ),
-			),
-			'NURA' => array(
+			'About' => array(
 				'url'   => self::page_url( 'about-us' ),
 				'links' => array(
 					'About NURA'      => self::page_url( 'about-us' ),
@@ -164,8 +122,13 @@ class NURAX_Mega_Menu {
 					'Virtual Try-On'  => self::page_url( 'virtual-try-on' ),
 					'The NURA Circle' => self::page_url( 'nura-circle' ),
 					'NURA Journal'    => self::page_url( 'journal' ),
-					'Contact'         => self::page_url( 'contact-us' ),
 				),
+			),
+			'Book Appointment' => array(
+				'url' => self::page_url( 'book-appointment' ),
+			),
+			'Contact' => array(
+				'url' => self::page_url( 'contact-us' ),
 			),
 		);
 	}
@@ -183,10 +146,15 @@ class NURAX_Mega_Menu {
 			return $output;
 		}
 
-		// If the owner has assigned a real menu to this location, don't override it.
-		$locations = get_nav_menu_locations();
-		if ( ! empty( $locations[ $location ] ) ) {
-			return $output;
+		// The built-in NURA mega menu is the canonical navigation. It renders
+		// even when a menu is assigned under Appearance -> Menus. To fall back to
+		// an assigned WordPress menu instead, disable it with:
+		//   add_filter( 'nurax_use_code_menu', '__return_false' );
+		if ( ! apply_filters( 'nurax_use_code_menu', true, $location ) ) {
+			$locations = get_nav_menu_locations();
+			if ( ! empty( $locations[ $location ] ) ) {
+				return $output;
+			}
 		}
 
 		return ( 'mobile' === $location ) ? $this->render_mobile() : $this->render_desktop();
