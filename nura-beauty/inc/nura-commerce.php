@@ -38,8 +38,8 @@ if ( ! function_exists( 'nura_payment_methods' ) ) {
 				$title = trim( wp_strip_all_tags( (string) $gw->get_title() ) );
 				if ( false !== strpos( $id, 'mpesa' ) || false !== stripos( $title, 'mpesa' ) || false !== stripos( $title, 'm-pesa' ) ) {
 					$label = __( 'M-Pesa', 'nura-beauty' );
-				} elseif ( 'cod' === $id || false !== stripos( $title, 'on delivery' ) ) {
-					$label = __( 'Pay on Delivery', 'nura-beauty' );
+				} elseif ( 'cod' === $id || false !== stripos( $title, 'on delivery' ) || false !== stripos( $title, 'cash' ) ) {
+					$label = __( 'Cash on Delivery', 'nura-beauty' );
 				} elseif ( 'bacs' === $id || false !== stripos( $title, 'bank' ) ) {
 					$label = __( 'Bank Transfer', 'nura-beauty' );
 				} elseif ( false !== strpos( $id, 'paypal' ) || false !== strpos( $id, 'ppcp' ) ) {
@@ -51,6 +51,15 @@ if ( ! function_exists( 'nura_payment_methods' ) ) {
 				}
 				$labels[ $label ] = $label;
 			}
+		}
+		if ( empty( $labels ) ) {
+			// Curated NURA payment options shown until the real gateways are switched
+			// on in WooCommerce (the M-Pesa Till is still being processed).
+			return array(
+				__( 'M-Pesa', 'nura-beauty' ),
+				__( 'Cash on Delivery', 'nura-beauty' ),
+				__( 'Bank Transfer', 'nura-beauty' ),
+			);
 		}
 		return array_values( $labels );
 	}

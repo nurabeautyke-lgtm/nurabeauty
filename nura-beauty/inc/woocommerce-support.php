@@ -201,7 +201,11 @@ function nura_trust_strip() {
 		$items[] = $hair;
 	}
 	$items[] = __( 'Same-day delivery in Nairobi', 'nura-beauty' );
-	$items[] = __( 'Pay with M-Pesa, card or on delivery', 'nura-beauty' );
+	$nura_pay = function_exists( 'nura_payment_summary' )
+		? nura_payment_summary( __( 'M-Pesa, Cash on Delivery & Bank Transfer', 'nura-beauty' ) )
+		: __( 'M-Pesa, Cash on Delivery & Bank Transfer', 'nura-beauty' );
+	/* translators: %s: list of accepted payment methods */
+	$items[] = sprintf( __( 'Pay with %s', 'nura-beauty' ), $nura_pay );
 	$items[] = __( 'Free virtual wig consultation', 'nura-beauty' );
 	echo '<ul class="nura-trust">';
 	foreach ( $items as $item ) {
@@ -355,4 +359,72 @@ function nura_complete_the_look() {
 	echo '</section>';
 	wp_reset_postdata();
 	$GLOBALS['product'] = $main_product; // Restore for any later single-product hooks.
+}
+
+
+/* ================= NURA v1.17.0 : AJAX cart drawer ================= */
+
+/**
+ * Load WooCommerce's cart-fragment + variation scripts site-wide so the slide-in
+ * cart drawer, the live header count and Quick View variation forms work on every
+ * page (home rails, category, single product).
+ */
+add_action( 'wp_enqueue_scripts', function () {
+	if ( is_admin() || ! class_exists( 'WooCommerce' ) ) {
+		return;
+	}
+	wp_enqueue_script( 'wc-add-to-cart' );
+	wp_enqueue_script( 'wc-cart-fragments' );
+	wp_enqueue_script( 'wc-add-to-cart-variation' );
+}, 20 );
+
+// We provide our own drawer CTAs (Proceed to checkout / Continue shopping), so
+// drop the default mini-cart buttons to avoid duplicates.
+add_action( 'wp_loaded', function () {
+	remove_action( 'woocommerce_widget_shopping_cart_buttons', 'woocommerce_widget_shopping_cart_button_view_cart', 10 );
+	remove_action( 'woocommerce_widget_shopping_cart_buttons', 'woocommerce_widget_shopping_cart_proceed_to_checkout', 20 );
+} );
+
+// Keep the drawer's mini-cart body fresh through WooCommerce's fragment system.
+add_filter( 'woocommerce_add_to_cart_fragments', function ( $fragments ) {
+	if ( ! function_exists( 'woocommerce_mini_cart' ) ) {
+		return $fragments;
+	}
+	ob_start();
+	echo '<div class="widget_shopping_cart_content">';
+	woocommerce_mini_cart();
+	echo '</div>';
+	$fragments['div.widget_shopping_cart_content'] = ob_get_clean();
+	return $fragments;
+} );
+
+/**
+ * Render the slide-in cart drawer once, in the footer. Opens on add-to-cart from
+ * anywhere (see assets/js/main.js); the inner .widget_shopping_cart_content is a
+ * WooCommerce fragment so it refreshes live without a reload.
+ */
+add_action( 'wp_footer', 'nura_cart_drawer' );
+function nura_cart_drawer() {
+	if ( is_admin() || ! class_exists( 'WooCommerce' ) || ! function_exists( 'woocommerce_mini_cart' ) ) {
+		return;
+	}
+	if ( function_exists( 'is_checkout' ) && is_checkout() ) {
+		return; // Don't overlay the checkout itself.
+	}
+	?>
+	<div class="nura-cart-overlay" data-nura-cart-overlay></div>
+	<aside class="nura-cartdrawer" data-nura-cartdrawer aria-hidden="true" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Shopping cart', 'nura-beauty' ); ?>">
+		<div class="nura-cartdrawer__head">
+			<span class="nura-cartdrawer__title"><?php esc_html_e( 'Your Cart', 'nura-beauty' ); ?></span>
+			<button type="button" class="nura-cartdrawer__close" data-nura-cart-close aria-label="<?php esc_attr_e( 'Close cart', 'nura-beauty' ); ?>">&times;</button>
+		</div>
+		<div class="nura-cartdrawer__body">
+			<div class="widget_shopping_cart_content"><?php woocommerce_mini_cart(); ?></div>
+		</div>
+		<div class="nura-cartdrawer__foot">
+			<a class="nura-btn nura-btn--gold nura-cartdrawer__checkout" href="<?php echo esc_url( wc_get_checkout_url() ); ?>"><?php esc_html_e( 'Proceed to checkout', 'nura-beauty' ); ?></a>
+			<button type="button" class="nura-btn nura-btn--ghost" data-nura-cart-close><?php esc_html_e( 'Continue shopping', 'nura-beauty' ); ?></button>
+		</div>
+	</aside>
+	<?php
 }

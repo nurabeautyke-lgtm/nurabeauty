@@ -448,3 +448,64 @@ a:focus-visible,button:focus-visible,.nura-btn:focus-visible,input:focus-visible
 .nura-cat-intro__inner p{margin:0 0 .7em}
 .nura-cat-intro__inner p:last-child{margin-bottom:0}
 .nura-cat-intro__inner a{color:var(--nura-gold);text-decoration:underline}
+
+
+/* ==================================================================
+   NURA v1.17.0 - punch-list fixes (rails, cart icon, footer, drawer,
+   Quick View add-to-cart)
+   ================================================================== */
+
+/* #6 + #10 Product rails: 4 across on desktop (so a 10-item rail overflows and
+   the prev/next arrows actually have room to scroll), 3 on tablet, and exactly
+   2 full products on mobile (was ~1.5 at 64vw). */
+@media(min-width:1025px){.nura-rail .woocommerce ul.products li.product,.nura-rail ul.products li.product{flex:0 0 calc((100% - 3 * clamp(14px,2vw,26px)) / 4)!important}}
+@media(min-width:641px) and (max-width:1024px){.nura-rail .woocommerce ul.products li.product,.nura-rail ul.products li.product{flex:0 0 calc((100% - 2 * clamp(14px,2vw,26px)) / 3)!important}}
+@media(max-width:640px){.nura-rail .woocommerce ul.products li.product,.nura-rail ul.products li.product{flex:0 0 calc((100% - clamp(14px,2vw,26px)) / 2)!important}}
+
+/* #9 Header cart: make the bag icon actually visible + tidy the count badge. */
+.nura-cart-btn{color:var(--nura-ink)}
+.nura-cart-btn:hover{color:var(--nura-gold)}
+.nura-cart-btn .nura-cart-icon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;color:currentColor}
+.nura-cart-btn .nura-cart-icon svg{display:block;width:22px;height:22px}
+.nura-cart-btn .nura-cart-count{position:absolute;top:-7px;right:-10px;min-width:18px;height:18px;font-size:.62rem;box-shadow:0 0 0 2px var(--nura-white)}
+.nura-cart-btn .nura-cart-count[data-count="0"]{display:none}
+
+/* #4 Footer: top-align every column so a longer one no longer drags the row down,
+   and style the contact block now living in the brand column. */
+.nura-foot-grid{align-items:start}
+.nura-foot-contact{list-style:none;margin:.2rem 0 1.4rem;padding:0;line-height:2;font-size:.9rem}
+.nura-foot-contact a{color:rgba(243,233,220,.8)}
+.nura-foot-contact li:last-child{color:rgba(243,233,220,.6)}
+
+/* #8 Slide-in AJAX cart drawer */
+.nura-cart-overlay{position:fixed;inset:0;background:rgba(14,14,14,.5);z-index:1300;opacity:0;visibility:hidden;transition:opacity .3s var(--ease)}
+.nura-cart-overlay.is-open{opacity:1;visibility:visible}
+.nura-cartdrawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,92vw);background:#fff;color:var(--nura-ink);z-index:1310;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .34s var(--ease);box-shadow:-20px 0 50px rgba(14,14,14,.22)}
+.nura-cartdrawer.is-open{transform:none}
+.nura-cartdrawer__head{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.3rem;border-bottom:1px solid var(--nura-line)}
+.nura-cartdrawer__title{font-family:var(--font-display);font-size:1.35rem;color:var(--nura-ink);margin:0}
+.nura-cartdrawer__close{background:none;border:0;font-size:1.9rem;line-height:1;cursor:pointer;color:var(--nura-ink)}
+.nura-cartdrawer__body{flex:1 1 auto;overflow-y:auto;padding:1.1rem 1.3rem}
+.nura-cartdrawer__foot{border-top:1px solid var(--nura-line);padding:1.1rem 1.3rem;display:flex;flex-direction:column;gap:.7rem}
+.nura-cartdrawer__foot .nura-btn{width:100%}
+body.nura-cart-open{overflow:hidden}
+.nura-cartdrawer .widget_shopping_cart_content{font-family:var(--font-ui)}
+.nura-cartdrawer ul.woocommerce-mini-cart{list-style:none;margin:0;padding:0}
+.nura-cartdrawer .woocommerce-mini-cart-item{display:flex;gap:.85rem;align-items:flex-start;padding:.85rem 0;border-bottom:1px solid var(--nura-line);position:relative}
+.nura-cartdrawer .woocommerce-mini-cart-item a:not(.remove){color:var(--nura-ink);font-family:var(--font-editorial);font-size:1.02rem}
+.nura-cartdrawer .woocommerce-mini-cart-item img{width:58px;height:auto;order:-1;border-radius:2px}
+.nura-cartdrawer .woocommerce-mini-cart-item a.remove{position:absolute;top:.7rem;right:0;color:var(--nura-muted)!important}
+.nura-cartdrawer .woocommerce-mini-cart__total{display:flex;justify-content:space-between;align-items:baseline;margin:1rem 0 .2rem;font-size:1rem}
+.nura-cartdrawer .woocommerce-mini-cart__total .amount{color:var(--nura-gold);font-weight:600}
+.nura-cartdrawer .woocommerce-mini-cart__empty-message{font-family:var(--font-editorial);font-size:1.1rem;color:var(--nura-muted);text-align:center;padding:2.2rem 0}
+.nura-cartdrawer .buttons{display:none}
+@media(max-width:560px){.nura-cartdrawer{width:100vw}}
+
+/* #7 Quick View add-to-cart / variation form */
+[data-qv-body] .variations_form{width:100%;margin-top:.4rem}
+[data-qv-body] .variations{width:100%}
+[data-qv-body] .variations td,[data-qv-body] .variations th{padding:.3rem 0}
+[data-qv-body] .variations select{min-height:44px;width:100%;border:1px solid rgba(0,0,0,.18);border-radius:2px;padding:.4rem .6rem;font-family:var(--font-ui)}
+[data-qv-body] .single_variation .price{color:var(--nura-gold);font-family:var(--font-ui);font-size:1.2rem;margin:.4rem 0}
+[data-qv-body] .single_add_to_cart_button{margin-top:.6rem}
+[data-qv-body] .nura-qv-error{color:#a33;font-family:var(--font-ui);font-size:.8rem;margin:.4rem 0 0}

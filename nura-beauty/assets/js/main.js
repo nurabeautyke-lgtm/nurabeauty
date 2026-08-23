@@ -270,3 +270,100 @@ r(function(){var form=d.querySelector("[data-nura-book]");if(!form){return;}
 		timer=setTimeout(function(){run(q);},220);
 	});
 })();
+
+/* ===== NURA v1.17.0 - AJAX cart drawer + variable quick-add routing ===== */
+(function(){
+	var d=document;
+	function ready(f){if(d.readyState!=="loading"){f();}else{d.addEventListener("DOMContentLoaded",f);}}
+	function wcAjax(ep){
+		if(window.wc_add_to_cart_params&&wc_add_to_cart_params.wc_ajax_url){
+			return wc_add_to_cart_params.wc_ajax_url.replace("%%endpoint%%",ep);
+		}
+		return "/?wc-ajax="+ep;
+	}
+	ready(function(){
+		var drawer=d.querySelector("[data-nura-cartdrawer]");
+		var overlay=d.querySelector("[data-nura-cart-overlay]");
+		function openCart(){if(!drawer){return;}drawer.classList.add("is-open");drawer.setAttribute("aria-hidden","false");if(overlay){overlay.classList.add("is-open");}d.body.classList.add("nura-cart-open");}
+		function closeCart(){if(!drawer){return;}drawer.classList.remove("is-open");drawer.setAttribute("aria-hidden","true");if(overlay){overlay.classList.remove("is-open");}d.body.classList.remove("nura-cart-open");}
+
+		if(overlay){overlay.addEventListener("click",closeCart);}
+		d.addEventListener("click",function(e){
+			if(e.target.closest("[data-nura-cart-close]")){e.preventDefault();closeCart();return;}
+			var toggle=e.target.closest("[data-nura-cart-toggle]");
+			if(toggle){e.preventDefault();openCart();return;}
+		});
+		d.addEventListener("keyup",function(e){if(e.key==="Escape"){closeCart();}});
+
+		// Open the drawer whenever WooCommerce finishes an AJAX add (loop simple + Quick View simple).
+		if(window.jQuery){window.jQuery(d.body).on("added_to_cart",function(){openCart();});}
+		// Custom event fired by our own single-product / Quick View variable add flows.
+		d.addEventListener("nura:cartadded",function(){openCart();});
+
+		function refreshFragments(){
+			if(window.jQuery){window.jQuery(d.body).trigger("wc_fragment_refresh");return;}
+			fetch(wcAjax("get_refreshed_fragments"),{method:"POST",credentials:"same-origin"}).then(function(r){return r.json();}).then(function(j){
+				if(j&&j.fragments){Object.keys(j.fragments).forEach(function(sel){var el=d.querySelector(sel);if(el){el.outerHTML=j.fragments[sel];}});}
+			}).catch(function(){});
+		}
+
+		// Single-product add-to-cart -> AJAX so the drawer opens instead of a full reload.
+		d.addEventListener("submit",function(e){
+			var form=e.target.closest("form.cart");
+			if(!form){return;}
+			if(form.closest("[data-qv-body]")){return;} // Quick View forms handled in nurax.js
+			if(form.classList.contains("grouped_form")){return;} // grouped products -> let WC handle natively
+			var addBtn=form.querySelector("button.single_add_to_cart_button, button[name=add-to-cart]");
+			if(!addBtn||addBtn.classList.contains("disabled")){return;}
+			if(form.classList.contains("variations_form")){
+				var vid=form.querySelector("input[name=variation_id]");
+				if(!vid||!vid.value||vid.value==="0"){return;} // no variation chosen -> let WC show "choose options"
+			}
+			e.preventDefault();
+			var fd=new FormData(form);
+			var pid=fd.get("add-to-cart")||addBtn.value||"";
+			if(pid&&!fd.get("product_id")){fd.append("product_id",pid);}
+			addBtn.classList.add("loading");
+			fetch(wcAjax("add_to_cart"),{method:"POST",body:fd,credentials:"same-origin"}).then(function(r){return r.json();}).then(function(data){
+				addBtn.classList.remove("loading");
+				if(!data||data.error){var a=form.getAttribute("action");if(a){window.location.assign(a);}else{form.submit();}return;}
+				if(window.jQuery){window.jQuery(d.body).trigger("added_to_cart",[data.fragments,data.cart_hash,window.jQuery(addBtn)]);}
+				else{refreshFragments();openCart();}
+			}).catch(function(){addBtn.classList.remove("loading");form.submit();});
+		});
+
+		// Loop simple products when WooCommerce AJAX-add is OFF: AJAX it ourselves so the drawer still opens.
+		d.addEventListener("click",function(e){
+			var btn=e.target.closest("a.add_to_cart_button");
+			if(!btn){return;}
+			if(btn.classList.contains("product_type_variable")){return;} // handled by Quick View routing below
+			if(btn.classList.contains("ajax_add_to_cart")){return;} // WC core will AJAX + fire added_to_cart
+			var pid=btn.getAttribute("data-product_id")||"";
+			if(!pid){var m=(btn.getAttribute("href")||"").match(/add-to-cart=(\d+)/);if(m){pid=m[1];}}
+			if(!pid){return;}
+			e.preventDefault();
+			var body=new FormData();
+			body.append("product_id",pid);
+			body.append("quantity",btn.getAttribute("data-quantity")||1);
+			btn.classList.add("loading");
+			fetch(wcAjax("add_to_cart"),{method:"POST",body:body,credentials:"same-origin"}).then(function(r){return r.json();}).then(function(data){
+				btn.classList.remove("loading");
+				if(!data||data.error){window.location.assign(btn.getAttribute("href")||window.location.href);return;}
+				if(window.jQuery){window.jQuery(d.body).trigger("added_to_cart",[data.fragments,data.cart_hash,window.jQuery(btn)]);}
+				else{refreshFragments();openCart();}
+			}).catch(function(){btn.classList.remove("loading");window.location.assign(btn.getAttribute("href")||window.location.href);});
+		});
+
+		// #7 Variable products in loops: "Select options" reveals options in Quick View
+		// instead of bouncing to the product page.
+		d.addEventListener("click",function(e){
+			var link=e.target.closest("a.product_type_variable, a.add_to_cart_button.product_type_variable");
+			if(!link){return;}
+			var li=link.closest("li.product");
+			var qv=li?li.querySelector(".nura-qv"):null;
+			if(!qv){return;} // no Quick View available -> let it navigate
+			e.preventDefault();
+			qv.click();
+		});
+	});
+})();

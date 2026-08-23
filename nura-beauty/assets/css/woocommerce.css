@@ -187,3 +187,16 @@
 .nura-finder__skip{font-family:var(--font-ui);font-size:.82rem;color:var(--nura-muted);text-decoration:underline}
 .nura-finder__skip:hover{color:var(--nura-ink)}
 .nura-finder--empty{text-align:center}
+
+
+/* ================= NURA v1.17.0 : punch-list fixes ================= */
+
+/* #2 "Complete Your NURA Look" -> 4 across (the global grid forces 3, like the
+   related-products 4-up rule above). Extra .woocommerce prefix guarantees the win. */
+.woocommerce .nura-complete-look ul.products,.nura-complete-look ul.products{grid-template-columns:repeat(4,1fr)!important}
+@media(max-width:1024px){.woocommerce .nura-complete-look ul.products,.nura-complete-look ul.products{grid-template-columns:repeat(3,1fr)!important}}
+@media(max-width:860px){.woocommerce .nura-complete-look ul.products,.nura-complete-look ul.products{grid-template-columns:1fr 1fr!important}}
+
+/* #3 Single product title -> ~30px (was inheriting the huge global h1 clamp). */
+.woocommerce div.product .product_title,.woocommerce-page div.product .product_title{font-size:30px;line-height:1.2;margin:.1rem 0 .7rem}
+@media(max-width:560px){.woocommerce div.product .product_title,.woocommerce-page div.product .product_title{font-size:24px}}

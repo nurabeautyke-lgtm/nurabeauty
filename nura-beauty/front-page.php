@@ -207,7 +207,7 @@ $slides = array(
 
 	<!-- RAIL: FRESH ARRIVALS (4 products) -->
 	<?php if ( class_exists( 'WooCommerce' ) ) : ?>
-	<?php nura_rail( __( 'New in', 'nura-beauty' ), __( 'New Arrivals', 'nura-beauty' ), '[products limit="4" columns="4" orderby="date" order="DESC" visibility="visible" class="nura-rail-products"]', $shop_url, __( 'View all new arrivals', 'nura-beauty' ) ); ?>
+	<?php nura_query_rail( __( 'New in', 'nura-beauty' ), __( 'New Arrivals', 'nura-beauty' ), array( 'orderby' => 'date', 'order' => 'DESC', 'posts_per_page' => 18 ), 10, $shop_url, __( 'View all new arrivals', 'nura-beauty' ) ); ?>
 	<?php endif; ?>
 
 	<!-- REAL NURA WOMEN (social proof, moved high) -->
@@ -225,7 +225,7 @@ $slides = array(
 
 	<!-- RAIL: HOUSE FAVOURITES (4 products) -->
 	<?php if ( class_exists( 'WooCommerce' ) ) : ?>
-	<?php nura_rail( __( 'Most loved', 'nura-beauty' ), __( 'Best Sellers', 'nura-beauty' ), '[products limit="4" columns="4" orderby="popularity" class="nura-rail-products"]', $shop_url, __( 'View all', 'nura-beauty' ) ); ?>
+	<?php nura_query_rail( __( 'Most loved', 'nura-beauty' ), __( 'Best Sellers', 'nura-beauty' ), array( 'meta_key' => 'total_sales', 'orderby' => 'meta_value_num', 'order' => 'DESC', 'posts_per_page' => 18 ), 10, $shop_url, __( 'View all', 'nura-beauty' ) ); ?>
 	<?php endif; ?>
 
 	<!-- BRAND STORY (editorial split, condensed) -->
