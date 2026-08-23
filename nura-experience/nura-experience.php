@@ -3,7 +3,7 @@
  * Plugin Name:       NURA Experience
  * Plugin URI:        https://nura.co.ke
  * Description:       NURA's exclusive features: AI Wig Finder, Virtual Try-On, and The NURA Circle luxury client portal (order history, care schedule, warranty certificates, maintenance reminders, loyalty points, VIP membership), plus the NURA catalogue architecture, a catalogue-driven mega menu, mobile bottom navigation, a faceted shop experience and an upgraded product page. Requires WooCommerce.
- * Version:           1.28.0
+ * Version:           1.29.0
  * Author:            NURA - The House of Radiant Confidence
  * License:           GPL-2.0-or-later
  * Text Domain:       nura-experience
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NURAX_VERSION', '1.28.0' );
+define( 'NURAX_VERSION', '1.29.0' );
 define( 'NURAX_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NURAX_URL', plugin_dir_url( __FILE__ ) );
 
@@ -57,6 +57,9 @@ require_once NURAX_DIR . 'includes/class-nura-pages.php';
 require_once NURAX_DIR . 'includes/class-nura-schema.php';
 require_once NURAX_DIR . 'includes/class-nura-security.php';
 require_once NURAX_DIR . 'includes/class-nura-perf.php';
+
+// Admin housekeeping: tidy third-party admin list-table columns.
+require_once NURAX_DIR . 'includes/class-admin-tidy.php';
 
 /**
  * Boot.
@@ -99,6 +102,12 @@ function nurax_init() {
 	new NURAX_Schema();
 	new NURAX_Security();
 	new NURAX_Perf();
+
+	// Admin housekeeping (admin-only): keep third-party SEO columns from
+	// breaking the WooCommerce product list layout.
+	if ( is_admin() ) {
+		new NURAX_Admin_Tidy();
+	}
 }
 add_action( 'plugins_loaded', 'nurax_init' );
 

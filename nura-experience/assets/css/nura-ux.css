@@ -40,7 +40,7 @@
 	top: 100%;
 	left: 0;
 	transform: translateY(8px);
-	min-width: 620px;
+	min-width: 740px;
 	background: #fff;
 	border-top: 2px solid var(--nura-ux-gold);
 	box-shadow: 0 24px 60px rgba(0, 0, 0, .14);
@@ -62,8 +62,10 @@
 	grid-template-columns: repeat(4, minmax(140px, 1fr));
 	gap: 1.4rem 2rem;
 }
-.nura-mega__col ul,
-.nura-mega__panel--simple ul { list-style: none; margin: .45rem 0 0; padding: 0; }
+.nura-nav .nura-mega__col ul,
+.nura-nav .nura-mega__panel--simple ul { display: block; list-style: none; margin: .45rem 0 0; padding: 0; gap: 0; }
+.nura-nav .nura-mega__col li,
+.nura-nav .nura-mega__panel--simple li { display: block; margin: 0; }
 .nura-mega__h {
 	font-family: var(--nura-font-ui, 'Jost', sans-serif);
 	font-size: .68rem;
@@ -81,6 +83,7 @@
 }
 .nura-mega__col a:hover,
 .nura-mega__panel--simple a:hover { color: var(--nura-ux-ink); }
+.nura-nav .nura-mega__panel a::after { display: none; }
 
 /* --------------------------- Mobile drawer menu ------------------------- */
 .nura-drawer-menu,
