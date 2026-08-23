@@ -3,7 +3,7 @@
  * Plugin Name:       NURA Experience
  * Plugin URI:        https://nura.co.ke
  * Description:       NURA's exclusive features: AI Wig Finder, Virtual Try-On, and The NURA Circle luxury client portal (order history, care schedule, warranty certificates, maintenance reminders, loyalty points, VIP membership), plus the NURA catalogue architecture, a catalogue-driven mega menu, mobile bottom navigation, a faceted shop experience and an upgraded product page. Requires WooCommerce.
- * Version:           1.21.0
+ * Version:           1.22.0
  * Author:            NURA - The House of Radiant Confidence
  * License:           GPL-2.0-or-later
  * Text Domain:       nura-experience
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NURAX_VERSION', '1.21.0' );
+define( 'NURAX_VERSION', '1.22.0' );
 define( 'NURAX_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NURAX_URL', plugin_dir_url( __FILE__ ) );
 
@@ -47,6 +47,11 @@ require_once NURAX_DIR . 'includes/class-nura-consent.php';
 require_once NURAX_DIR . 'includes/class-nura-abandoned-cart.php';
 require_once NURAX_DIR . 'includes/class-nura-followup.php';
 require_once NURAX_DIR . 'includes/class-nura-retargeting.php';
+
+// Storefront: Find-Your-Wig quiz, trust layer (badges + reviews), policy pages.
+require_once NURAX_DIR . 'includes/class-nura-wig-quiz.php';
+require_once NURAX_DIR . 'includes/class-nura-trust.php';
+require_once NURAX_DIR . 'includes/class-nura-pages.php';
 
 /**
  * Boot.
@@ -77,6 +82,13 @@ function nurax_init() {
 	NURAX_Abandoned_Cart::instance()->boot();
 	NURAX_Followup::instance()->boot();
 	NURAX_Retargeting::instance()->boot();
+
+	// Storefront conversion helpers. The two shortcodes render only where they
+	// are placed; the trust settings and page importer live in the admin. All
+	// dormant by default - zero effect on the live site until used.
+	new NURAX_Wig_Quiz();
+	NURAX_Trust::instance()->boot();
+	new NURAX_Pages();
 }
 add_action( 'plugins_loaded', 'nurax_init' );
 
