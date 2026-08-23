@@ -528,3 +528,7 @@ body.nura-cart-open{overflow:hidden}
 .nura-foot-bottom{padding:.9rem 0 1.4rem;margin-top:0;gap:.6rem 1.2rem;border-top:1px solid rgba(243,233,220,.14)}
 @media(max-width:860px){.site-footer{padding-top:clamp(28px,6vw,40px)!important}.nura-foot-grid{gap:24px 28px}}
 @media(max-width:560px){.nura-foot-grid{gap:22px}.nura-foot-bottom{padding-bottom:1.1rem}}
+
+/* v1.18.1 - footer logo removed from the brand column; top-align its first
+   element so the bio / contact / subscription line up with the other columns. */
+.nura-foot-brand>:first-child{margin-top:0}

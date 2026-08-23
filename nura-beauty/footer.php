@@ -64,7 +64,6 @@ if ( ! function_exists( 'nura_footer_company_menu' ) ) {
 	<div class="nura-container">
 		<div class="nura-foot-grid">
 			<div class="nura-foot-col nura-foot-brand">
-				<?php if ( has_custom_logo() ) { the_custom_logo(); } else { echo '<div class="nura-logo">' . esc_html( nura_opt( 'nura_brand_name' ) ) . '</div>'; } ?>
 				<p><?php echo esc_html( nura_opt( 'nura_bio' ) ); ?></p>
 				<ul class="nura-foot-contact">
 					<li><a href="<?php echo esc_url( nura_opt( 'nura_whatsapp' ) ); ?>"><?php echo esc_html( nura_opt( 'nura_phone' ) ); ?></a></li>
