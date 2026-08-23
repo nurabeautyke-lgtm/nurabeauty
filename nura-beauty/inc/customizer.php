@@ -104,6 +104,13 @@ add_filter( 'theme_mod_nura_whatsapp', function ( $value ) {
  * empties it. Guarantees these labels appear nowhere on the storefront.
  */
 add_filter( 'theme_mod_nura_payments', function ( $value ) {
+	// The Customizer previews settings by running the registered default through
+	// this same filter, and that default can arrive as a non-string sentinel (an
+	// stdClass, sometimes an array). Casting that to a string throws a fatal, so
+	// only ever transform a real string value and pass anything else through.
+	if ( ! is_string( $value ) ) {
+		return $value;
+	}
 	$retired = array( 'visa', 'mastercard', 'master card', 'paypal', 'pay pal', 'lipa later', 'lipa-later', 'lipalater', 'credit card', 'card', 'debit card' );
 	$items   = array_filter( array_map( 'trim', explode( ',', (string) $value ) ) );
 	$kept    = array();
