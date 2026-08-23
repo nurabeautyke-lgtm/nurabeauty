@@ -87,7 +87,7 @@ function nura_preload_lcp() {
 	}
 	$hero = function_exists( 'nura_opt' ) ? nura_opt( 'nura_hero_image' ) : '';
 	if ( empty( $hero ) ) {
-		$hero = NURA_URI . 'assets/images/hero.jpg';
+		$hero = NURA_URI . 'assets/images/hero.webp';
 	}
 	printf( '<link rel="preload" as="image" href="%s" fetchpriority="high" />' . "\n", esc_url( $hero ) );
 }

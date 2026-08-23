@@ -124,12 +124,12 @@ add_filter( 'the_content', function ( $content ) {
 add_shortcode( 'nura_lookbook', function () {
 	$shop  = function_exists( 'wc_get_page_id' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/shop/' );
 	$items = array(
-		array( 'img' => 'hero.jpg',            'title' => 'The Signature', 'tag' => 'Everyday luxe' ),
-		array( 'img' => 'hero-2.jpg',          'title' => 'The Bride',     'tag' => 'Bridal & occasion' ),
-		array( 'img' => 'model-editorial.jpg', 'title' => 'The Icon',      'tag' => 'HD lace front' ),
-		array( 'img' => 'hero-3.jpg',          'title' => 'The Statement', 'tag' => 'Confidence line' ),
-		array( 'img' => 'look-bob.jpg',        'title' => 'The Bob',       'tag' => 'Ready to wear' ),
-		array( 'img' => 'look-curls.jpg',      'title' => 'The Curls',     'tag' => 'Textured' ),
+		array( 'img' => 'hero.webp',            'title' => 'The Signature', 'tag' => 'Everyday luxe' ),
+		array( 'img' => 'hero-2.webp',          'title' => 'The Bride',     'tag' => 'Bridal & occasion' ),
+		array( 'img' => 'model-editorial.webp', 'title' => 'The Icon',      'tag' => 'HD lace front' ),
+		array( 'img' => 'hero-3.webp',          'title' => 'The Statement', 'tag' => 'Confidence line' ),
+		array( 'img' => 'look-bob.webp',        'title' => 'The Bob',       'tag' => 'Ready to wear' ),
+		array( 'img' => 'look-curls.webp',      'title' => 'The Curls',     'tag' => 'Textured' ),
 	);
 	ob_start();
 	echo '<div class="nura-lookbook">';

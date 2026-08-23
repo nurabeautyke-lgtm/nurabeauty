@@ -86,19 +86,19 @@ $wigs_url = nura_home_cat_url( 'wigs' );
  */
 $slides = array(
 	array(
-		'img'     => NURA_URI . 'assets/images/hero.jpg',
+		'img'     => NURA_URI . 'assets/images/hero.webp',
 		'eyebrow' => __( 'Premium Wigs • Beauty • Care • Confidence', 'nura-beauty' ),
 		'title'   => __( 'Wear Your Crown', 'nura-beauty' ),
 		'sub'     => __( 'Discover human-hair wigs and beauty essentials curated for the modern woman.', 'nura-beauty' ),
 	),
 	array(
-		'img'     => NURA_URI . 'assets/images/hero-2.jpg',
+		'img'     => NURA_URI . 'assets/images/hero-2.webp',
 		'eyebrow' => __( 'Bridal & Occasion', 'nura-beauty' ),
 		'title'   => __( 'Your Crown for the Big Day', 'nura-beauty' ),
 		'sub'     => __( 'Bespoke bridal units, hand-finished for a flawless, photograph-ready finish.', 'nura-beauty' ),
 	),
 	array(
-		'img'     => NURA_URI . 'assets/images/hero-3.jpg',
+		'img'     => NURA_URI . 'assets/images/hero-3.webp',
 		'eyebrow' => __( 'The Confidence Line', 'nura-beauty' ),
 		'title'   => __( 'Statement HD-Lace Units', 'nura-beauty' ),
 		'sub'     => __( 'An invisible hairline and undeniable presence, hand-crafted in Nairobi.', 'nura-beauty' ),
@@ -174,10 +174,10 @@ $slides = array(
 			<?php
 			nura_home_tiles(
 				array(
-					array( 'label' => __( 'Wigs', 'nura-beauty' ),              'sub' => __( 'Human Hair • Lace • Glueless', 'nura-beauty' ), 'url' => nura_home_cat_url( 'wigs' ),            'img' => ( nura_home_cat_img( 'wigs' ) ?: NURA_URI . 'assets/images/cats/pillar-wigs.jpg' ) ),
-					array( 'label' => __( 'Hair & Extensions', 'nura-beauty' ), 'sub' => __( 'Bundles • Closures • Frontals', 'nura-beauty' ), 'url' => nura_home_cat_url( 'hair-extensions' ), 'img' => ( nura_home_cat_img( 'hair-extensions' ) ?: NURA_URI . 'assets/images/cats/pillar-hair-extensions.jpg' ) ),
-					array( 'label' => __( 'Wig Care', 'nura-beauty' ),          'sub' => __( 'Wash • Treat • Maintain', 'nura-beauty' ),     'url' => nura_home_cat_url( 'wig-care' ),        'img' => ( nura_home_cat_img( 'wig-care' ) ?: NURA_URI . 'assets/images/cats/pillar-wig-care.jpg' ) ),
-					array( 'label' => __( 'Beauty', 'nura-beauty' ),            'sub' => __( 'Makeup • Accessories', 'nura-beauty' ),           'url' => nura_home_cat_url( 'beauty' ),          'img' => ( nura_home_cat_img( 'beauty' ) ?: NURA_URI . 'assets/images/cats/pillar-beauty.jpg' ) ),
+					array( 'label' => __( 'Wigs', 'nura-beauty' ),              'sub' => __( 'Human Hair • Lace • Glueless', 'nura-beauty' ), 'url' => nura_home_cat_url( 'wigs' ),            'img' => ( nura_home_cat_img( 'wigs' ) ?: NURA_URI . 'assets/images/cats/pillar-wigs.webp' ) ),
+					array( 'label' => __( 'Hair & Extensions', 'nura-beauty' ), 'sub' => __( 'Bundles • Closures • Frontals', 'nura-beauty' ), 'url' => nura_home_cat_url( 'hair-extensions' ), 'img' => ( nura_home_cat_img( 'hair-extensions' ) ?: NURA_URI . 'assets/images/cats/pillar-hair-extensions.webp' ) ),
+					array( 'label' => __( 'Wig Care', 'nura-beauty' ),          'sub' => __( 'Wash • Treat • Maintain', 'nura-beauty' ),     'url' => nura_home_cat_url( 'wig-care' ),        'img' => ( nura_home_cat_img( 'wig-care' ) ?: NURA_URI . 'assets/images/cats/pillar-wig-care.webp' ) ),
+					array( 'label' => __( 'Beauty', 'nura-beauty' ),            'sub' => __( 'Makeup • Accessories', 'nura-beauty' ),           'url' => nura_home_cat_url( 'beauty' ),          'img' => ( nura_home_cat_img( 'beauty' ) ?: NURA_URI . 'assets/images/cats/pillar-beauty.webp' ) ),
 				),
 				'nura-tiles--4'
 			);
@@ -278,7 +278,7 @@ $slides = array(
 	<section class="section section--ivory">
 		<div class="nura-container nura-split nura-reveal">
 			<div class="nura-split__media">
-				<img src="<?php echo esc_url( NURA_URI . 'assets/images/model-editorial.jpg' ); ?>" alt="<?php echo esc_attr( nura_opt( 'nura_brand_name' ) ); ?>" loading="lazy">
+				<img src="<?php echo esc_url( NURA_URI . 'assets/images/model-editorial.webp' ); ?>" alt="<?php echo esc_attr( nura_opt( 'nura_brand_name' ) ); ?>" loading="lazy">
 			</div>
 			<div class="nura-split__body">
 				<p class="nura-eyebrow"><?php esc_html_e( 'The House of Radiant Confidence', 'nura-beauty' ); ?></p>

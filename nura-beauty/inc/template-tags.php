@@ -85,15 +85,15 @@ function nura_cat_fallback_image( $name ) {
 	$b = NURA_URI . 'assets/images/cats/';
 	$n = strtolower( (string) $name );
 	$map = array(
-		'bridal'=>'bridal-occasion.jpg','occasion'=>'bridal-occasion.jpg','wedding'=>'bridal-occasion.jpg',
-		'lace'=>'lace-front-hd.jpg','hd'=>'lace-front-hd.jpg','closure'=>'lace-front-hd.jpg','frontal'=>'lace-front-hd.jpg',
-		'ready'=>'ready-to-wear.jpg','glueless'=>'ready-to-wear.jpg','headband'=>'ready-to-wear.jpg','everyday'=>'ready-to-wear.jpg',
-		'confidence'=>'confidence-line.jpg','signature'=>'confidence-line.jpg',
+		'bridal'=>'bridal-occasion.webp','occasion'=>'bridal-occasion.webp','wedding'=>'bridal-occasion.webp',
+		'lace'=>'lace-front-hd.webp','hd'=>'lace-front-hd.webp','closure'=>'lace-front-hd.webp','frontal'=>'lace-front-hd.webp',
+		'ready'=>'ready-to-wear.webp','glueless'=>'ready-to-wear.webp','headband'=>'ready-to-wear.webp','everyday'=>'ready-to-wear.webp',
+		'confidence'=>'confidence-line.webp','signature'=>'confidence-line.webp',
 	);
 	foreach ( $map as $needle => $file ) {
 		if ( false !== strpos( $n, $needle ) ) { return $b . $file; }
 	}
-	return $b . 'wigs.jpg';
+	return $b . 'wigs.webp';
 }
 
 
