@@ -755,3 +755,51 @@
 	white-space: nowrap;
 }
 .nura-related__pillar:hover { text-decoration: underline; }
+
+
+/* =========================================================================
+   NURA v1.25.0 : bottom-right floating layer + sticky bar collision fix
+   The AI Stylist launcher (.nurax-stylist) and the WhatsApp FAB (.nura-wa)
+   both sat at right:20px; bottom:20px, so the Stylist pill covered the
+   WhatsApp button ("chat and ai chat" overlap), and both floated over the
+   single-product sticky "Add to cart" bar (.nura-sticky-atc), hiding its
+   price on the right. This stacks the two buttons, keeps the sticky bar's
+   price clear, and removes a stray horizontal scrollbar. Additive only;
+   positions use !important so they win over the parent theme's inline
+   positions regardless of stylesheet load order.
+   ========================================================================= */
+
+/* Stray horizontal-scroll guard. overflow-x:clip does NOT create a scroll
+   container, so (unlike hidden/auto) it never breaks any position:sticky. */
+html { overflow-x: clip; }
+
+/* The slide-in cart drawer used width:100vw at <=560px, which is wider than
+   the usable width whenever a vertical scrollbar is present -> a horizontal
+   scrollbar. Use the containing-block width instead. */
+@media (max-width: 560px) {
+	.nura-cartdrawer { width: 100% !important; max-width: 100%; }
+}
+
+/* Lift the WhatsApp FAB above the AI Stylist launcher so the two never
+   overlap each other at the bottom-right corner. */
+.nura-wa { bottom: 90px !important; z-index: 9989; }
+
+/* Reserve room on the sticky bar's right edge so its price never hides behind
+   the floating buttons (this alone fixes it even where :has() is unsupported). */
+.nura-sticky-atc { padding-right: calc(var(--gutter, 24px) + 200px) !important; }
+
+/* Progressive polish (desktop): when the sticky bar is actually on screen,
+   lift both floating buttons fully above it so nothing overlaps the bar. */
+@media (min-width: 769px) {
+	body:has(.nura-sticky-atc.is-visible) .nurax-stylist { bottom: 84px; }
+	body:has(.nura-sticky-atc.is-visible) .nura-wa { bottom: 152px !important; }
+}
+
+@media (max-width: 768px) {
+	/* Clear the mobile bottom navigation, and keep the two buttons stacked. */
+	.nurax-stylist { right: 12px !important; bottom: 72px !important; }
+	.nura-wa { bottom: 140px !important; }
+	/* The mobile bar is narrower and the buttons sit above it, so a small
+	   right gutter is enough here. */
+	.nura-sticky-atc { padding-right: calc(var(--gutter, 18px) + 12px) !important; }
+}
