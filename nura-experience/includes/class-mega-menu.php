@@ -73,55 +73,42 @@ class NURAX_Mega_Menu {
 			'Shop' => array(
 				'url'     => $shop,
 				'columns' => array(
-					'Wigs' => array(
+					'Shop Wigs' => array(
+						'Shop All Wigs'     => self::cat_url( 'wigs' ),
+						'New In'            => add_query_arg( 'orderby', 'date', $shop ),
+						'Bridal & Occasion' => self::cat_url( 'bridal-occasion' ),
+					),
+					'By Hair Type' => array(
+						'Human Hair Wigs'  => self::cat_url( 'human-hair-wigs' ),
+						'Human Hair Blend' => self::cat_url( 'human-hair-blend-wigs' ),
+						'Curly Wigs'       => self::cat_url( 'curly-wigs' ),
+						'Jerry Curl Wigs'  => self::cat_url( 'jerry-curl-wigs' ),
+					),
+					'By Construction' => array(
 						'Lace Front Wigs' => self::cat_url( 'lace-front-wigs' ),
-						'HD Lace Wigs'    => self::cat_url( 'hd-lace-wigs' ),
-						'Glueless Wigs'   => self::cat_url( 'glueless-wigs' ),
 						'Closure Wigs'    => self::cat_url( 'closure-wigs' ),
-						'Human Hair Wigs' => self::cat_url( 'human-hair-wigs' ),
-						'Shop All Wigs'   => self::cat_url( 'wigs' ),
+						'Headband Wigs'   => self::cat_url( 'headband-wigs' ),
 					),
-					'Hair & Extensions' => array(
-						'Bundles'             => self::cat_url( 'bundles' ),
-						'Closures'            => self::cat_url( 'closures' ),
-						'Frontals'            => self::cat_url( 'frontals' ),
-						'Clip-In Extensions'  => self::cat_url( 'clip-in-extensions' ),
-						'Ponytail Extensions' => self::cat_url( 'ponytail-extensions' ),
-					),
-					'Wig Care' => array(
-						'Shampoo & Conditioner' => self::cat_url( 'wig-care' ),
-						'Treatments'            => self::cat_url( 'treatments' ),
-						'Styling Products'      => self::cat_url( 'styling-products' ),
-						'Wig Care Kits'         => self::cat_url( 'wig-care-kits' ),
-						'Accessories'           => self::cat_url( 'accessories' ),
-					),
-					'Beauty & Offers' => array(
-						'Beauty'       => self::cat_url( 'beauty' ),
-						'Makeup Tools' => self::cat_url( 'makeup-tools' ),
-						'New In'       => add_query_arg( 'orderby', 'date', $shop ),
-						'On Sale'      => self::cat_url( 'sale' ),
+					'By Style & Texture' => array(
+						'Bob Wigs'           => self::cat_url( 'bob-wigs' ),
+						'Pixie Wigs'         => self::cat_url( 'pixie-wigs' ),
+						'Body Wave Wigs'     => self::cat_url( 'body-wave-wigs' ),
+						'Afro Wigs'          => self::cat_url( 'afro-wigs' ),
+						'Bone Straight Wigs' => self::cat_url( 'bone-straight-wigs' ),
 					),
 				),
 			),
-			'Services' => array(
-				'url'   => self::page_url( 'services' ),
-				'links' => array(
-					'Installation'      => self::cat_url( 'installation' ),
-					'Wig Revamp'        => self::cat_url( 'wig-revamp' ),
-					'Restyling'         => self::cat_url( 'restyling' ),
-					'Consultation'      => self::cat_url( 'consultation' ),
-					'Custom Wig Making' => self::cat_url( 'custom-wig-making' ),
-					'Bridal Hair'       => self::cat_url( 'bridal-hair' ),
-				),
+			'Installation' => array(
+				'url' => self::page_url( 'installation' ),
 			),
 			'About' => array(
 				'url'   => self::page_url( 'about-us' ),
 				'links' => array(
-					'About NURA'      => self::page_url( 'about-us' ),
+					'About Us'        => self::page_url( 'about-us' ),
 					'AI Wig Finder'   => self::page_url( 'ai-wig-finder' ),
 					'Virtual Try-On'  => self::page_url( 'virtual-try-on' ),
 					'The NURA Circle' => self::page_url( 'nura-circle' ),
-					'NURA Journal'    => self::page_url( 'journal' ),
+					'Journal'         => self::page_url( 'journal' ),
 				),
 			),
 			'Book Appointment' => array(
