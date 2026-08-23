@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NURA_VERSION', '1.17.0' );
+define( 'NURA_VERSION', '1.18.0' );
 define( 'NURA_DIR', trailingslashit( get_template_directory() ) );
 define( 'NURA_URI', trailingslashit( get_template_directory_uri() ) );
 
@@ -31,6 +31,9 @@ function nura_require( $relative ) {
 // Core setup and assets.
 nura_require( 'setup' );
 nura_require( 'enqueue' );
+
+// Security & anti-abuse hardening.
+nura_require( 'nura-security' );
 
 // Commerce + storefront.
 nura_require( 'woocommerce-support' );

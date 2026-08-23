@@ -73,8 +73,11 @@ if ( ! function_exists( 'nura_footer_company_menu' ) ) {
 				</ul>
 				<div class="nura-newsletter">
 					<h4><?php esc_html_e( 'Join The House', 'nura-beauty' ); ?></h4>
-					<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
+					<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" class="nura-subscribe-form">
 						<input type="hidden" name="action" value="nura_subscribe">
+						<?php wp_nonce_field( 'nura_subscribe', 'nura_sub_nonce' ); ?>
+						<input type="hidden" name="nura_sub_ts" value="<?php echo esc_attr( time() ); ?>">
+						<p class="nura-hp" aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden"><label><?php esc_html_e( 'Leave this field empty', 'nura-beauty' ); ?><input type="text" name="nura_hp" tabindex="-1" autocomplete="off" value=""></label></p>
 						<input type="email" name="nura_email" placeholder="<?php esc_attr_e( 'Your email', 'nura-beauty' ); ?>" required>
 						<button type="submit" class="nura-btn nura-btn--gold" style="width:100%"><?php esc_html_e( 'Subscribe', 'nura-beauty' ); ?></button>
 					</form>

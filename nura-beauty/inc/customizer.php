@@ -67,7 +67,7 @@ function nura_settings_map() {
 		'nura_trust_4' => array( 'default' => 'Written longevity guarantee', 'label' => __( 'Trust item 4', 'nura-beauty' ), 'section' => 'nura_home' ),
 
 		// ---- Payment badges (comma separated, fully editable) ----
-		'nura_payments' => array( 'default' => 'M-Pesa, Visa, Mastercard, PayPal, Lipa Later, Cash on Delivery', 'label' => __( 'Payment badges (comma separated)', 'nura-beauty' ), 'section' => 'nura_brand', 'control' => 'textarea' ),
+		'nura_payments' => array( 'default' => 'M-Pesa, Cash on Delivery, Bank Transfer', 'label' => __( 'Payment badges (comma separated)', 'nura-beauty' ), 'section' => 'nura_brand', 'control' => 'textarea' ),
 
 		// ---- Default social share image ----
 		'nura_default_share_image' => array( 'default' => '', 'label' => __( 'Default social share image', 'nura-beauty' ), 'section' => 'nura_brand', 'control' => 'image', 'sanitize' => 'esc_url_raw' ),
@@ -94,6 +94,25 @@ add_filter( 'theme_mod_nura_phone', function ( $value ) {
 } );
 add_filter( 'theme_mod_nura_whatsapp', function ( $value ) {
 	return ( '' === $value || 'https://wa.me/254700000000' === $value ) ? 'https://wa.me/254714994898' : $value;
+} );
+
+/**
+ * Never render retired payment badges. NURA takes M-Pesa, Cash on Delivery and
+ * Bank Transfer only, so Visa, Mastercard, PayPal, Lipa Later and generic "Card"
+ * are stripped from whatever is stored - even a value saved into the Customizer
+ * before this change - and the field falls back to the curated list if that
+ * empties it. Guarantees these labels appear nowhere on the storefront.
+ */
+add_filter( 'theme_mod_nura_payments', function ( $value ) {
+	$retired = array( 'visa', 'mastercard', 'master card', 'paypal', 'pay pal', 'lipa later', 'lipa-later', 'lipalater', 'credit card', 'card', 'debit card' );
+	$items   = array_filter( array_map( 'trim', explode( ',', (string) $value ) ) );
+	$kept    = array();
+	foreach ( $items as $item ) {
+		if ( ! in_array( strtolower( $item ), $retired, true ) ) {
+			$kept[] = $item;
+		}
+	}
+	return $kept ? implode( ', ', $kept ) : 'M-Pesa, Cash on Delivery, Bank Transfer';
 } );
 
 function nura_customize_register( $wp_customize ) {

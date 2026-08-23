@@ -509,3 +509,22 @@ body.nura-cart-open{overflow:hidden}
 [data-qv-body] .single_variation .price{color:var(--nura-gold);font-family:var(--font-ui);font-size:1.2rem;margin:.4rem 0}
 [data-qv-body] .single_add_to_cart_button{margin-top:.6rem}
 [data-qv-body] .nura-qv-error{color:#a33;font-family:var(--font-ui);font-size:.8rem;margin:.4rem 0 0}
+
+
+/* ==================================================================
+   NURA v1.18.0 - Footer compaction: the footer was too tall. Tighten
+   the vertical rhythm and keep all four columns balanced/uniform.
+   ================================================================== */
+.site-footer{padding-top:clamp(34px,4vw,56px)!important;padding-bottom:0!important}
+.nura-foot-grid{gap:clamp(20px,3vw,44px);padding-bottom:clamp(20px,2.6vw,34px);align-items:start}
+.nura-foot-col h4{margin:0 0 .7rem;font-size:.82rem;letter-spacing:.14em}
+.nura-foot-col ul{margin:0;line-height:1.85;font-size:.9rem}
+.nura-foot-brand p{margin:.5rem 0 .9rem;font-size:.9rem;line-height:1.55;max-width:34ch}
+.nura-foot-contact{margin:.2rem 0 1rem!important;line-height:1.8!important}
+.nura-newsletter{margin-top:.2rem}
+.nura-newsletter h4{margin:0 0 .5rem}
+.nura-newsletter form{display:flex;flex-direction:column;gap:.5rem;max-width:320px}
+.nura-newsletter input[type=email]{margin:0}
+.nura-foot-bottom{padding:.9rem 0 1.4rem;margin-top:0;gap:.6rem 1.2rem;border-top:1px solid rgba(243,233,220,.14)}
+@media(max-width:860px){.site-footer{padding-top:clamp(28px,6vw,40px)!important}.nura-foot-grid{gap:24px 28px}}
+@media(max-width:560px){.nura-foot-grid{gap:22px}.nura-foot-bottom{padding-bottom:1.1rem}}
