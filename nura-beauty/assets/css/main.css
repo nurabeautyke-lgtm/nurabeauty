@@ -174,6 +174,8 @@ p{margin:0 0 1.1em}
 .nura-page-hero{background:var(--nura-ink);color:var(--nura-ivory);text-align:center;padding-block:clamp(48px,7vw,100px)}
 .nura-page-hero h1{color:var(--nura-ivory)}
 .entry-content{max-width:820px;margin-inline:auto;font-size:1.02rem}
+/* Checkout: drop the 820px reading cap so the multi-column block checkout uses the full content width. Article/text pages keep the comfortable measure. */
+.woocommerce-checkout .entry-content{max-width:none}
 .entry-content h2{margin-top:2em}
 .entry-content ul,.entry-content ol{padding-left:1.3em}
 .entry-content li{margin-bottom:.5em}
