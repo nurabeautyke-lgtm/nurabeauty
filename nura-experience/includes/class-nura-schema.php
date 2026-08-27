@@ -63,7 +63,7 @@ class NURAX_Schema {
 			'name'        => get_bloginfo( 'name' ),
 			'url'         => $home,
 			'description' => get_bloginfo( 'description' ),
-			'email'       => apply_filters( 'nurax_schema_email', 'care@nura.co.ke' ),
+			'email'       => apply_filters( 'nurax_schema_email', 'care@nurabeauty.co.ke' ),
 			'telephone'   => apply_filters( 'nurax_schema_phone', '+254714994898' ),
 			'priceRange'  => apply_filters( 'nurax_schema_pricerange', 'KSh' ),
 			'currenciesAccepted' => 'KES',

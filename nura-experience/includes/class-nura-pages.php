@@ -17,7 +17,7 @@
  *    publish.
  *
  * The copy is grounded in NURA's own published details (Nairobi studio,
- * +254 714 994 898, care@nura.co.ke, M-Pesa/card/PayPal, same-day Nairobi
+ * +254 714 994 898, care@nurabeauty.co.ke, M-Pesa/card/PayPal, same-day Nairobi
  * delivery, 48-hour returns window). A few store-specific values that only the
  * owner can confirm (exact Till number, precise fees) are shown at checkout or
  * left as a clearly marked note rather than invented.
@@ -41,7 +41,7 @@ class NURAX_Pages {
 	public static function defs() {
 		$biz   = get_bloginfo( 'name' );
 		$phone = '+254 714 994 898';
-		$email = 'care@nura.co.ke';
+		$email = 'care@nurabeauty.co.ke';
 
 		$about = <<<HTML
 <h2>The House of Radiant Confidence</h2>
