@@ -45,15 +45,15 @@ class NURAX_Pages {
 
 		$about = <<<HTML
 <h2>The House of Radiant Confidence</h2>
-<p>$biz is a Nairobi-based house of premium wigs, hair and beauty, built on a simple belief: every woman deserves to wear her crown with confidence. We hand-finish and personally curate each unit, then back it with the kind of concierge service you would expect from a luxury house.</p>
+<p>$biz is a Nairobi-based house of premium human hair wigs in Kenya, built on a simple belief: every woman deserves to wear her crown with confidence. We hand-finish and personally curate each unit, then back it with the kind of concierge service you would expect from a luxury house.</p>
 <h3>What we stand for</h3>
 <ul>
 <li><strong>Honest hair.</strong> Our premium units are verified human hair, supplied with a provenance certificate and a written guarantee. We never sell synthetic hair as human hair.</li>
-<li><strong>Personal service.</strong> From your first consultation to installation and aftercare, our team helps you choose, fit and maintain the right unit for your face shape, lifestyle and budget.</li>
-<li><strong>Made for Kenya.</strong> Same-day delivery in Nairobi, fast countrywide shipping, M-Pesa checkout and flexible payment options designed around how our clients actually shop.</li>
+<li><strong>Personal service.</strong> From your first consultation to installation and aftercare, our team helps you choose, fit and maintain the right wig for your face shape, lifestyle and budget.</li>
+<li><strong>Made for Kenya.</strong> Same-day delivery in Nairobi, fast countrywide shipping and M-Pesa checkout, designed around how our clients actually shop for wigs in Kenya.</li>
 </ul>
 <h3>The NURA Experience</h3>
-<p>We are more than a wig shop. Our team handles installation, revamp, styling and consultation end to end, and members of <em>The NURA Circle</em> enjoy care reminders, scheduled revamps and loyalty rewards. Hand-crafted in Nairobi, made for you.</p>
+<p>We are more than a wig shop. Our team handles installation, revamp, styling, colouring and consultation end to end, and members of <em>The NURA Circle</em> enjoy care reminders, scheduled revamps and loyalty rewards. Visit us at Imenti House, Moi Avenue, Nairobi CBD - hand-finished in Nairobi, made for you.</p>
 <p>Have a question or want a recommendation? Message us on WhatsApp at <strong>$phone</strong> or email <strong>$email</strong>.</p>
 HTML;
 

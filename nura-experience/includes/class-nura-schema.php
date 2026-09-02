@@ -26,6 +26,14 @@ class NURAX_Schema {
 		add_action( 'wp_head', array( $this, 'output' ), 20 );
 	}
 
+	/** Whether Rank Math, Yoast or SEOPress is active and already owns Organization/WebSite schema. */
+	private function seo_plugin_active() {
+		if ( function_exists( 'nura_seo_plugin_active' ) ) {
+			return nura_seo_plugin_active();
+		}
+		return defined( 'WPSEO_VERSION' ) || class_exists( 'RankMath' ) || defined( 'SEOPRESS_VERSION' );
+	}
+
 	private function print_jsonld( $data ) {
 		if ( empty( $data ) ) {
 			return;
@@ -37,6 +45,7 @@ class NURAX_Schema {
 
 	public function output() {
 		$home = home_url( '/' );
+		$seo  = $this->seo_plugin_active();
 
 		// --- Organization + LocalBusiness (site-wide) ---
 		$logo   = '';
@@ -58,9 +67,12 @@ class NURAX_Schema {
 
 		$business = array(
 			'@context'    => 'https://schema.org',
-			'@type'       => array( 'Organization', 'HealthAndBeautyBusiness' ),
-			'@id'         => $home . '#business',
+			// With Rank Math/Yoast/SEOPress active it already declares the Organization entity,
+			// so emit only a complementary LocalBusiness node here to avoid duplicate Organization.
+			'@type'       => $seo ? 'HealthAndBeautyBusiness' : array( 'Organization', 'HealthAndBeautyBusiness' ),
+			'@id'         => $seo ? ( $home . '#localbusiness' ) : ( $home . '#business' ),
 			'name'        => get_bloginfo( 'name' ),
+			'legalName'   => 'NURA CROWN & BEAUTY',
 			'url'         => $home,
 			'description' => get_bloginfo( 'description' ),
 			'email'       => apply_filters( 'nurax_schema_email', 'care@nurabeauty.co.ke' ),
@@ -71,8 +83,16 @@ class NURAX_Schema {
 			'areaServed'  => 'Kenya',
 			'address'     => array(
 				'@type'           => 'PostalAddress',
+				'streetAddress'   => 'Imenti House, Moi Avenue, Nairobi CBD',
 				'addressLocality' => 'Nairobi',
+				'addressRegion'   => 'Nairobi County',
+				'postalCode'      => '00100',
 				'addressCountry'  => 'KE',
+			),
+			'geo'         => array(
+				'@type'     => 'GeoCoordinates',
+				'latitude'  => '-1.2837',
+				'longitude' => '36.8272',
 			),
 			'openingHoursSpecification' => array(
 				array(
@@ -93,7 +113,7 @@ class NURAX_Schema {
 		$this->print_jsonld( $business );
 
 		// --- WebSite + SearchAction (front page only) ---
-		if ( is_front_page() || is_home() ) {
+		if ( false === $seo && ( is_front_page() || is_home() ) ) {
 			$this->print_jsonld( array(
 				'@context'        => 'https://schema.org',
 				'@type'           => 'WebSite',
