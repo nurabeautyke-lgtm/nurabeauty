@@ -46,14 +46,28 @@
 			reveal.forEach(function (el) { el.classList.add('is-in'); });
 		}
 
-		// Sticky add-to-cart on single product.
+		// Sticky add-to-cart on single product. Show it once the main add-to-cart
+		// form scrolls out of view, then hide it again the moment the related
+		// products / footer reach the viewport, so the fixed bar never covers the
+		// 'Complete Your NURA Look' buttons or the site footer at the page end.
 		var sticky = d.querySelector('.nura-sticky-atc');
 		var atc = d.querySelector('form.cart');
 		if (sticky && atc && 'IntersectionObserver' in window) {
+			var atcAway = false, tailNear = false;
+			var syncSticky = function () { sticky.classList.toggle('is-visible', atcAway && tailNear === false); };
 			var so = new IntersectionObserver(function (entries) {
-				entries.forEach(function (en) { sticky.classList.toggle('is-visible', !en.isIntersecting); });
+				entries.forEach(function (en) { atcAway = en.isIntersecting === false; });
+				syncSticky();
 			}, { threshold: 0 });
 			so.observe(atc);
+			var tail = d.querySelector('.nura-complete-look') || d.querySelector('#site-footer');
+			if (tail) {
+				var fo = new IntersectionObserver(function (entries) {
+					entries.forEach(function (en) { tailNear = en.isIntersecting; });
+					syncSticky();
+				}, { threshold: 0 });
+				fo.observe(tail);
+			}
 			sticky.addEventListener('click', function () { atc.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
 		}
 	});
