@@ -35,6 +35,8 @@ add_shortcode( 'nura_contact_form', function () {
 	<form class="nura-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
 		<input type="hidden" name="action" value="nura_contact">
 		<?php wp_nonce_field( 'nura_contact' ); ?>
+		<div class="nura-hp" aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"><label>Leave this field empty<input type="text" name="nura_hp" tabindex="-1" autocomplete="off" value=""></label></div>
+		<input type="hidden" name="nura_ct_ts" value="<?php echo esc_attr( time() ); ?>">
 		<p><input type="text" name="nura_name" placeholder="<?php esc_attr_e( 'Your name', 'nura-beauty' ); ?>" required></p>
 		<p><input type="text" name="nura_contact_val" placeholder="<?php esc_attr_e( 'Phone / WhatsApp or email', 'nura-beauty' ); ?>" required></p>
 		<p><textarea name="nura_message" rows="5" placeholder="<?php esc_attr_e( 'How can we help?', 'nura-beauty' ); ?>" required></textarea></p>
@@ -53,6 +55,8 @@ add_shortcode( 'nura_booking_form', function () {
 		<input type="hidden" name="action" value="nura_contact">
 		<input type="hidden" name="nura_kind" value="booking">
 		<?php wp_nonce_field( 'nura_contact' ); ?>
+		<div class="nura-hp" aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"><label>Leave this field empty<input type="text" name="nura_hp" tabindex="-1" autocomplete="off" value=""></label></div>
+		<input type="hidden" name="nura_ct_ts" value="<?php echo esc_attr( time() ); ?>">
 		<p><input type="text" name="nura_name" placeholder="<?php esc_attr_e( 'Your name', 'nura-beauty' ); ?>" required></p>
 		<p><input type="text" name="nura_contact_val" placeholder="<?php esc_attr_e( 'Phone / WhatsApp', 'nura-beauty' ); ?>" required></p>
 		<p>

@@ -215,3 +215,39 @@ add_filter( 'preprocess_comment', function ( $commentdata ) {
 	}
 	return $commentdata;
 } );
+
+
+/* -----------------------------------------------------------------------------
+ * 11. Contact / appointment form anti-spam: honeypot + time-trap + per-IP rate
+ *     limit, mirroring the newsletter guard (section 9). A valid nonce alone
+ *     does not stop bots that scrape it off the page, and nura_handle_contact
+ *     emails on every valid submit - so guard it before the handler runs
+ *     (priority 0) and silently bounce bots without ever emailing anyone.
+ * -------------------------------------------------------------------------- */
+function nura_contact_spam_guard() {
+	$bounce = wp_get_referer() ? wp_get_referer() : home_url( '/' );
+
+	// Honeypot: a hidden field real users never fill.
+	$hp = isset( $_POST['nura_hp'] ) ? trim( (string) wp_unslash( $_POST['nura_hp'] ) ) : '';
+	if ( strlen( $hp ) > 0 ) {
+		wp_safe_redirect( $bounce );
+		exit;
+	}
+	// Time-trap: a submit within 2s of the page rendering is a bot.
+	$ts = isset( $_POST['nura_ct_ts'] ) ? absint( $_POST['nura_ct_ts'] ) : 0;
+	if ( $ts && ( time() - $ts ) < 2 ) {
+		wp_safe_redirect( $bounce );
+		exit;
+	}
+	// Per-IP rate limit: at most 5 submissions per 10 minutes.
+	$ip   = isset( $_SERVER['REMOTE_ADDR'] ) ? preg_replace( '/[^0-9a-f:.]/i', '', (string) wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '0';
+	$key  = 'nura_ct_rl_' . md5( $ip );
+	$hits = (int) get_transient( $key );
+	if ( $hits >= 5 ) {
+		wp_safe_redirect( $bounce );
+		exit;
+	}
+	set_transient( $key, $hits + 1, 10 * MINUTE_IN_SECONDS );
+}
+add_action( 'admin_post_nopriv_nura_contact', 'nura_contact_spam_guard', 0 );
+add_action( 'admin_post_nura_contact', 'nura_contact_spam_guard', 0 );
