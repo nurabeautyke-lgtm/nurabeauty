@@ -46,28 +46,52 @@
 			reveal.forEach(function (el) { el.classList.add('is-in'); });
 		}
 
-		// Sticky add-to-cart on single product. Show it once the main add-to-cart
-		// form scrolls out of view, then hide it again the moment the related
-		// products / footer reach the viewport, so the fixed bar never covers the
-		// 'Complete Your NURA Look' buttons or the site footer at the page end.
+		// Sticky add-to-cart on single product. It lives on the same bottom edge as
+		// the footer, the 'Complete Your NURA Look' rail AND the cookie-consent bar,
+		// so only show it once the main add-to-cart form has scrolled away and none
+		// of those bottom-anchored regions are on screen - otherwise the fixed bar
+		// stacks on top of them.
 		var sticky = d.querySelector('.nura-sticky-atc');
 		var atc = d.querySelector('form.cart');
 		if (sticky && atc && 'IntersectionObserver' in window) {
 			var atcAway = false, tailNear = false;
-			var syncSticky = function () { sticky.classList.toggle('is-visible', atcAway && tailNear === false); };
+			var consentOpen = function () {
+				var root = d.getElementById('wpconsent-root');
+				if (root === null) { return false; }
+				var holder = root.querySelector('.wpconsent-banner-holder');
+				if (holder === null) { holder = root; }
+				var cs = window.getComputedStyle(holder);
+				if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) { return false; }
+				return holder.getBoundingClientRect().height > 0;
+			};
+			var syncSticky = function () {
+				sticky.classList.toggle('is-visible', atcAway && tailNear === false && consentOpen() === false);
+			};
 			var so = new IntersectionObserver(function (entries) {
 				entries.forEach(function (en) { atcAway = en.isIntersecting === false; });
 				syncSticky();
 			}, { threshold: 0 });
 			so.observe(atc);
-			var tail = d.querySelector('.nura-complete-look') || d.querySelector('#site-footer');
-			if (tail) {
+			// Observe BOTH the related rail and the footer so the bar stays hidden
+			// across the whole bottom of the page (not just while one of them shows).
+			var tails = [ d.querySelector('.nura-complete-look'), d.querySelector('#site-footer') ].filter(function (el) { return el; });
+			var nearState = [];
+			if (tails.length) {
 				var fo = new IntersectionObserver(function (entries) {
-					entries.forEach(function (en) { tailNear = en.isIntersecting; });
+					entries.forEach(function (en) {
+						var idx = tails.indexOf(en.target);
+						if (idx > -1) { nearState[idx] = en.isIntersecting; }
+					});
+					tailNear = nearState.indexOf(true) > -1;
 					syncSticky();
 				}, { threshold: 0 });
-				fo.observe(tail);
+				tails.forEach(function (el) { fo.observe(el); });
 			}
+			// Re-evaluate right after the cookie bar is dismissed so the sticky bar
+			// can appear without needing another scroll.
+			d.addEventListener('click', function (e) {
+				if (e.target && e.target.closest && e.target.closest('#wpconsent-root')) { setTimeout(syncSticky, 400); }
+			});
 			sticky.addEventListener('click', function () { atc.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
 		}
 	});
