@@ -278,6 +278,41 @@ HTML;
 <p>Still have a question? Chat with us on WhatsApp at <strong>$phone</strong>.</p>
 HTML;
 
+		$sizing = <<<HTML
+<h2>Wig Size &amp; Fit Guide</h2>
+<p>The right fit is what makes a wig look natural and feel comfortable all day. This quick guide shows you how to measure your head, understand cap sizes and choose the right density - so you order with confidence and rarely need to return.</p>
+<h3>How to measure your head</h3>
+<p>Use a soft tape measure (or a piece of string you then hold against a ruler), with your own hair flat. Take these four measurements:</p>
+<ul>
+<li><strong>Circumference:</strong> around your hairline - across the forehead, above the ears and around the nape. This is the most important number. Most women measure 21 to 23 inches (53 to 58 cm).</li>
+<li><strong>Front to nape:</strong> from your front hairline straight back to the nape of your neck.</li>
+<li><strong>Ear to ear (over the top):</strong> across the crown from the top of one ear to the other.</li>
+<li><strong>Temple to temple (round the back):</strong> across the back of the head between the temples.</li>
+</ul>
+<h3>Cap sizes</h3>
+<ul>
+<li><strong>Petite:</strong> about 20 to 21 inches (51 to 53.5 cm).</li>
+<li><strong>Average:</strong> about 21.5 to 22.5 inches (54.5 to 57 cm) - this fits most women and is our standard cap.</li>
+<li><strong>Large:</strong> about 23 to 24 inches (58.5 to 61 cm).</li>
+</ul>
+<p>Between sizes? Choose the larger cap and use the adjustable straps to tighten the fit.</p>
+<h3>What an adjustable cap means</h3>
+<p>Most NURA units are built on an <strong>average, adjustable cap</strong>. Inside the back you will find:</p>
+<ul>
+<li><strong>Adjustable straps:</strong> two hooked straps that tighten or loosen the cap by up to about an inch.</li>
+<li><strong>Combs:</strong> small clips that anchor the unit to your own hair or a wig cap for a secure hold.</li>
+<li><strong>Elastic band:</strong> a stretch band along the nape that keeps the wig snug and helps hold a lace front flat.</li>
+</ul>
+<h3>Density - how full the wig looks</h3>
+<ul>
+<li><strong>130% to 150%:</strong> natural, everyday fullness that suits most face shapes.</li>
+<li><strong>180%:</strong> fuller and more glamorous, popular for curly and longer styles.</li>
+<li><strong>200% and above:</strong> very full, dramatic red-carpet volume.</li>
+</ul>
+<h3>Still not sure?</h3>
+<p>Try our <a href="/ai-wig-finder/">Find Your Wig</a> quiz and <a href="/virtual-try-on/">Virtual Try-On</a> for the look, then message us on WhatsApp at <strong>$phone</strong> or email <strong>$email</strong> and we will help you confirm size, cap and density before you order. You can also visit our Nairobi studio for a fitting.</p>
+HTML;
+
 		return array(
 			'about-nura'           => array( 'About NURA', $about ),
 			'contact-us'           => array( 'Contact Us', $contact ),
@@ -286,6 +321,7 @@ HTML;
 			'privacy-policy'       => array( 'Privacy Policy', $privacy ),
 			'terms-conditions'     => array( 'Terms & Conditions', $terms ),
 			'wig-care-guide'       => array( 'Wig Care Guide', $care ),
+			'wig-size-fit-guide'   => array( 'Wig Size & Fit Guide', $sizing ),
 			'payment-information'  => array( 'Payment Information', $payment ),
 			'wig-installation'     => array( 'Wig Installation', $install ),
 			'faq'                  => array( 'FAQ', $faq ),
