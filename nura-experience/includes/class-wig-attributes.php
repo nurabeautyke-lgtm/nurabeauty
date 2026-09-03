@@ -210,7 +210,7 @@ class NURAX_Wig_Attributes {
 	}
 
 	public function handle() {
-		if ( ! current_user_can( 'manage_woocommerce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'nurax_make_attributes' ) ) {
+		if ( ! current_user_can( 'manage_woocommerce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['_wpnonce'] ) ), 'nurax_make_attributes' ) ) {
 			wp_die( esc_html__( 'Not allowed', 'nura-experience' ) );
 		}
 

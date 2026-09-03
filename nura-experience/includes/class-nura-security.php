@@ -51,6 +51,12 @@ class NURAX_Security {
 		if ( is_admin() || headers_sent() ) {
 			return;
 		}
+		// The NURA Beauty theme ships a more complete security-header set (it
+		// also sends COOP + HSTS). When that theme is active, defer to it so the
+		// response never carries two conflicting Permissions-Policy headers.
+		if ( defined( 'NURA_VERSION' ) ) {
+			return;
+		}
 		header( 'X-Content-Type-Options: nosniff' );
 		header( 'X-Frame-Options: SAMEORIGIN' );
 		header( 'Referrer-Policy: strict-origin-when-cross-origin' );

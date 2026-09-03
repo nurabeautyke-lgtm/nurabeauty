@@ -81,7 +81,7 @@ add_shortcode( 'nura_booking_form', function () {
  * (A real deployment can route these to a CRM / WhatsApp instead.)
  */
 function nura_handle_contact() {
-	if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'nura_contact' ) ) {
+	if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['_wpnonce'] ) ), 'nura_contact' ) ) {
 		wp_safe_redirect( home_url( '/' ) );
 		exit;
 	}
