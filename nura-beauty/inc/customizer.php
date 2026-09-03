@@ -45,7 +45,7 @@ function nura_settings_map() {
 		'nura_phone'       => array( 'default' => '+254 714 994 898', 'label' => __( 'Phone', 'nura-beauty' ), 'section' => 'nura_brand' ),
 		'nura_whatsapp'    => array( 'default' => 'https://wa.me/254714994898', 'label' => __( 'WhatsApp link (wa.me/...)', 'nura-beauty' ), 'section' => 'nura_brand', 'sanitize' => 'esc_url_raw' ),
 		'nura_email'       => array( 'default' => 'care@nurabeauty.co.ke', 'label' => __( 'Support email', 'nura-beauty' ), 'section' => 'nura_brand', 'sanitize' => 'sanitize_email' ),
-		'nura_address'     => array( 'default' => 'Nairobi, Kenya', 'label' => __( 'Store address', 'nura-beauty' ), 'section' => 'nura_brand' ),
+		'nura_address'     => array( 'default' => 'Imenti House, Moi Avenue, Nairobi CBD', 'label' => __( 'Store address', 'nura-beauty' ), 'section' => 'nura_brand' ),
 		'nura_city'        => array( 'default' => 'Nairobi', 'label' => __( 'City', 'nura-beauty' ), 'section' => 'nura_brand' ),
 		'nura_hours'       => array( 'default' => 'Mon–Sat 9:00–18:00', 'label' => __( 'Opening hours', 'nura-beauty' ), 'section' => 'nura_brand' ),
 		'nura_instagram'   => array( 'default' => '', 'label' => __( 'Instagram URL', 'nura-beauty' ), 'section' => 'nura_brand', 'sanitize' => 'esc_url_raw' ),

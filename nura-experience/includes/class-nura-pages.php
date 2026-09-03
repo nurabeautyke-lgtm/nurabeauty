@@ -90,54 +90,118 @@ HTML;
 HTML;
 
 		$returns = <<<HTML
-<h2>Refund &amp; Returns</h2>
-<p>Your confidence matters to us. Because wigs and hair are intimate, hygiene-sensitive products, our returns policy is designed to be fair to every client.</p>
+<h2>Returns &amp; Refunds</h2>
+<p>Your confidence matters. We want you to love your NURA unit - here is exactly how returns, exchanges and refunds work.</p>
+<h3>Our promise</h3>
+<p>For hygiene and safety reasons, wigs and hair products are intimate items. We follow Kenyan consumer-protection guidance and offer returns and exchanges under the clear conditions below. Nothing here removes any right you have under the Consumer Protection Act.</p>
 <h3>What can be returned</h3>
 <ul>
-<li><strong>Eligible:</strong> unworn, unaltered units in their original packaging, returned within <strong>48 hours</strong> of delivery.</li>
-<li><strong>Not eligible:</strong> units that have been worn, washed, cut, coloured or installed cannot be returned or exchanged for hygiene reasons.</li>
+<li><strong>Unworn, unaltered units</strong> in original condition with tags on, lace uncut and all packaging intact - within <strong>14 days</strong> of delivery.</li>
+<li><strong>Wrong item received</strong> - we cover return shipping and send the correct unit or a full refund.</li>
+<li><strong>Faulty or damaged on arrival</strong> - reported with photos within 48 hours of delivery (see Warranty for full coverage terms).</li>
 </ul>
-<h3>Faulty or incorrect items</h3>
-<p>If you receive a faulty or incorrect item, contact us within 48 hours and we will make it right with a replacement or refund. Please keep the item unused and in its original packaging.</p>
+<h3>What cannot be returned</h3>
+<ul>
+<li>Units that have been <strong>worn, washed, cut, coloured, installed or restyled</strong>.</li>
+<li>Custom or bespoke units built to your specification (unless faulty).</li>
+<li>Clearance items and gift cards.</li>
+<li>Accessories that have been opened or used, for hygiene reasons (caps, edge control).</li>
+</ul>
+<h3>Who pays for return shipping</h3>
+<ul>
+<li><strong>Wrong item received or faulty on arrival:</strong> NURA covers return shipping in full.</li>
+<li><strong>Change-of-mind returns</strong> (unworn unit, within 14 days): return shipping is the customer's responsibility. We recommend a tracked courier so we can confirm arrival before processing your refund.</li>
+</ul>
+<h3>International &amp; diaspora orders</h3>
+<p>Because of the cost of return freight on international shipments, change-of-mind returns are not available for orders shipped outside Kenya via DHL or FedEx. Diaspora orders remain fully covered by our <a href="/warranty/">Warranty</a> for faulty or damaged units. If you are unsure about sizing, colour or texture before ordering internationally, we strongly recommend a free virtual consultation first, or our Virtual Try-On tool.</p>
 <h3>How to start a return</h3>
-<p>Message us on WhatsApp at <strong>$phone</strong> or email <strong>$email</strong> with your order number and a short description (and photos, if relevant). We will confirm the next steps.</p>
-<h3>Warranty</h3>
-<p>Premium units carry a written longevity guarantee (up to 6 months on custom units). Warranty covers workmanship, not damage from wear, heat or improper care. Keep your care card and order confirmation as proof of purchase.</p>
+<ol>
+<li>Contact us on WhatsApp or email within 14 days of delivery, quoting your order number.</li>
+<li>Share clear photos of the item and packaging.</li>
+<li>We confirm approval and share return instructions, including the return address.</li>
+<li>Send the item back (unworn, in original packaging) via a tracked courier.</li>
+</ol>
+<h3>Refunds &amp; exchanges</h3>
+<ul>
+<li>Approved refunds are processed to your original payment method (M-Pesa or card) within <strong>3 to 7 business days</strong> of us receiving and inspecting the returned item.</li>
+<li>Original delivery fees are non-refundable unless the return is due to our error (wrong item or fault).</li>
+<li>Prefer an exchange or store credit? We can swap length, texture or colour, or issue NURA credit - often faster than a refund.</li>
+</ul>
+<h3>Questions</h3>
+<p>Our team will guide you through every step. Reach us on WhatsApp for the fastest response at <strong>$phone</strong> or email <strong>$email</strong>.</p>
 HTML;
 
 		$privacy = <<<HTML
 <h2>Privacy Policy</h2>
-<p>$biz respects your privacy. This policy explains what we collect, how we use it, and your rights. It is written to align with Kenya's Data Protection Act, 2019.</p>
-<h3>What we collect</h3>
+<p><em>Last updated: September 2026. Please have this reviewed by a Kenyan lawyer, or against the ODPC model templates, before publishing.</em></p>
+<p>$biz (part of NURA CROWN &amp; BEAUTY - "NURA", "we", "us", "our") operates nurabeauty.co.ke (the "Site"). This policy explains what personal information we collect, how we use it, and the choices you have. We handle your data in line with Kenya's Data Protection Act, 2019.</p>
+<h3>Who we are</h3>
 <ul>
-<li>Contact and order details you provide (name, phone/WhatsApp, email, delivery address).</li>
-<li>Payment information, processed securely by our payment providers (M-Pesa, card and PayPal). We do not store full card numbers.</li>
-<li>Usage data such as pages viewed and items added to cart, via cookies and analytics, to improve the store and show relevant offers.</li>
+<li>NURA CROWN &amp; BEAUTY (trading as NURA Beauty)</li>
+<li>Business Registration No. BN-MJS7ALRV</li>
+<li>Imenti House, Moi Avenue, Nairobi CBD, Kenya</li>
+<li>Email: $email</li>
+<li>Phone / WhatsApp: $phone</li>
 </ul>
-<h3>How we use it</h3>
-<p>To process and deliver your orders, provide support and consultations, send updates you have opted into, prevent fraud, and improve our products and service.</p>
-<h3>Who we share it with</h3>
-<p>Only with the partners needed to serve you - couriers for delivery, payment processors for payment, and analytics/advertising providers - each under their own privacy terms. We never sell your personal data.</p>
-<h3>Cookies &amp; marketing</h3>
-<p>We use cookies for the cart, analytics and (with your consent) retargeting. You can manage cookies in your browser, and unsubscribe from marketing messages at any time.</p>
+<h3>Information we collect</h3>
+<ul>
+<li><strong>Information you give us:</strong> name, phone number, email, delivery address and order details when you place an order, book an appointment, message us on WhatsApp, or subscribe to Join The House.</li>
+<li><strong>Payment information:</strong> we do not store your full M-Pesa or card details. Payments are processed securely through Safaricom (M-Pesa) and our card and PayPal payment providers, who handle this data under their own security and privacy standards.</li>
+<li><strong>Automatically collected information:</strong> IP address, browser type, device information and browsing behaviour on our Site, collected via cookies and similar technologies.</li>
+<li><strong>Photos you share:</strong> if you send photos via WhatsApp (for a return, warranty claim or styling consultation), we keep these only as long as needed to resolve your request.</li>
+</ul>
+<h3>How we use your information</h3>
+<ul>
+<li>Process and deliver your orders</li>
+<li>Communicate with you about orders, appointments and support</li>
+<li>Send marketing updates, if you have opted in (you can unsubscribe anytime)</li>
+<li>Improve our Site, products and services</li>
+<li>Meet legal and tax obligations</li>
+<li>Prevent fraud and protect our business and customers</li>
+</ul>
+<h3>How we share your information</h3>
+<p>We share information only where necessary to run our business: delivery partners (such as courier companies, DHL and FedEx) to fulfil your order; payment processors to take payment securely; and service providers who support our Site (hosting, email, WhatsApp business tools). We do not sell your personal information to third parties.</p>
+<h3>Cookies</h3>
+<p>Our Site uses cookies to keep your cart working, remember your preferences and understand how visitors use the Site. You can control cookies through your browser settings; disabling them may affect how the Site functions.</p>
 <h3>Your rights</h3>
-<p>You may request access to, correction of, or deletion of your personal data. Email <strong>$email</strong> and we will respond within a reasonable time.</p>
+<p>Under Kenya's Data Protection Act you have the right to know what data we hold, request a copy, request correction, request deletion (subject to legal retention), and withdraw consent to marketing at any time. To exercise any of these, email $email.</p>
+<h3>Data security &amp; retention</h3>
+<p>We take reasonable technical and organisational measures to protect your information, though no method of transmission over the internet is completely secure. We keep your information only as long as needed for the purposes above, or as required by law.</p>
+<h3>Changes &amp; contact</h3>
+<p>We may update this policy from time to time; the date above reflects the latest revision. Questions? Email $email or message us on WhatsApp at $phone.</p>
 HTML;
 
 		$terms = <<<HTML
 <h2>Terms &amp; Conditions</h2>
-<p>By using this website and placing an order with $biz, you agree to these terms.</p>
-<h3>Orders &amp; pricing</h3>
-<p>All prices are in Kenyan Shillings (KES) and include applicable taxes unless stated otherwise. We may correct pricing errors and confirm or decline any order. Product availability and variation prices are shown on each product page.</p>
-<h3>Payment</h3>
-<p>We accept M-Pesa, Visa/Mastercard, PayPal, and pay-on-delivery within Nairobi. For units above KES 15,000, NURA Flex lets you begin with a 50% M-Pesa deposit and settle the balance before delivery, or split over instalments. Orders are dispatched once payment (or the agreed deposit) is confirmed.</p>
-<h3>Delivery &amp; returns</h3>
-<p>Delivery timeframes are estimates - see <a href="/delivery-information/">Delivery Information</a>. Returns are governed by our <a href="/refund-returns/">Refund &amp; Returns</a> policy.</p>
-<h3>Products &amp; care</h3>
-<p>Colours and textures may vary slightly from screen images. Wig longevity depends on proper care; follow our <a href="/wig-care-guide/">Wig Care Guide</a> to protect your warranty.</p>
-<h3>Intellectual property &amp; liability</h3>
-<p>All content on this site is the property of $biz and may not be copied without permission. To the extent permitted by law, our liability is limited to the value of your order. These terms are governed by the laws of Kenya.</p>
-<p>Questions? Contact us at <strong>$email</strong> or <strong>$phone</strong>.</p>
+<p><em>Last updated: September 2026.</em></p>
+<p>Welcome to $biz. By accessing or using nurabeauty.co.ke, placing an order, or booking an appointment, you agree to the terms below.</p>
+<h3>About NURA</h3>
+<p>$biz (registered as NURA CROWN &amp; BEAUTY, Business Registration No. BN-MJS7ALRV) is East Africa's house of radiant confidence, offering premium human-hair and fashion wigs, hair care and beauty products, hand-finished and serviced from our studio at Imenti House, Moi Avenue, Nairobi CBD.</p>
+<h3>Orders &amp; payment</h3>
+<ul>
+<li>All prices are listed in Kenyan Shillings (KES) unless otherwise stated; international orders may be quoted in USD.</li>
+<li>We accept M-Pesa, card payment, PayPal and pay-on-delivery within Nairobi (where available).</li>
+<li>Orders are confirmed once payment is received or, for pay-on-delivery orders, once we have confirmed the order details with you.</li>
+<li>We may cancel or refuse an order - for example in cases of suspected fraud, pricing errors or stock unavailability - and will notify you promptly.</li>
+</ul>
+<h3>Product information</h3>
+<p>We do our best to accurately describe and photograph every product, including hair type (human hair versus synthetic fibre), texture, length and construction. Minor variations in colour or texture are possible due to the natural nature of human hair and to photography and screen differences.</p>
+<h3>Shipping &amp; delivery</h3>
+<p>See our <a href="/shipping-delivery/">Shipping &amp; Delivery</a> page for timelines and fees. Delivery estimates are not guaranteed and may be affected by factors outside our control (courier delays, customs processing for international orders).</p>
+<h3>Returns, refunds &amp; warranty</h3>
+<p>See our <a href="/returns-refunds/">Returns &amp; Refunds</a> and <a href="/warranty/">Warranty</a> pages for full terms. Nothing in these Terms affects your statutory rights under Kenya's Consumer Protection Act.</p>
+<h3>Custom &amp; bespoke orders</h3>
+<p>Custom and bespoke units are made to your specification and are non-returnable unless faulty. Production timelines are confirmed at the time of order.</p>
+<h3>Appointments &amp; installation</h3>
+<p>Appointments booked through our Site or WhatsApp are subject to availability. Please give at least 24 hours notice if you need to reschedule or cancel.</p>
+<h3>Intellectual property</h3>
+<p>All content on this Site - photos, text, logos and design - is owned by NURA or used under licence, and may not be copied or reused without our written permission.</p>
+<h3>Limitation of liability</h3>
+<p>To the extent permitted by law, NURA is not liable for indirect or consequential losses arising from use of our Site or products. This does not limit any liability that cannot be excluded under Kenyan law.</p>
+<h3>Governing law</h3>
+<p>These Terms are governed by the laws of Kenya, and any disputes will be subject to the jurisdiction of Kenyan courts.</p>
+<h3>Changes &amp; contact</h3>
+<p>We may update these Terms from time to time; continued use of the Site after changes are posted means you accept the updated Terms. Questions? Email $email or message us on WhatsApp at $phone.</p>
 HTML;
 
 		$care = <<<HTML
@@ -206,9 +270,9 @@ HTML;
 <h3>How do I pay?</h3>
 <p>M-Pesa, Visa/Mastercard, PayPal, and pay-on-delivery in Nairobi. NURA Flex is available on units above KES 15,000. See <a href="/payment-information/">Payment Information</a>.</p>
 <h3>How fast is delivery?</h3>
-<p>Same-day within Nairobi (order before 2:00pm), 1 to 3 business days countrywide, and 3 to 10 business days internationally with tracking. See <a href="/delivery-information/">Delivery Information</a>.</p>
+<p>Same-day within Nairobi (order before 2:00pm), 1 to 3 business days countrywide, and 3 to 10 business days internationally with tracking. See <a href="/shipping-delivery/">Delivery Information</a>.</p>
 <h3>Can I return or exchange a wig?</h3>
-<p>Unworn, unaltered units can be returned within 48 hours of delivery. Worn, cut or installed units cannot be returned for hygiene reasons. See <a href="/refund-returns/">Refund &amp; Returns</a>.</p>
+<p>Unworn, unaltered units can be returned within 48 hours of delivery. Worn, cut or installed units cannot be returned for hygiene reasons. See <a href="/returns-refunds/">Refund &amp; Returns</a>.</p>
 <h3>Do you install wigs?</h3>
 <p>Yes - installation, styling, colouring, revamp and repairs. See <a href="/wig-installation/">Wig Installation</a>.</p>
 <p>Still have a question? Chat with us on WhatsApp at <strong>$phone</strong>.</p>
@@ -218,7 +282,7 @@ HTML;
 			'about-nura'           => array( 'About NURA', $about ),
 			'contact-us'           => array( 'Contact Us', $contact ),
 			'delivery-information' => array( 'Delivery Information', $delivery ),
-			'refund-returns'       => array( 'Refund & Returns', $returns ),
+			'returns-refunds'       => array( 'Returns & Refunds', $returns ),
 			'privacy-policy'       => array( 'Privacy Policy', $privacy ),
 			'terms-conditions'     => array( 'Terms & Conditions', $terms ),
 			'wig-care-guide'       => array( 'Wig Care Guide', $care ),
