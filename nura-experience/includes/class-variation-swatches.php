@@ -20,7 +20,7 @@ class NURAX_Variation_Swatches {
 
 	public function __construct() {
 		add_filter( 'woocommerce_dropdown_variation_attribute_options_html', array( $this, 'render' ), 20, 2 );
-		add_action( 'wp_enqueue_scripts', array( $this, 'assets' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'assets' ), 20 );
 	}
 
 	/** Common NURA colour name (slug) => swatch background. */
@@ -96,8 +96,31 @@ class NURAX_Variation_Swatches {
 	}
 
 	public function assets() {
-		if ( function_exists( 'is_product' ) && is_product() ) {
-			wp_enqueue_script( 'nurax-variations', NURAX_URL . 'assets/js/nura-variations.js', array( 'jquery' ), NURAX_VERSION, true );
+		if ( is_admin() ) {
+			return;
 		}
+		// Quick View can surface a variation form on ANY product loop - shop and
+		// taxonomy archives, the front-page carousels, and the related-products
+		// grid on a single product - so the swatch driver AND WooCommerce's own
+		// variation engine must be present there too, not only on single-product
+		// pages. Without the engine, variation_id is never set and Quick View
+		// 'Add to cart' is inert; without the driver the swatches never bind.
+		$load = ( function_exists( 'is_product' ) && is_product() )
+			|| ( function_exists( 'is_shop' ) && is_shop() )
+			|| ( function_exists( 'is_product_taxonomy' ) && is_product_taxonomy() )
+			|| is_front_page()
+			|| is_home();
+		$load = (bool) apply_filters( 'nurax_swatches_load_assets', $load );
+		if ( $load === false ) {
+			return;
+		}
+		$deps = array( 'jquery' );
+		// WooCommerce registers this on the front end but only enqueues it on
+		// single-product pages; pull it in wherever Quick View may run.
+		if ( wp_script_is( 'wc-add-to-cart-variation', 'registered' ) ) {
+			wp_enqueue_script( 'wc-add-to-cart-variation' );
+			$deps[] = 'wc-add-to-cart-variation';
+		}
+		wp_enqueue_script( 'nurax-variations', NURAX_URL . 'assets/js/nura-variations.js', $deps, NURAX_VERSION, true );
 	}
 }
