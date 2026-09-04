@@ -368,8 +368,10 @@ r(function(){var form=d.querySelector("[data-nura-book]");if(!form){return;}
 			}
 			e.preventDefault();
 			var fd=new FormData(form);
-			var pid=fd.get("add-to-cart")||addBtn.value||"";
-			if(pid&&!fd.get("product_id")){fd.append("product_id",pid);}
+			// For a variable product the AJAX endpoint adds by the VARIATION id, not the parent.
+			var vsel=form.querySelector("input[name=variation_id]");
+			var pid=(form.classList.contains("variations_form")&&vsel&&vsel.value&&vsel.value!=="0")?vsel.value:(fd.get("add-to-cart")||addBtn.value||"");
+			if(pid){fd.set("product_id",pid);}
 			addBtn.classList.add("loading");
 			fetch(wcAjax("add_to_cart"),{method:"POST",body:fd,credentials:"same-origin"}).then(function(r){return r.json();}).then(function(data){
 				addBtn.classList.remove("loading");

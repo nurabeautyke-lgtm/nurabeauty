@@ -212,25 +212,34 @@ r(function(){
 		ev.preventDefault();
 		var isVar=form.classList.contains("variations_form");
 		var vidEl=form.querySelector("input[name=variation_id]");
-		if(isVar&&(!vidEl||!vidEl.value||vidEl.value==="0")){
-			var err=form.querySelector(".nura-qv-error");
-			if(!err){err=d.createElement("p");err.className="nura-qv-error";form.appendChild(err);}
-			err.textContent="Please choose the available options first.";
+		var variationId=vidEl?String(vidEl.value||""):"";
+		var addBtn=form.querySelector("button.single_add_to_cart_button, button[name=add-to-cart]");
+		function qvError(msg){var err=form.querySelector(".nura-qv-error");if(!err){err=d.createElement("p");err.className="nura-qv-error";form.appendChild(err);}err.textContent=msg;}
+		if(isVar&&(!variationId||variationId==="0"||(addBtn&&addBtn.classList.contains("wc-variation-selection-needed")))){
+			qvError("Please choose the available options first.");
 			return;
 		}
-		var addBtn=form.querySelector("button.single_add_to_cart_button, button[name=add-to-cart]");
-		if(addBtn&&addBtn.classList.contains("disabled")){return;}
+		if(addBtn&&addBtn.classList.contains("disabled")){
+			qvError("Sorry, that option is currently unavailable.");
+			return;
+		}
 		var fd=new FormData(form);
-		var pid=fd.get("add-to-cart")||(addBtn&&addBtn.value)||"";
-		if(pid&&!fd.get("product_id")){fd.append("product_id",pid);}
+		// WooCommerce's ?wc-ajax=add_to_cart adds by product_id; for a variable product
+		// that id MUST be the chosen VARIATION id (not the parent) or the add is rejected.
+		if(isVar&&variationId){fd.set("product_id",variationId);fd.set("variation_id",variationId);}
+		else{var pid=fd.get("add-to-cart")||fd.get("product_id")||(addBtn&&addBtn.value)||"";if(pid){fd.set("product_id",pid);}}
+		var qtyEl=form.querySelector("input.qty, input[name=quantity]");
+		if(qtyEl&&qtyEl.value){fd.set("quantity",qtyEl.value);}
 		var ep=(window.wc_add_to_cart_params&&wc_add_to_cart_params.wc_ajax_url)?wc_add_to_cart_params.wc_ajax_url.replace("%%endpoint%%","add_to_cart"):"/?wc-ajax=add_to_cart";
-		if(addBtn){addBtn.classList.add("loading");}
+		var label=addBtn?addBtn.textContent:"";
+		if(addBtn){addBtn.classList.add("loading");addBtn.setAttribute("aria-busy","true");addBtn.disabled=true;}
 		fetch(ep,{method:"POST",body:fd,credentials:"same-origin"}).then(function(res){return res.json();}).then(function(data){
-			if(addBtn){addBtn.classList.remove("loading");}
-			if(!data||data.error){return;}
-			if(window.jQuery){window.jQuery(d.body).trigger("added_to_cart",[data.fragments,data.cart_hash]);}
-			else{closeM();d.dispatchEvent(new CustomEvent("nura:cartadded"));}
-		}).catch(function(){if(addBtn){addBtn.classList.remove("loading");}});
+			if(addBtn){addBtn.classList.remove("loading");addBtn.removeAttribute("aria-busy");addBtn.disabled=false;}
+			if(!data||data.error){qvError("Sorry, we couldn't add that just now. Please try again.");return;}
+			if(addBtn){addBtn.classList.add("added");addBtn.textContent="Added \u2713";setTimeout(function(){if(addBtn){addBtn.textContent=label||"Add to cart";addBtn.classList.remove("added");}},1600);}
+			if(window.jQuery){window.jQuery(d.body).trigger("added_to_cart",[data.fragments,data.cart_hash,addBtn?window.jQuery(addBtn):null]);}
+			else{if(data.fragments){Object.keys(data.fragments).forEach(function(sel){var t=d.querySelector(sel);if(t){t.outerHTML=data.fragments[sel];}});}closeM();d.dispatchEvent(new CustomEvent("nura:cartadded"));}
+		}).catch(function(){if(addBtn){addBtn.classList.remove("loading");addBtn.removeAttribute("aria-busy");addBtn.disabled=false;}qvError("Network hiccup \u2014 please try again.");});
 	});
 	d.addEventListener("click",function(e){
 		var el=e.target;while(el&&el.nodeType!==1){el=el.parentNode;}
