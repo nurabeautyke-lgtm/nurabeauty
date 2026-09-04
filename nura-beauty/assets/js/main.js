@@ -417,3 +417,118 @@ r(function(){var form=d.querySelector("[data-nura-book]");if(!form){return;}
 		});
 	});
 })();
+
+/* ===== NURA v1.20.0 - Mini-cart drawer quantity steppers (Store API) ===== */
+(function(){
+	var d=document;
+	function ready(f){if(d.readyState!=="loading"){f();}else{d.addEventListener("DOMContentLoaded",f);}}
+
+	var API=(function(){
+		var base="/wp-json/wc/store/v1/";
+		var nonce="";
+		function readNonce(res){try{var n=res.headers.get("Nonce");if(n){nonce=n;}}catch(e){}return nonce;}
+		function ensureNonce(){
+			if(nonce){return Promise.resolve(nonce);}
+			return fetch(base+"cart",{credentials:"same-origin",headers:{"Accept":"application/json"}}).then(function(res){return readNonce(res);});
+		}
+		function send(path,payload){
+			return fetch(base+path,{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json","Nonce":nonce},body:JSON.stringify(payload)}).then(function(res){readNonce(res);return res;});
+		}
+		function post(path,payload){
+			return ensureNonce().then(function(){return send(path,payload);}).then(function(res){
+				if(res.status===403){nonce="";return ensureNonce().then(function(){return send(path,payload);});}
+				return res;
+			});
+		}
+		return {
+			setQty:function(key,qty){return post("cart/update-item",{key:key,quantity:qty});},
+			remove:function(key){return post("cart/remove-item",{key:key});}
+		};
+	})();
+
+	function enhance(){
+		var items=d.querySelectorAll(".woocommerce-mini-cart-item");
+		[].forEach.call(items,function(item){
+			if(item.querySelector(".nura-qtystep")){return;}
+			var rm=item.querySelector("a.remove_from_cart_button, a.remove");
+			var key=rm?rm.getAttribute("data-cart_item_key"):null;
+			if(!key){return;}
+			var q=item.querySelector(".quantity");
+			var m=q?(q.textContent||"").replace(/,/g,"").match(/\d+/):null;
+			var qty=m?parseInt(m[0],10):1;
+			var wrap=d.createElement("div");
+			wrap.className="nura-qtystep";
+			wrap.setAttribute("data-key",key);
+			wrap.innerHTML='<button type="button" class="nura-qtystep__btn" data-step="-1" aria-label="Decrease quantity">&minus;</button><span class="nura-qtystep__n" aria-live="polite">'+qty+'</span><button type="button" class="nura-qtystep__btn" data-step="1" aria-label="Increase quantity">+</button>';
+			item.appendChild(wrap);
+		});
+	}
+
+	function refreshCart(){
+		if(window.jQuery){window.jQuery(d.body).trigger("wc_fragment_refresh");return;}
+		fetch("/?wc-ajax=get_refreshed_fragments",{method:"POST",credentials:"same-origin"}).then(function(r){return r.json();}).then(function(j){
+			if(j&&j.fragments){Object.keys(j.fragments).forEach(function(sel){var el=d.querySelector(sel);if(el){el.outerHTML=j.fragments[sel];}});enhance();}
+		}).catch(function(){});
+	}
+
+	function busy(wrap,on){
+		wrap.classList.toggle("is-busy",on);
+		[].forEach.call(wrap.querySelectorAll("button"),function(b){b.disabled=on;});
+	}
+
+	ready(function(){
+		var style=d.createElement("style");
+		style.textContent=".woocommerce-mini-cart-item{position:relative}.nura-qtystep{display:inline-flex;align-items:center;gap:.4rem;margin-top:.5rem}.nura-qtystep__btn{width:28px;height:28px;line-height:1;border:1px solid #d8cfc4;background:#fff;border-radius:6px;font-size:1rem;cursor:pointer;color:#1a1a1a;display:inline-flex;align-items:center;justify-content:center;padding:0}.nura-qtystep__btn:hover{background:#f4efe8}.nura-qtystep__btn:disabled{opacity:.5;cursor:default}.nura-qtystep__n{min-width:1.7rem;text-align:center;font-weight:600}.nura-qtystep.is-busy{opacity:.55}";
+		d.head.appendChild(style);
+		enhance();
+		if(window.jQuery){window.jQuery(d.body).on("wc_fragments_refreshed wc_fragments_loaded added_to_cart removed_from_cart",function(){enhance();});}
+		var drawer=d.querySelector("[data-nura-cartdrawer]");
+		if(drawer){try{new MutationObserver(function(){enhance();}).observe(drawer,{childList:true,subtree:true});}catch(e){}}
+
+		d.addEventListener("click",function(e){
+			var btn=(e.target&&e.target.closest)?e.target.closest(".nura-qtystep__btn"):null;
+			if(!btn){return;}
+			e.preventDefault();
+			var wrap=btn.closest(".nura-qtystep");
+			if(!wrap||wrap.classList.contains("is-busy")){return;}
+			var key=wrap.getAttribute("data-key");
+			var nEl=wrap.querySelector(".nura-qtystep__n");
+			var cur=parseInt(nEl.textContent,10)||1;
+			var step=parseInt(btn.getAttribute("data-step"),10)||0;
+			var next=cur+step;
+			busy(wrap,true);
+			var op=(next<1)?API.remove(key):API.setQty(key,next);
+			op.then(function(res){
+				if(res&&res.ok&&next>=1){nEl.textContent=String(next);}
+				refreshCart();
+			}).catch(function(){refreshCart();}).then(function(){busy(wrap,false);});
+		});
+	});
+})();
+
+/* ===== NURA v1.20.0 - "Edit cart" link on block checkout ===== */
+(function(){
+	var d=document;
+	function ready(f){if(d.readyState!=="loading"){f();}else{d.addEventListener("DOMContentLoaded",f);}}
+	ready(function(){
+		if(!d.querySelector(".wp-block-woocommerce-checkout")){return;}
+		var cartUrl=(window.wc_cart_fragments_params&&wc_cart_fragments_params.cart_url)?wc_cart_fragments_params.cart_url:"/cart/";
+		var style=d.createElement("style");
+		style.textContent=".nura-editcart{display:inline-flex;align-items:center;gap:.3rem;margin:0 0 .85rem;font-size:.9rem;font-weight:600;color:#7a5b2e;text-decoration:underline;text-underline-offset:2px}.nura-editcart:hover{color:#5c451f}";
+		d.head.appendChild(style);
+		function ensure(){
+			var anchor=d.querySelector(".wc-block-components-order-summary")||d.querySelector(".wp-block-woocommerce-checkout-order-summary-block");
+			if(!anchor){return;}
+			var host=anchor.parentNode;
+			if(!host){return;}
+			if(host.querySelector(":scope > .nura-editcart")){return;}
+			var a=d.createElement("a");
+			a.className="nura-editcart";
+			a.href=cartUrl;
+			a.textContent="\u2190 Edit cart";
+			host.insertBefore(a,anchor);
+		}
+		ensure();
+		try{new MutationObserver(function(){ensure();}).observe(d.body,{childList:true,subtree:true});}catch(e){}
+	});
+})();
