@@ -532,3 +532,24 @@ r(function(){var form=d.querySelector("[data-nura-book]");if(!form){return;}
 		try{new MutationObserver(function(){ensure();}).observe(d.body,{childList:true,subtree:true});}catch(e){}
 	});
 })();
+
+/* ===== NURA v1.20.1 - Safety net for the Quick View double-add =====
+   The Quick View variation form carries a hidden <input name="add-to-cart">.
+   If it rides along in the plugin's AJAX add, WooCommerce's classic form
+   handler adds the item a SECOND time (double add). The plugin's own fix
+   (nurax.js >= 1.35.3) strips it, but this theme-side guard removes it too
+   in a capture-phase submit listener that runs BEFORE the plugin's handler,
+   so the double-add is prevented even when the plugin build is not yet
+   deployed. Scoped to Quick View forms only; harmless once the plugin is
+   current. */
+(function(){
+	var d=document;
+	d.addEventListener("submit",function(e){
+		var t=e.target;
+		var form=(t&&t.closest)?t.closest("form.cart"):null;
+		if(!form){return;}
+		if(!form.closest("[data-qv-body]")){return;}
+		var atc=form.querySelector('input[name="add-to-cart"]');
+		if(atc&&atc.parentNode){atc.parentNode.removeChild(atc);}
+	},true);
+})();
