@@ -228,6 +228,7 @@ r(function(){
 		// that id MUST be the chosen VARIATION id (not the parent) or the add is rejected.
 		if(isVar&&variationId){fd.set("product_id",variationId);fd.set("variation_id",variationId);}
 		else{var pid=fd.get("add-to-cart")||fd.get("product_id")||(addBtn&&addBtn.value)||"";if(pid){fd.set("product_id",pid);}}
+		fd.delete("add-to-cart"); // strip so WooCommerce classic form handler does not add a 2nd copy on this AJAX request
 		var qtyEl=form.querySelector("input.qty, input[name=quantity]");
 		if(qtyEl&&qtyEl.value){fd.set("quantity",qtyEl.value);}
 		var ep=(window.wc_add_to_cart_params&&wc_add_to_cart_params.wc_ajax_url)?wc_add_to_cart_params.wc_ajax_url.replace("%%endpoint%%","add_to_cart"):"/?wc-ajax=add_to_cart";

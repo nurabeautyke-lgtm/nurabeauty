@@ -372,6 +372,7 @@ r(function(){var form=d.querySelector("[data-nura-book]");if(!form){return;}
 			var vsel=form.querySelector("input[name=variation_id]");
 			var pid=(form.classList.contains("variations_form")&&vsel&&vsel.value&&vsel.value!=="0")?vsel.value:(fd.get("add-to-cart")||addBtn.value||"");
 			if(pid){fd.set("product_id",pid);}
+			fd.delete("add-to-cart"); // avoid double-add: WC form handler would otherwise add this item again
 			addBtn.classList.add("loading");
 			fetch(wcAjax("add_to_cart"),{method:"POST",body:fd,credentials:"same-origin"}).then(function(r){return r.json();}).then(function(data){
 				addBtn.classList.remove("loading");
