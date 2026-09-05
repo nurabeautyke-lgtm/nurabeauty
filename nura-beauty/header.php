@@ -64,6 +64,7 @@
 				<span class="nura-contact-link__txt"><?php echo esc_html( $nura_contact_txt ); ?></span>
 			</a>
 			<?php endif; ?>
+			<button class="nura-icon-btn nura-search-ic" type="button" data-nura-search-open aria-label="<?php esc_attr_e( 'Search', 'nura-beauty' ); ?>"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></button>
 			<a class="nura-icon-btn nura-search-txt" href="<?php echo esc_url( add_query_arg( 'post_type', 'product', home_url( '/?s=' ) ) ); ?>" data-nura-search-open aria-label="<?php esc_attr_e( 'Search', 'nura-beauty' ); ?>"><?php esc_html_e( 'Search', 'nura-beauty' ); ?></a>
 			<?php if ( function_exists( 'nura_cart_button' ) ) { nura_cart_button(); } ?>
 		</div>
@@ -73,15 +74,31 @@
 <!-- Mobile drawer -->
 <div class="nura-overlay" data-nura-overlay></div>
 <aside class="nura-drawer" data-nura-drawer-panel aria-hidden="true">
-	<a class="nura-logo" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html( nura_opt( 'nura_brand_name' ) ); ?></a>
-	<?php
-	wp_nav_menu( array(
-		'theme_location' => 'mobile',
-		'container'      => false,
-		'fallback_cb'    => 'nura_default_menu',
-	) );
-	?>
-	<a class="nura-btn nura-btn--gold" style="width:100%" href="<?php echo esc_url( nura_opt( 'nura_whatsapp' ) ); ?>"><?php esc_html_e( 'Chat on WhatsApp', 'nura-beauty' ); ?></a>
+	<div class="nura-drawer__head">
+		<a class="nura-logo nura-drawer__logo" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html( nura_opt( 'nura_brand_name' ) ); ?></a>
+		<button class="nura-drawer__close" type="button" data-nura-drawer aria-label="<?php esc_attr_e( 'Close menu', 'nura-beauty' ); ?>"><span aria-hidden="true">&times;</span></button>
+	</div>
+
+	<form role="search" method="get" class="nura-drawer__search" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+		<input type="search" name="s" placeholder="<?php esc_attr_e( 'Search wigs, styles…', 'nura-beauty' ); ?>" aria-label="<?php esc_attr_e( 'Search products', 'nura-beauty' ); ?>">
+		<input type="hidden" name="post_type" value="product">
+		<button type="submit" class="nura-drawer__search-btn" aria-label="<?php esc_attr_e( 'Search', 'nura-beauty' ); ?>"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></button>
+	</form>
+
+	<nav class="nura-drawer__nav" aria-label="<?php esc_attr_e( 'Mobile menu', 'nura-beauty' ); ?>">
+		<?php
+		wp_nav_menu( array(
+			'theme_location' => 'mobile',
+			'container'      => false,
+			'fallback_cb'    => 'nura_default_menu',
+		) );
+		?>
+	</nav>
+
+	<div class="nura-drawer__foot">
+		<a class="nura-btn nura-btn--gold nura-drawer__wa" href="<?php echo esc_url( nura_opt( 'nura_whatsapp' ) ); ?>"><?php esc_html_e( 'Chat on WhatsApp', 'nura-beauty' ); ?></a>
+		<a class="nura-drawer__account" href="<?php echo esc_url( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/my-account/' ) ); ?>"><?php esc_html_e( 'My Account', 'nura-beauty' ); ?></a>
+	</div>
 </aside>
 <?php
 /**
